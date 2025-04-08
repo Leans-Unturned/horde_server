@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net48</TargetFrameworks>
+		<AssemblyName>HordeServer</AssemblyName>
+		<RootNamespace>HordeServer</RootNamespace>
+		<OutputType>Library</OutputType>
+		<LangVersion>12</LangVersion>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>HordeServer</PackageId>
+		<PackageTags>RocketMod Universal</PackageTags>
+		<PackageAuthors>LeandroTheDev</PackageAuthors>
+		<PackageOwners>LeandroTheDev</PackageOwners>
+		<Version>1.0.0</Version>
+		<PackageVersion>1.0.0</PackageVersion>
+		<Authors>LeandroTheDev</Authors>
+		<Description>Rank system for unturned.</Description>
+		<Copyright>LeandroTheDev</Copyright>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>Libs\Assembly-CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="com.rlabrecque.steamworks.net">
+			<HintPath>Libs\com.rlabrecque.steamworks.net.dll</HintPath>
+		</Reference>
+		<Reference Include="Rocket.API">
+			<HintPath>Libs\Rocket.API.dll</HintPath>
+		</Reference>
+		<Reference Include="Rocket.Core">
+			<HintPath>Libs\Rocket.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="Rocket.Unturned">
+			<HintPath>Libs\Rocket.Unturned.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>Libs\UnityEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
+			<Aliases>UnityEngineCoreModule</Aliases>
+		</Reference>
+	</ItemGroup>
+
+</Project>
