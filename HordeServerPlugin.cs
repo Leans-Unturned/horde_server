@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Rocket.API.Collections;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
+using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Steamworks;
@@ -43,9 +44,15 @@ namespace HordeServer
 
                 string position = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Player.dat");
                 if (File.Exists(position)) File.Delete(position);
+
+                string life = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Life.dat");
+                if (File.Exists(life)) File.Delete(life);
+
+                string skills = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Skills.dat");
+                if (File.Exists(skills)) File.Delete(skills);
             }
 
-            Logger.Log("HordeServer instanciated, restored by LeandroTheDev");
+            Logger.Log("HordeServer instanciated, by LeandroTheDev");
         }
 
         private void OnPlayerDisconnected(UnturnedPlayer player)
@@ -55,6 +62,8 @@ namespace HordeServer
             onlinePlayers.Remove(player);
             alivePlayers.Remove(player);
 
+            UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
+
             string clothingPath = Path.Combine(Configuration.Instance.PlayersFolder, $"{player.Id}_0", Configuration.Instance.LevelName, "Player", "Clothing.dat");
             if (File.Exists(clothingPath)) File.Delete(clothingPath);
 
@@ -63,6 +72,25 @@ namespace HordeServer
 
             string position = Path.Combine(Configuration.Instance.PlayersFolder, $"{player.Id}_0", Configuration.Instance.LevelName, "Player", "Player.dat");
             if (File.Exists(position)) File.Delete(position);
+
+            string life = Path.Combine(Configuration.Instance.PlayersFolder, $"{player.Id}_0", Configuration.Instance.LevelName, "Player", "Life.dat");
+            if (File.Exists(life)) File.Delete(life);
+
+            string skills = Path.Combine(Configuration.Instance.PlayersFolder, $"{player.Id}_0", Configuration.Instance.LevelName, "Player", "Skills.dat");
+            if (File.Exists(skills)) File.Delete(skills);
+        }
+
+        private void OnPlayerStatsUpdate(UnturnedPlayer player, EPlayerStat stat)
+        {
+            switch (stat)
+            {
+                case EPlayerStat.KILLS_ZOMBIES_NORMAL:
+                    HordeUtils.ReceiveZombieDeathUpdate();
+                    break;
+                case EPlayerStat.KILLS_ZOMBIES_MEGA:
+                    HordeUtils.ReceiveZombieDeathUpdate();
+                    break;
+            }
         }
 
         private void OnPlayerConnected(UnturnedPlayer player)
@@ -133,13 +161,14 @@ namespace HordeServer
         public bool RestartRound = false;
         public int wave = 0;
 
-        private uint actualTick = 0;
+        private uint actualSpawnTick = 0;
+        private uint actualRemainingTick = 0;
         private uint actualTickBetweenRounds = 0;
 
         public void Start()
         {
             actualTickBetweenRounds = HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds;
-            actualTick = HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate;
+            actualSpawnTick = HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate;
         }
 
         public void Update()
@@ -147,8 +176,13 @@ namespace HordeServer
             // Round Restart
             if (RestartRound)
             {
+                actualSpawnTick = HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate;
                 actualTickBetweenRounds = HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds;
+                actualRemainingTick = HordeServerPlugin.instance!.Configuration.Instance.RemainingCheckTickrate;
 
+                HordeUtils.zombiesAlive = [];
+                HordeUtils.zombiesToSpawn = 0;
+                HordeUtils.wave = null;
                 LightingManager.time = 500;
                 wave = 0;
                 System.Random random = new();
@@ -228,15 +262,23 @@ namespace HordeServer
             }
             else if (HordeUtils.zombiesToSpawn <= 0 && HordeUtils.zombiesAlive.Count <= 0) actualTickBetweenRounds--;
 
-            // Server Tickrate
-            if (actualTick <= 0)
+            // Spawn Tickrate
+            if (actualSpawnTick <= 0)
             {
-                actualTick = HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate;
+                actualSpawnTick = HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate;
 
-                HordeUtils.CheckRemainingZombies();
                 HordeUtils.SpawnZombiesInNodes();
             }
-            actualTick--;
+            actualSpawnTick--;
+
+            // Zombie check tick
+            if (actualRemainingTick <= 0)
+            {
+                actualRemainingTick = HordeServerPlugin.instance!.Configuration.Instance.RemainingCheckTickrate;
+
+                HordeUtils.CheckRemainingZombies();
+            }
+            actualRemainingTick--;
         }
     }
 
@@ -348,6 +390,35 @@ namespace HordeServer
             zombiesToSpawn += wave.Sprinter;
         }
 
+        public static void ReceiveZombieDeathUpdate()
+        {
+            if (zombiesToSpawn - 1 <= 0)
+            {
+                uint? nextAlert = HordeServerPlugin.instance!.Configuration.Instance.RemainingZombiesAlert
+                    .Where(n => n >= zombiesAlive.Count)
+                    .OrderBy(n => n)
+                    .FirstOrDefault();
+
+                if (nextAlert != null && !AlertsUsed.Contains((uint)nextAlert))
+                {
+                    AlertsUsed.Add((uint)nextAlert);
+
+                    foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
+                    {
+                        ChatManager.serverSendMessage(
+                            HordeServerPlugin.instance!.Translate("wave_remaining", zombiesAlive.Count),
+                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                            null,
+                            player.SteamPlayer(),
+                            EChatMode.SAY,
+                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                            true
+                        );
+                    }
+                }
+            }
+        }
+
         public static void CheckRemainingZombies()
         {
             List<Zombie> toRemove = [];
@@ -367,6 +438,8 @@ namespace HordeServer
 
                 if (nextAlert != null && !AlertsUsed.Contains((uint)nextAlert))
                 {
+                    AlertsUsed.Add((uint)nextAlert);
+
                     foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
                     {
                         ChatManager.serverSendMessage(

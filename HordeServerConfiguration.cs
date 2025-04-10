@@ -6,6 +6,7 @@ namespace HordeServer
     public class HordeServerConfiguration : IRocketPluginConfiguration
     {
         public uint SpawnTickrate = 600;
+        public uint RemainingCheckTickrate = 600;
         public uint TickrateBetweenRounds = 1000;
         public int SecondsAfterRoundFail = 10;
         public ConfigPosition MapCenterPosition = new();
