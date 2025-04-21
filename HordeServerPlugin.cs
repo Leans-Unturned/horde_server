@@ -140,9 +140,33 @@ namespace HordeServer
                         Configuration.Instance.ChatIconURL,
                         true
                     );
-
-                    Task.Delay(Configuration.Instance.SecondsAfterRoundFail * 1000).ContinueWith((_) => hordeInstance!.RestartRound = true);
                 }
+
+                void tryToRestartRound()
+                {
+                    if (onlinePlayers.Count == 0) return;
+
+                    Task.Delay(Configuration.Instance.SecondsAfterRoundFail * 1000).ContinueWith((_) =>
+                    {
+                        if (onlinePlayers.Count == 0) return;
+
+                        bool oneIsAlive = false;
+                        foreach (UnturnedPlayer player in onlinePlayers)
+                        {
+                            if (!player.Dead)
+                            {
+                                oneIsAlive = true;
+                                break;
+                            };
+                        }
+
+                        if (oneIsAlive)
+                            hordeInstance!.RestartRound = true;
+                        else tryToRestartRound();
+                    });
+                }
+
+                tryToRestartRound();
             }
         }
 
@@ -176,41 +200,78 @@ namespace HordeServer
             // Round Restart
             if (RestartRound)
             {
-                actualSpawnTick = HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate;
-                actualTickBetweenRounds = HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds;
-                actualRemainingTick = HordeServerPlugin.instance!.Configuration.Instance.RemainingCheckTickrate;
-
-                HordeUtils.zombiesAlive = [];
-                HordeUtils.zombiesToSpawn = 0;
-                HordeUtils.wave = null;
-                LightingManager.time = 500;
-                wave = 0;
-                System.Random random = new();
-
-                RestartRound = false;
-                HordeUtils.KillAllZombies();
-                ItemManager.askClearAllItems();
-
-                HordeServerPlugin.alivePlayers = [];
+                bool oneIsAlive = false;
                 foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
                 {
-                    ChatManager.serverSendMessage(
-                        HordeServerPlugin.instance!.Translate("round_started"),
-                        new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
-                        null,
-                        player.SteamPlayer(),
-                        EChatMode.SAY,
-                        HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
-                        true
-                    );
-
                     if (!player.Dead)
                     {
-                        ConfigPosition position = HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions[
-                            random.Next(HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
+                        oneIsAlive = true;
+                        break;
+                    };
+                }
 
-                        player.Teleport(new(position.X, position.Y, position.Z), position.Angle);
-                        HordeServerPlugin.alivePlayers.Add(player);
+                if (oneIsAlive)
+                {
+                    actualSpawnTick = HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate;
+                    actualTickBetweenRounds = HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds;
+                    actualRemainingTick = HordeServerPlugin.instance!.Configuration.Instance.RemainingCheckTickrate;
+
+                    HordeUtils.zombiesAlive = [];
+                    HordeUtils.zombiesToSpawn = 0;
+                    HordeUtils.wave = null;
+                    LightingManager.time = 500;
+                    wave = 0;
+                    System.Random random = new();
+
+                    RestartRound = false;
+                    HordeUtils.KillAllZombies();
+                    ItemManager.askClearAllItems();
+
+                    HordeServerPlugin.alivePlayers = [];
+                    foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
+                    {
+                        ChatManager.serverSendMessage(
+                            HordeServerPlugin.instance!.Translate("round_started"),
+                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                            null,
+                            player.SteamPlayer(),
+                            EChatMode.SAY,
+                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                            true
+                        );
+
+                        if (!player.Dead)
+                        {
+                            ConfigPosition position = HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions[
+                                random.Next(HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
+
+                            player.Teleport(new(position.X, position.Y, position.Z), position.Angle);
+                            HordeServerPlugin.alivePlayers.Add(player);
+                        }
+                    }
+                }
+                else
+                {
+                    if (HordeServerPlugin.onlinePlayers.Count == 0)
+                    {
+                        Logger.LogWarning("No online players, round restart was cancelled");
+                        RestartRound = false;
+                    }
+                    else
+                    {
+                        Logger.LogWarning($"No alive players, round restart was cancelled, will retry in {HordeServerPlugin.instance!.Configuration.Instance.SecondsAfterRoundFail} seconds...");
+                        RestartRound = false;
+
+                        Task.Delay(HordeServerPlugin.instance!.Configuration.Instance.SecondsAfterRoundFail * 1000).ContinueWith((_) =>
+                        {
+                            if (HordeServerPlugin.alivePlayers.Count > 0)
+                            {
+                                Logger.LogWarning($"Restart round was cancelled because there is alive players");
+                                return;
+                            }
+                            Logger.LogWarning($"Restarting round after no alive players detected...");
+                            RestartRound = true;
+                        });
                     }
                 }
             }
