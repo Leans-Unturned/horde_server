@@ -58,11 +58,10 @@ namespace HordeServer
         private void OnPlayerDisconnected(UnturnedPlayer player)
         {
             player.Events.OnDeath -= OnPlayerDead;
+            UnturnedPlayerEvents.OnPlayerUpdateStat -= OnPlayerStatsUpdate;
 
             onlinePlayers.Remove(player);
             alivePlayers.Remove(player);
-
-            UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
 
             string clothingPath = Path.Combine(Configuration.Instance.PlayersFolder, $"{player.Id}_0", Configuration.Instance.LevelName, "Player", "Clothing.dat");
             if (File.Exists(clothingPath)) File.Delete(clothingPath);
@@ -96,6 +95,7 @@ namespace HordeServer
         private void OnPlayerConnected(UnturnedPlayer player)
         {
             player.Events.OnDeath += OnPlayerDead;
+            UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
 
             if (onlinePlayers.Count == 0)
             {
@@ -287,6 +287,7 @@ namespace HordeServer
         private static readonly System.Random random = new();
         public static List<uint> AlertsUsed = [];
         public static long zombiesToSpawn = 0;
+        public static long zombiesAliveCountReference = 0;
         public static List<Zombie> zombiesAlive = [];
         public static ConfigWave? wave = null;
 
@@ -338,6 +339,24 @@ namespace HordeServer
 
                     if (zombie.isDead)
                     {
+                        bool nodeeToFar = false;
+                        foreach (UnturnedPlayer alivePlayer in HordeServerPlugin.alivePlayers)
+                        {
+                            float distance = UnityEngineCoreModule.UnityEngine.Vector3.Distance(alivePlayer.Position, point);
+                            if (HordeServerPlugin.instance.Configuration.Instance.DebugPlayerPosition)
+                                Logger.Log($"{alivePlayer.SteamName} node: {point.x},{point.y},{point.z} distance: {distance}");
+
+                            if (distance > HordeServerPlugin.instance.Configuration.Instance.MaximumZombieNodeDistanceToSpawn)
+                            {
+                                nodeeToFar = true;
+                                break;
+                            }
+                        }
+                        if (nodeeToFar) continue;
+
+                        if (HordeServerPlugin.instance.Configuration.Instance.DebugZombies)
+                            Logger.Log($"Zombie Spawned in: {point.x},{point.y}{point.z}");
+
                         zombie.sendRevive(type, (byte)speciality, shirt, pants, hat, gear, point, Random.Range(0f, 360f));
                         zombiesAlive.Add(zombie);
                         zombiesToSpawn--;
@@ -388,35 +407,36 @@ namespace HordeServer
             zombiesToSpawn += wave.Normal;
             zombiesToSpawn += wave.Spirit;
             zombiesToSpawn += wave.Sprinter;
+            zombiesAliveCountReference = zombiesToSpawn;
         }
 
         public static void ReceiveZombieDeathUpdate()
         {
-            if (zombiesToSpawn - 1 <= 0)
+            zombiesAliveCountReference--;
+
+            uint? nextAlert = HordeServerPlugin.instance!.Configuration.Instance.RemainingZombiesAlert
+                .Where(n => n >= zombiesAliveCountReference)
+                .OrderBy(n => n)
+                .FirstOrDefault();
+
+            if (nextAlert != null && !AlertsUsed.Contains((uint)nextAlert))
             {
-                uint? nextAlert = HordeServerPlugin.instance!.Configuration.Instance.RemainingZombiesAlert
-                    .Where(n => n >= zombiesAlive.Count)
-                    .OrderBy(n => n)
-                    .FirstOrDefault();
+                AlertsUsed.Add((uint)nextAlert);
 
-                if (nextAlert != null && !AlertsUsed.Contains((uint)nextAlert))
+                foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
                 {
-                    AlertsUsed.Add((uint)nextAlert);
-
-                    foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
-                    {
-                        ChatManager.serverSendMessage(
-                            HordeServerPlugin.instance!.Translate("wave_remaining", zombiesAlive.Count),
-                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
-                            null,
-                            player.SteamPlayer(),
-                            EChatMode.SAY,
-                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
-                            true
-                        );
-                    }
+                    ChatManager.serverSendMessage(
+                        HordeServerPlugin.instance!.Translate("wave_remaining", zombiesAliveCountReference),
+                        new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                        null,
+                        player.SteamPlayer(),
+                        EChatMode.SAY,
+                        HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                        true
+                    );
                 }
             }
+
         }
 
         public static void CheckRemainingZombies()
@@ -429,35 +449,18 @@ namespace HordeServer
                     toRemove.Add(zombie);
             }
 
-            if (zombiesToSpawn <= 0 && toRemove.Count > 0)
-            {
-                uint? nextAlert = HordeServerPlugin.instance!.Configuration.Instance.RemainingZombiesAlert
-                    .Where(n => n >= zombiesAlive.Count)
-                    .OrderBy(n => n)
-                    .FirstOrDefault();
-
-                if (nextAlert != null && !AlertsUsed.Contains((uint)nextAlert))
-                {
-                    AlertsUsed.Add((uint)nextAlert);
-
-                    foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
-                    {
-                        ChatManager.serverSendMessage(
-                            HordeServerPlugin.instance!.Translate("wave_remaining", zombiesAlive.Count),
-                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
-                            null,
-                            player.SteamPlayer(),
-                            EChatMode.SAY,
-                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
-                            true
-                        );
-                    }
-                }
-            }
-
             foreach (Zombie zombie in toRemove)
             {
                 zombiesAlive.Remove(zombie);
+            }
+
+            if (HordeServerPlugin.instance!.Configuration.Instance.DebugZombies)
+            {
+                Logger.Log("---- Alive Zombies ----");
+                foreach (Zombie zombie in zombiesAlive)
+                {
+                    Logger.Log($"{zombie.transform.position.x},{zombie.transform.position.y},{zombie.transform.position.z}");
+                }
             }
         }
 
@@ -488,8 +491,6 @@ namespace HordeServer
             if (wave.Normal > 0) zombies.Add("Normal");
             if (wave.Spirit > 0) zombies.Add("Spirit");
             if (wave.Sprinter > 0) zombies.Add("Sprinter");
-
-            zombiesToSpawn--;
 
             if (zombies.Count > 0)
             {

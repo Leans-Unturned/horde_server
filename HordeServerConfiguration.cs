@@ -11,7 +11,9 @@ namespace HordeServer
         public int SecondsAfterRoundFail = 10;
         public ConfigPosition MapCenterPosition = new();
         public int MapCenterRadius = 10000;
+        public int MaximumZombieNodeDistanceToSpawn = 150;
         public bool DebugPlayerPosition = false;
+        public bool DebugZombies = false;
         public string PlayersFolder = "SteamLibrary/steamapps/common/U3DS/Servers/myserver/Players/";
         public string LevelName = "PEI";
 
