@@ -23,6 +23,7 @@ namespace HordeServer
         public List<ConfigPosition> PlayerSpawnPositions = [];
         public List<ConfigWave> Waves = [];
         public List<uint> RemainingZombiesAlert = [];
+        public List<WeaponLoadout> AvailableWeaponsToPurchase = [];
 
         public uint StartingCredits = 500;
 
@@ -63,111 +64,129 @@ namespace HordeServer
             Waves = [
                 new() {
                     Normal = 10,
+                    HealthMultiplier = 0.1f,
                 },
                 new() {
-                    Normal = 15,
-                    Crawler = 3
+                    Normal = 10,
+                    Crawler = 3,
+                    HealthMultiplier = 0.2f,
                 },
                 new() {
                     Normal = 20,
                     Crawler = 5,
-                    Acid = 1
+                    Acid = 1,
+                    HealthMultiplier = 0.3f,
                 },
                 new() {
                     Normal = 30,
                     Crawler = 10,
-                    Acid = 1
+                    Acid = 1,
+                    HealthMultiplier = 0.4f,
                 },
                 new() {
                     Normal = 40,
                     Crawler = 15,
                     Acid = 2,
-                    Burner = 1
+                    Burner = 1,
+                    HealthMultiplier = 0.5f,
                 },
                 new() {
                     Normal = 60,
                     Crawler = 20,
                     Acid = 3,
-                    Burner = 2
+                    Burner = 2,
+                    HealthMultiplier = 0.6f,
                 },
                 new() {
                     Normal = 90,
                     Crawler = 30,
                     Acid = 4,
-                    Burner = 3
+                    Burner = 3,
+                    HealthMultiplier = 0.7f,
                 },
                 new() {
                     Normal = 100,
                     Crawler = 30,
                     Acid = 4,
                     Burner = 3,
-                    Mega = 1
+                    Mega = 1,
+                    HealthMultiplier = 0.8f,
                 },
                 new() {
                     Normal = 150,
                     Crawler = 40,
                     Acid = 6,
                     Burner = 5,
-                    Mega = 2
+                    Mega = 2,
+                    HealthMultiplier = 0.9f,
                 },
                 new() {
-                    BossWind = 1
+                    BossWind = 1,
+                    HealthMultiplier = 1.0f,
                 },
                 new() {
                     Normal = 180,
                     Crawler = 45,
                     Acid = 8,
                     Burner = 15,
-                    Mega = 2
+                    Mega = 2,
+                    HealthMultiplier = 1.1f,
                 },
                 new() {
                     Normal = 160,
                     Crawler = 45,
                     Acid = 28,
                     Burner = 15,
-                    Mega = 2
+                    Mega = 2,
+                    HealthMultiplier = 1.2f,
                 },
                 new() {
                     Normal = 140,
                     Crawler = 45,
                     Acid = 28,
                     Burner = 35,
-                    Mega = 2
+                    Mega = 2,
+                    HealthMultiplier = 1.3f,
                 },
                 new() {
                     Normal = 140,
                     Crawler = 25,
                     Acid = 28,
                     Burner = 35,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 1.4f,
                 },
                 new() {
                     Normal = 140,
                     Crawler = 25,
                     Acid = 28,
                     Burner = 35,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 1.5f,
                 },
                 new() {
                     Normal = 140,
                     Crawler = 25,
                     Acid = 28,
                     Burner = 35,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 1.6f,
                 },
                 new() {
                     Normal = 140,
                     Crawler = 25,
                     Acid = 28,
                     Burner = 35,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 1.7f,
                 },
                 new() {
                     Normal = 140,
                     Crawler = 25,
                     Acid = 28,
                     Burner = 35,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 1.8f,
                 },
                 new() {
                     Normal = 80,
@@ -175,142 +194,177 @@ namespace HordeServer
                     Acid = 28,
                     Burner = 85,
                     Mega = 4,
+                    HealthMultiplier = 1.9f,
                 },
                 new() {
                     BossFire = 2,
+                    HealthMultiplier = 2.0f,
                 },
                 new() {
                     Normal = 140,
                     Crawler = 25,
                     Acid = 48,
                     Burner = 35,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 2.1f,
                 },
                 new() {
                     Normal = 140,
                     Crawler = 25,
                     Acid = 88,
                     Burner = 35,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 2.2f,
                 },
                 new() {
                     Normal = 100,
                     Crawler = 25,
                     Acid = 100,
                     Burner = 15,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 2.3f,
                 },
                 new() {
                     Normal = 100,
                     Crawler = 25,
                     Acid = 100,
                     Burner = 15,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 2.4f,
                 },
                 new() {
                     Normal = 100,
                     Crawler = 25,
                     Acid = 100,
                     Burner = 15,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 2.5f,
                 },
                 new() {
                     Normal = 100,
                     Crawler = 25,
                     Acid = 100,
                     Burner = 15,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 2.6f,
                 },
                 new() {
                     Normal = 100,
                     Crawler = 25,
                     Acid = 100,
                     Burner = 15,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 2.7f,
                 },
                 new() {
                     Normal = 100,
                     Crawler = 25,
                     Acid = 100,
                     Burner = 15,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 2.8f,
                 },
                 new() {
                     Normal = 100,
                     Crawler = 25,
                     Acid = 100,
                     Burner = 15,
-                    Mega = 4
+                    Mega = 4,
+                    HealthMultiplier = 2.9f,
                 },
                 new() {
                     BossNuclear = 4,
+                    HealthMultiplier = 3.0f,
                 },
                 new() {
                     Normal = 200,
                     Crawler = 25,
                     Acid = 20,
                     Burner = 20,
-                    Mega = 6
+                    Mega = 6,
+                    HealthMultiplier = 3.1f,
                 },
                 new() {
                     Normal = 200,
                     Crawler = 25,
                     Acid = 20,
                     Burner = 20,
-                    Mega = 6
+                    Mega = 6,
+                    HealthMultiplier = 3.2f,
                 },
                 new() {
                     Normal = 200,
                     Crawler = 25,
                     Acid = 20,
                     Burner = 20,
-                    Mega = 6
+                    Mega = 6,
+                    HealthMultiplier = 3.3f,
                 },
                 new() {
                     Normal = 200,
                     Crawler = 25,
                     Acid = 20,
                     Burner = 20,
-                    Mega = 6
+                    Mega = 6,
+                    HealthMultiplier = 3.4f,
                 },
                 new() {
                     Normal = 200,
                     Crawler = 25,
                     Acid = 20,
                     Burner = 20,
-                    Mega = 6
+                    Mega = 6,
+                    HealthMultiplier = 3.5f,
                 },
                 new() {
                     Normal = 200,
                     Crawler = 25,
                     Acid = 20,
                     Burner = 40,
-                    Mega = 6
+                    Mega = 6,
+                    HealthMultiplier = 3.6f,
                 },
                 new() {
                     Normal = 200,
                     Crawler = 25,
                     Acid = 20,
                     Burner = 60,
-                    Mega = 6
+                    Mega = 6,
+                    HealthMultiplier = 3.7f,
                 },
                 new() {
                     Normal = 200,
                     Crawler = 25,
                     Acid = 20,
                     Burner = 80,
-                    Mega = 6
+                    Mega = 6,
+                    HealthMultiplier = 3.8f,
                 },
                 new() {
                     Normal = 200,
                     Crawler = 25,
                     Acid = 20,
                     Burner = 100,
-                    Mega = 6
+                    Mega = 6,
+                    HealthMultiplier = 3.9f,
                 },
                 new() {
-                    BossMagma = 8
+                    BossMagma = 8,
+                    HealthMultiplier = 4.0f,
                 },
+            ];
+
+            AvailableWeaponsToPurchase = [
+                new() {
+                    weapondId = 101,
+                    ammoId = 103,
+                    ammoRefilQuantity = 5,
+                },
+                new() {
+                    weapondId = 380,
+                    ammoId = 381,
+                    ammoRefilQuantity = 10
+                }
             ];
         }
     }
@@ -352,5 +406,40 @@ namespace HordeServer
         public long Normal = 0;
         public long Spirit = 0;
         public long Sprinter = 0;
+        public float HealthMultiplier = 1.0f;
+        public float MaxAmmoChance = 0.05f;
+    }
+
+    public class WeaponLoadout
+    {
+        public ushort weapondId = 0;
+        public ushort ammoId = 0;
+        public byte ammoRefilQuantity = 0;
+    }
+
+    public class Skill
+    {
+        public byte Agriculture = 0;
+        public byte Cardio = 0;
+        public byte Cooking = 0;
+        public byte Crafting = 0;
+        public byte Dexerity = 0;
+        public byte Diving = 0;
+        public byte Engineer = 0;
+        public byte Exercise = 0;
+        public byte Fishing = 0;
+        public byte Healing = 0;
+        public byte Immunity = 0;
+        public byte Mechanic = 0;
+        public byte Outdoors = 0;
+        public byte Overkill = 0;
+        public byte Parkour = 0;
+        public byte Sharpshooter = 0;
+        public byte Sneakybeaky = 0;
+        public byte Strength = 0;
+        public byte Survival = 0;
+        public byte Toughness = 0;
+        public byte Vitality = 0;
+        public byte Warmblooded = 0;
     }
 }

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Rocket.API.Collections;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
-using Rocket.Unturned.Enumerations;
 using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
@@ -33,6 +32,8 @@ namespace HordeServer
 
             Rocket.Unturned.U.Events.OnPlayerConnected += OnPlayerConnected;
             Rocket.Unturned.U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
+            DamageTool.damageZombieRequested += HordeUtils.CalculateZombieArmor;
+            UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
 
             string[] playersDirectory = System.IO.Directory.GetDirectories(Configuration.Instance.PlayersFolder);
             foreach (string playerFolder in playersDirectory)
@@ -61,7 +62,8 @@ namespace HordeServer
             player.Events.OnDeath += OnPlayerDead;
             player.Events.OnInventoryAdded += ItemSystem.OnInventoryAdded;
             player.Events.OnInventoryRemoved += ItemSystem.OnInventoryRemoved;
-            UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
+            player.Inventory.onDropItemRequested += ItemSystem.OnItemDropped;
+            player.Player.skills.onSkillsUpdated += OnSkillsUpdated;
 
             if (onlinePlayers.Count == 0)
             {
@@ -94,7 +96,8 @@ namespace HordeServer
             player.Events.OnDeath -= OnPlayerDead;
             player.Events.OnInventoryAdded -= ItemSystem.OnInventoryAdded;
             player.Events.OnInventoryRemoved -= ItemSystem.OnInventoryRemoved;
-            UnturnedPlayerEvents.OnPlayerUpdateStat -= OnPlayerStatsUpdate;
+            player.Inventory.onDropItemRequested -= ItemSystem.OnItemDropped;
+            player.Player.skills.onSkillsUpdated -= OnSkillsUpdated;
 
             onlinePlayers.Remove(player);
             alivePlayers.Remove(player);
@@ -115,15 +118,20 @@ namespace HordeServer
             if (File.Exists(skills)) File.Delete(skills);
         }
 
+        private void OnSkillsUpdated()
+        {
+            SkillSystem.RefreshPlayersSkills();
+        }
+
         private void OnPlayerStatsUpdate(UnturnedPlayer player, EPlayerStat stat)
         {
             switch (stat)
             {
                 case EPlayerStat.KILLS_ZOMBIES_NORMAL:
-                    HordeUtils.ReceiveZombieDeathUpdate();
+                    HordeUtils.ReceiveZombieDeathUpdate(player, "normal");
                     break;
                 case EPlayerStat.KILLS_ZOMBIES_MEGA:
-                    HordeUtils.ReceiveZombieDeathUpdate();
+                    HordeUtils.ReceiveZombieDeathUpdate(player, "mega");
                     break;
             }
         }
@@ -181,7 +189,8 @@ namespace HordeServer
             {"round_end", "Congratulations, you survived the Horde!!!"},
             {"round_fail", "All survivors died, restarting round..."},
             {"wave_started", "Wave {0}, Zombies: {1}"},
-            {"wave_remaining", "Remaining Zombies: {0}" }
+            {"wave_remaining", "Remaining Zombies: {0}" },
+            {"max_ammo", "Max Ammo, finded by: {0}" },
         };
     }
 

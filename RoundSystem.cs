@@ -60,6 +60,8 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                         true
                     );
 
+                    SkillSystem.ResetPlayersSkills();
+                    SkillSystem.RefreshPlayersSkills();
                     player.Experience = HordeServerPlugin.instance.Configuration.Instance.StartingCredits;
 
                     if (!player.Dead)

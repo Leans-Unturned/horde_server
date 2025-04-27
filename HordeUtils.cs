@@ -1,7 +1,9 @@
 extern alias UnityEngineCoreModule;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Rocket.Core.Logging;
+using Rocket.Unturned;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using UnityEngine;
@@ -96,6 +98,7 @@ class HordeUtils
                     zombie.sendRevive(type, (byte)speciality, shirt, pants, hat, gear, point, Random.Range(0f, 360f));
                     zombiesAlive.Add(zombie);
                     zombiesToSpawn--;
+
                     if (zombiesToSpawn <= 0) return;
                     zombieSpawned = true;
                     break;
@@ -151,8 +154,26 @@ class HordeUtils
         zombiesAliveCountReference = zombiesToSpawn;
     }
 
-    public static void ReceiveZombieDeathUpdate()
+    public static void ReceiveZombieDeathUpdate(UnturnedPlayer fromPlayer, string zombieType)
     {
+        if (Random.Range(0f, 100f) <= wave!.MaxAmmoChance)
+        {
+            foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
+            {
+                ChatManager.serverSendMessage(
+                    HordeServerPlugin.instance!.Translate("max_ammo", player.DisplayName),
+                    new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                    null,
+                    player.SteamPlayer(),
+                    EChatMode.SAY,
+                    HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                    true
+                );
+            }
+
+            GiveMaxAmmo();
+        }
+
         zombiesAliveCountReference--;
 
         uint? nextAlert = HordeServerPlugin.instance!.Configuration.Instance.RemainingZombiesAlert
@@ -205,6 +226,21 @@ class HordeUtils
         }
     }
 
+    public static void CalculateZombieArmor(ref DamageZombieParameters parameters, ref bool _)
+    {
+        if (wave == null)
+        {
+            Logger.LogError("CalculateZombiesToSpawn called without any ConfigWave");
+            return;
+        }
+
+        parameters.damage *= 1f / wave.HealthMultiplier;
+    }
+
+    public static void GiveMaxAmmo()
+    {
+        
+    }
     private static EZombieSpeciality GetRandomZombieFromWave()
     {
         if (wave == null)

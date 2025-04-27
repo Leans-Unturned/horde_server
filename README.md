@@ -14,9 +14,13 @@ Now you need to change some configuration in dedicated server, go to Configs.jso
 "Zombies": {
     "Spawn_Chance": 100.0,
     "Respawn_Day_Time": 999999999.0,
-    "Respawn_Night_Time": 999999999.0
+    "Respawn_Night_Time": 999999999.0,
+    "Damage_Multiplier": 1.0,
+    "Armor_Multiplier": 1.0,
 }
 ```
+
+### The next step is for configurating a new map for horde server
 
 Now you need to run the server to generate the configurations, change the ``PlayersFolder`` and ``LevelName`` Configurations so the plugin can handle player disconnections correctly, also enable ``DebugPlayerPosition`` for the next step.
 
@@ -30,7 +34,7 @@ If everything was done correctly when starting the server, everything should now
 - I strongly recommend that you use ``DebugZombies`` config before asking for help
 
 ## Fully Map Template
-- [Zumbi Blocks](https://steamcommunity.com/sharedfiles/filedetails/?id=3458712049)
+- [Nuketown](https://steamcommunity.com/sharedfiles/filedetails/?id=3471852710)
 - [Server Configurations](https://github.com/LeandroTheDev/horde_server/tree/master/Templates)
 
 # Building

@@ -1,5 +1,8 @@
+extern alias UnityEngineCoreModule;
+
 using System;
 using System.Collections.Generic;
+using Rocket.Core.Logging;
 using Rocket.Unturned.Enumerations;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
@@ -10,14 +13,25 @@ namespace HordeServer
     class ItemSystem
     {
         static private List<KeyValuePair<UnturnedPlayer, Item>> itemSwapped = [];
-        static bool CheckNextTick = false;
+        static bool SwapTickReset = false;
+        static bool ClearItemsNextTick = false;
 
         static public void OnInventoryAdded(UnturnedPlayer player, InventoryGroup _, byte __, ItemJar P)
         {
+            // Check if thhe items is swapped
             for (int i = itemSwapped.Count - 1; i >= 0; i--)
             {
                 var entry = itemSwapped[i];
                 if (entry.Key == player && entry.Value.item.item.id == P.item.id)
+                {
+                    return;
+                }
+            }
+
+            // In this situation the item is purchased
+            foreach (WeaponLoadout loadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
+            {
+                void removePreviouslyAmmo()
                 {
                     for (byte page = 0; page < PlayerInventory.PAGES; page++)
                     {
@@ -25,38 +39,61 @@ namespace HordeServer
                         {
                             for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
                             {
-                                if (player.Inventory.getItem(page, j).item.id == P.item.id)
+                                if (player.Inventory.getItem(page, j).item.id == loadout.ammoId)
                                 {
                                     player.Inventory.removeItem(page, j);
-                                    itemSwapped.RemoveAt(i);
-                                    return;
+                                    j--;
                                 }
                             }
                         }
                         catch (Exception) { }
                     }
+
+                }
+
+                // If is the first weapon give it the ammo for that weapon
+                if (P.item.id == loadout.weapondId)
+                {
+                    removePreviouslyAmmo();
+                    player.GiveItem(loadout.ammoId, loadout.ammoRefilQuantity);
+                }
+
+                // If the player receives ammo, is because he already have the weapon lets refresh the inventory
+                if (P.item.id == loadout.ammoId)
+                {
+                    removePreviouslyAmmo();
+                    player.GiveItem(loadout.ammoId, loadout.ammoRefilQuantity);
                 }
             }
         }
 
         static public void OnInventoryRemoved(UnturnedPlayer player, InventoryGroup inventoryGroup, byte inventoryIndex, ItemJar P)
         {
-            ItemManager.askClearAllItems();
+            // Future detection for swapped items
             ItemJar? item = player.Inventory.getItem((byte)inventoryGroup, inventoryIndex);
             if (item != null)
             {
                 itemSwapped.Add(new KeyValuePair<UnturnedPlayer, Item>(player, new Item(inventoryGroup, inventoryIndex, P)));
 
-                CheckNextTick = true;
+                SwapTickReset = true;
             }
+        }
+
+        static public void OnItemDropped(PlayerInventory _, SDG.Unturned.Item __, ref bool ___)
+        {
+            ClearItemsNextTick = true;
         }
 
         static public void Update()
         {
-            if (CheckNextTick)
+            if (SwapTickReset)
                 itemSwapped = [];
 
-            CheckNextTick = false;
+            if (ClearItemsNextTick)
+                ItemManager.askClearAllItems();
+
+            SwapTickReset = false;
+            ClearItemsNextTick = false;
         }
     }
 }
