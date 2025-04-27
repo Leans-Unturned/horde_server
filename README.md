@@ -26,6 +26,9 @@ Now you need to implement the ``ZombiesAvailableNodes`` is basically the same as
 
 If everything was done correctly when starting the server, everything should now be working as expected. any questions about the procedures, you can ask in the discussion tab.
 
+### Considerations
+- I strongly recommend that you use ``DebugZombies`` config before asking for help
+
 ## Fully Map Template
 - [Zumbi Blocks](https://steamcommunity.com/sharedfiles/filedetails/?id=3458712049)
 - [Server Configurations](https://github.com/LeandroTheDev/horde_server/tree/master/Templates)

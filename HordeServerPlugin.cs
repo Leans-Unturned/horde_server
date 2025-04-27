@@ -1,12 +1,13 @@
 ﻿extern alias UnityEngineCoreModule;
 
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Rocket.API.Collections;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
+using Rocket.Unturned.Enumerations;
 using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
@@ -22,13 +23,13 @@ namespace HordeServer
 
         public static HordeServerPlugin? instance;
 
-        private HordeSpawnTickrate? hordeInstance;
+        private UnityTickrate? unityTickrate;
         public override void LoadPlugin()
         {
             base.LoadPlugin();
             instance = this;
 
-            hordeInstance = gameObject.AddComponent<HordeSpawnTickrate>();
+            unityTickrate = gameObject.AddComponent<UnityTickrate>();
 
             Rocket.Unturned.U.Events.OnPlayerConnected += OnPlayerConnected;
             Rocket.Unturned.U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
@@ -55,9 +56,44 @@ namespace HordeServer
             Logger.Log("HordeServer instanciated, by LeandroTheDev");
         }
 
+        private void OnPlayerConnected(UnturnedPlayer player)
+        {
+            player.Events.OnDeath += OnPlayerDead;
+            player.Events.OnInventoryAdded += ItemSystem.OnInventoryAdded;
+            player.Events.OnInventoryRemoved += ItemSystem.OnInventoryRemoved;
+            UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
+
+            if (onlinePlayers.Count == 0)
+            {
+                Task.Delay(Configuration.Instance.SecondsAfterRoundFail * 1000).ContinueWith((_) =>
+                {
+                    unityTickrate!.RoundSystemInstance!.RestartRound = true;
+                });
+            }
+
+            if (Configuration.Instance.DebugPlayerPosition)
+            {
+                var debugTimer = new System.Timers.Timer(1000);
+
+                debugTimer.Elapsed += (sender, e) =>
+                {
+                    if (player.Position != null)
+                        Logger.Log($"[{player.SteamName}]: {player.Position.x},{player.Position.y},{player.Position.z}");
+                    else debugTimer.Dispose();
+                };
+
+                debugTimer.AutoReset = true;
+                debugTimer.Enabled = true;
+            }
+
+            onlinePlayers.Add(player);
+        }
+
         private void OnPlayerDisconnected(UnturnedPlayer player)
         {
             player.Events.OnDeath -= OnPlayerDead;
+            player.Events.OnInventoryAdded -= ItemSystem.OnInventoryAdded;
+            player.Events.OnInventoryRemoved -= ItemSystem.OnInventoryRemoved;
             UnturnedPlayerEvents.OnPlayerUpdateStat -= OnPlayerStatsUpdate;
 
             onlinePlayers.Remove(player);
@@ -90,37 +126,6 @@ namespace HordeServer
                     HordeUtils.ReceiveZombieDeathUpdate();
                     break;
             }
-        }
-
-        private void OnPlayerConnected(UnturnedPlayer player)
-        {
-            player.Events.OnDeath += OnPlayerDead;
-            UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
-
-            if (onlinePlayers.Count == 0)
-            {
-                Task.Delay(5000).ContinueWith((_) =>
-                {
-                    hordeInstance!.RestartRound = true;
-                });
-            }
-
-            if (Configuration.Instance.DebugPlayerPosition)
-            {
-                var debugTimer = new System.Timers.Timer(1000);
-
-                debugTimer.Elapsed += (sender, e) =>
-                {
-                    if (player.Position != null)
-                        Logger.Log($"[{player.SteamName}]: {player.Position.x},{player.Position.y},{player.Position.z}");
-                    else debugTimer.Dispose();
-                };
-
-                debugTimer.AutoReset = true;
-                debugTimer.Enabled = true;
-            }
-
-            onlinePlayers.Add(player);
         }
 
         private void OnPlayerDead(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
@@ -161,7 +166,7 @@ namespace HordeServer
                         }
 
                         if (oneIsAlive)
-                            hordeInstance!.RestartRound = true;
+                            unityTickrate!.RoundSystemInstance!.RestartRound = true;
                         else tryToRestartRound();
                     });
                 }
@@ -180,443 +185,20 @@ namespace HordeServer
         };
     }
 
-    class HordeSpawnTickrate : MonoBehaviour
+    class UnityTickrate : MonoBehaviour
     {
-        public bool RestartRound = false;
-        public int wave = 0;
-
-        private uint actualSpawnTick = 0;
-        private uint actualRemainingTick = 0;
-        private uint actualTickBetweenRounds = 0;
+        public RoundSystem? RoundSystemInstance;
 
         public void Start()
         {
-            actualTickBetweenRounds = HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds;
-            actualSpawnTick = HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate;
+            RoundSystemInstance = new(HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds,
+                HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate);
         }
 
         public void Update()
         {
-            // Round Restart
-            if (RestartRound)
-            {
-                bool oneIsAlive = false;
-                foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
-                {
-                    if (!player.Dead)
-                    {
-                        oneIsAlive = true;
-                        break;
-                    };
-                }
-
-                if (oneIsAlive)
-                {
-                    actualSpawnTick = HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate;
-                    actualTickBetweenRounds = HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds;
-                    actualRemainingTick = HordeServerPlugin.instance!.Configuration.Instance.RemainingCheckTickrate;
-
-                    HordeUtils.zombiesAlive = [];
-                    HordeUtils.zombiesToSpawn = 0;
-                    HordeUtils.wave = null;
-                    LightingManager.time = 500;
-                    wave = 0;
-                    System.Random random = new();
-
-                    RestartRound = false;
-                    HordeUtils.KillAllZombies();
-                    ItemManager.askClearAllItems();
-
-                    HordeServerPlugin.alivePlayers = [];
-                    foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
-                    {
-                        ChatManager.serverSendMessage(
-                            HordeServerPlugin.instance!.Translate("round_started"),
-                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
-                            null,
-                            player.SteamPlayer(),
-                            EChatMode.SAY,
-                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
-                            true
-                        );
-
-                        if (!player.Dead)
-                        {
-                            ConfigPosition position = HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions[
-                                random.Next(HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
-
-                            player.Teleport(new(position.X, position.Y, position.Z), position.Angle);
-                            HordeServerPlugin.alivePlayers.Add(player);
-                        }
-                    }
-                }
-                else
-                {
-                    if (HordeServerPlugin.onlinePlayers.Count == 0)
-                    {
-                        Logger.LogWarning("No online players, round restart was cancelled");
-                        RestartRound = false;
-                    }
-                    else
-                    {
-                        Logger.LogWarning($"No alive players, round restart was cancelled, will retry in {HordeServerPlugin.instance!.Configuration.Instance.SecondsAfterRoundFail} seconds...");
-                        RestartRound = false;
-
-                        Task.Delay(HordeServerPlugin.instance!.Configuration.Instance.SecondsAfterRoundFail * 1000).ContinueWith((_) =>
-                        {
-                            if (HordeServerPlugin.alivePlayers.Count > 0)
-                            {
-                                Logger.LogWarning($"Restart round was cancelled because there is alive players");
-                                return;
-                            }
-                            Logger.LogWarning($"Restarting round after no alive players detected...");
-                            RestartRound = true;
-                        });
-                    }
-                }
-            }
-
-            // Round Start
-            if (HordeUtils.zombiesToSpawn <= 0 && HordeUtils.zombiesAlive.Count <= 0 && actualTickBetweenRounds == 0)
-            {
-                actualTickBetweenRounds = HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds;
-                HordeUtils.AlertsUsed = [];
-
-                wave++;
-
-                // Game Ended all waves has been reach
-                if (HordeServerPlugin.instance!.Configuration.Instance.Waves.Count <= wave)
-                {
-                    HordeUtils.wave = HordeServerPlugin.instance!.Configuration.Instance.Waves[wave];
-                    foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
-                    {
-                        ChatManager.serverSendMessage(
-                            HordeServerPlugin.instance!.Translate("round_end"),
-                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
-                            null,
-                            player.SteamPlayer(),
-                            EChatMode.SAY,
-                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
-                            true
-                        );
-                    }
-
-                    RestartRound = true;
-                    return;
-                }
-
-                HordeUtils.wave = HordeServerPlugin.instance!.Configuration.Instance.Waves[wave];
-                HordeUtils.CalculateZombiesToSpawn();
-
-                foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
-                {
-                    ChatManager.serverSendMessage(
-                        HordeServerPlugin.instance!.Translate("wave_started", wave, HordeUtils.zombiesToSpawn),
-                        new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
-                        null,
-                        player.SteamPlayer(),
-                        EChatMode.SAY,
-                        HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
-                        true
-                    );
-                }
-            }
-            else if (HordeUtils.zombiesToSpawn <= 0 && HordeUtils.zombiesAlive.Count <= 0) actualTickBetweenRounds--;
-
-            // Spawn Tickrate
-            if (actualSpawnTick <= 0)
-            {
-                actualSpawnTick = HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate;
-
-                HordeUtils.SpawnZombiesInNodes();
-            }
-            actualSpawnTick--;
-
-            // Zombie check tick
-            if (actualRemainingTick <= 0)
-            {
-                actualRemainingTick = HordeServerPlugin.instance!.Configuration.Instance.RemainingCheckTickrate;
-
-                HordeUtils.CheckRemainingZombies();
-            }
-            actualRemainingTick--;
-        }
-    }
-
-    class HordeUtils
-    {
-        private static readonly System.Random random = new();
-        public static List<uint> AlertsUsed = [];
-        public static long zombiesToSpawn = 0;
-        public static long zombiesAliveCountReference = 0;
-        public static List<Zombie> zombiesAlive = [];
-        public static ConfigWave? wave = null;
-
-        public static void SpawnZombiesInNodes()
-        {
-            if (HordeServerPlugin.alivePlayers.Count == 0
-            || zombiesToSpawn <= 0
-            || wave == null
-            || HordeServerPlugin.instance == null) return;
-
-            // Getting all zombie instances from the map
-            List<Zombie> zombieNodes = [];
-            ZombieManager.getZombiesInRadius(new(
-                HordeServerPlugin.instance.Configuration.Instance.MapCenterPosition.X,
-                HordeServerPlugin.instance.Configuration.Instance.MapCenterPosition.Y,
-                HordeServerPlugin.instance.Configuration.Instance.MapCenterPosition.Z),
-                HordeServerPlugin.instance.Configuration.Instance.MapCenterRadius, zombieNodes);
-
-            List<ZombieNodePosition> zombiesNodesToSpawn = new(
-                HordeServerPlugin.instance.Configuration.Instance.ZombiesAvailableNodes
-            );
-            foreach (ZombieNodePosition _ in HordeServerPlugin.instance.Configuration.Instance.ZombiesAvailableNodes)
-            {
-                // Randomly get a zombie node to spawn
-                ZombieNodePosition zombieNodePosition;
-                if (zombiesNodesToSpawn.Count > 0)
-                {
-                    int index = random.Next(zombiesNodesToSpawn.Count);
-                    zombieNodePosition = zombiesNodesToSpawn[index];
-                    zombiesNodesToSpawn.RemoveAt(index);
-                }
-                else return;
-
-                // Create the zombie instance
-                EZombieSpeciality speciality = GetRandomZombieFromWave();
-                byte type = 1;
-                byte shirt = 1;
-                byte pants = 1;
-                byte hat = 1;
-                byte gear = 1;
-                UnityEngineCoreModule.UnityEngine.Vector3 point = new(zombieNodePosition.X, zombieNodePosition.Y, zombieNodePosition.Z);
-
-                bool zombieSpawned = false;
-
-                // Try to spawn a zombie with one of the available zombie nodes
-                foreach (Zombie zombie in zombieNodes)
-                {
-                    if (zombiesToSpawn <= 0) return;
-
-                    if (zombie.isDead)
-                    {
-                        bool nodeeToFar = false;
-                        foreach (UnturnedPlayer alivePlayer in HordeServerPlugin.alivePlayers)
-                        {
-                            float distance = UnityEngineCoreModule.UnityEngine.Vector3.Distance(alivePlayer.Position, point);
-                            if (HordeServerPlugin.instance.Configuration.Instance.DebugPlayerPosition)
-                                Logger.Log($"{alivePlayer.SteamName} node: {point.x},{point.y},{point.z} distance: {distance}");
-
-                            if (distance > HordeServerPlugin.instance.Configuration.Instance.MaximumZombieNodeDistanceToSpawn)
-                            {
-                                nodeeToFar = true;
-                                break;
-                            }
-                        }
-                        if (nodeeToFar) continue;
-
-                        if (HordeServerPlugin.instance.Configuration.Instance.DebugZombies)
-                            Logger.Log($"Zombie Spawned in: {point.x},{point.y}{point.z}");
-
-                        zombie.sendRevive(type, (byte)speciality, shirt, pants, hat, gear, point, Random.Range(0f, 360f));
-                        zombiesAlive.Add(zombie);
-                        zombiesToSpawn--;
-                        if (zombiesToSpawn <= 0) return;
-                        zombieSpawned = true;
-                        break;
-                    }
-                }
-
-                // All zombies is alive
-                if (!zombieSpawned) break;
-            }
-        }
-
-        public static void KillAllZombies()
-        {
-            List<Zombie> zombiesAlive = UnityEngineCoreModule.UnityEngine.Object.FindObjectsOfType<Zombie>()?.ToList() ?? [];
-            foreach (Zombie zombie in zombiesAlive)
-            {
-                ZombieManager.sendZombieDead(zombie, UnityEngineCoreModule.UnityEngine.Vector3.zero);
-            }
-        }
-
-        public static void CalculateZombiesToSpawn()
-        {
-            if (wave == null)
-            {
-                Logger.LogError("CalculateZombiesToSpawn called without any ConfigWave");
-                return;
-            }
-
-            zombiesToSpawn = 0;
-            zombiesToSpawn += wave.Acid;
-            zombiesToSpawn += wave.BossEletric;
-            zombiesToSpawn += wave.BossElverStomper;
-            zombiesToSpawn += wave.BossFire;
-            zombiesToSpawn += wave.BossMagma;
-            zombiesToSpawn += wave.BossNuclear;
-            zombiesToSpawn += wave.BossSprit;
-            zombiesToSpawn += wave.BossWind;
-            zombiesToSpawn += wave.Burner;
-            zombiesToSpawn += wave.Crawler;
-            zombiesToSpawn += wave.DLBlueVolatile;
-            zombiesToSpawn += wave.DLRedVolatile;
-            zombiesToSpawn += wave.FlankerFriendly;
-            zombiesToSpawn += wave.FlankerStalk;
-            zombiesToSpawn += wave.Mega;
-            zombiesToSpawn += wave.Normal;
-            zombiesToSpawn += wave.Spirit;
-            zombiesToSpawn += wave.Sprinter;
-            zombiesAliveCountReference = zombiesToSpawn;
-        }
-
-        public static void ReceiveZombieDeathUpdate()
-        {
-            zombiesAliveCountReference--;
-
-            uint? nextAlert = HordeServerPlugin.instance!.Configuration.Instance.RemainingZombiesAlert
-                .Where(n => n >= zombiesAliveCountReference)
-                .OrderBy(n => n)
-                .FirstOrDefault();
-
-            if (nextAlert != null && !AlertsUsed.Contains((uint)nextAlert))
-            {
-                AlertsUsed.Add((uint)nextAlert);
-
-                foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
-                {
-                    ChatManager.serverSendMessage(
-                        HordeServerPlugin.instance!.Translate("wave_remaining", zombiesAliveCountReference),
-                        new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
-                        null,
-                        player.SteamPlayer(),
-                        EChatMode.SAY,
-                        HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
-                        true
-                    );
-                }
-            }
-
-        }
-
-        public static void CheckRemainingZombies()
-        {
-            List<Zombie> toRemove = [];
-
-            foreach (Zombie zombie in zombiesAlive)
-            {
-                if (zombie.isDead)
-                    toRemove.Add(zombie);
-            }
-
-            foreach (Zombie zombie in toRemove)
-            {
-                zombiesAlive.Remove(zombie);
-            }
-
-            if (HordeServerPlugin.instance!.Configuration.Instance.DebugZombies)
-            {
-                Logger.Log("---- Alive Zombies ----");
-                foreach (Zombie zombie in zombiesAlive)
-                {
-                    Logger.Log($"{zombie.transform.position.x},{zombie.transform.position.y},{zombie.transform.position.z}");
-                }
-            }
-        }
-
-        private static EZombieSpeciality GetRandomZombieFromWave()
-        {
-            if (wave == null)
-            {
-                Logger.LogError("GetRandomZombieFromWave called without any ConfigWave");
-                return EZombieSpeciality.NONE;
-            }
-
-            List<string> zombies = [];
-            if (wave.Acid > 0) zombies.Add("Acid");
-            if (wave.BossEletric > 0) zombies.Add("BossEletric");
-            if (wave.BossElverStomper > 0) zombies.Add("BossElverStomper");
-            if (wave.BossFire > 0) zombies.Add("BossFire");
-            if (wave.BossMagma > 0) zombies.Add("BossMagma");
-            if (wave.BossNuclear > 0) zombies.Add("BossNuclear");
-            if (wave.BossSprit > 0) zombies.Add("BossSprit");
-            if (wave.BossWind > 0) zombies.Add("BossWind");
-            if (wave.Burner > 0) zombies.Add("Burner");
-            if (wave.Crawler > 0) zombies.Add("Crawler");
-            if (wave.DLBlueVolatile > 0) zombies.Add("DLBlueVolatile");
-            if (wave.DLRedVolatile > 0) zombies.Add("DLRedVolatile");
-            if (wave.FlankerFriendly > 0) zombies.Add("FlankerFriendly");
-            if (wave.FlankerStalk > 0) zombies.Add("FlankerStalk");
-            if (wave.Mega > 0) zombies.Add("Mega");
-            if (wave.Normal > 0) zombies.Add("Normal");
-            if (wave.Spirit > 0) zombies.Add("Spirit");
-            if (wave.Sprinter > 0) zombies.Add("Sprinter");
-
-            if (zombies.Count > 0)
-            {
-                int index = random.Next(zombies.Count);
-                var zombieType = zombies[index];
-
-                switch (zombieType)
-                {
-                    case "Acid":
-                        wave.Acid--;
-                        return EZombieSpeciality.ACID;
-                    case "BossEletric":
-                        wave.BossEletric--;
-                        return EZombieSpeciality.BOSS_ELECTRIC;
-                    case "BossElverStomper":
-                        wave.BossElverStomper--;
-                        return EZombieSpeciality.BOSS_ELVER_STOMPER;
-                    case "BossFire":
-                        wave.BossFire--;
-                        return EZombieSpeciality.BOSS_FIRE;
-                    case "BossMagma":
-                        wave.BossMagma--;
-                        return EZombieSpeciality.BOSS_MAGMA;
-                    case "BossNuclear":
-                        wave.BossNuclear--;
-                        return EZombieSpeciality.BOSS_NUCLEAR;
-                    case "BossSprit":
-                        wave.BossSprit--;
-                        return EZombieSpeciality.BOSS_SPIRIT;
-                    case "BossWind":
-                        wave.BossWind--;
-                        return EZombieSpeciality.BOSS_WIND;
-                    case "Burner":
-                        wave.Burner--;
-                        return EZombieSpeciality.BURNER;
-                    case "Crawler":
-                        wave.Crawler--;
-                        return EZombieSpeciality.CRAWLER;
-                    case "DLBlueVolatile":
-                        wave.DLBlueVolatile--;
-                        return EZombieSpeciality.DL_BLUE_VOLATILE;
-                    case "DLRedVolatile":
-                        wave.DLRedVolatile--;
-                        return EZombieSpeciality.DL_RED_VOLATILE;
-                    case "FlankerFriendly":
-                        wave.FlankerFriendly--;
-                        return EZombieSpeciality.FLANKER_FRIENDLY;
-                    case "FlankerStalk":
-                        wave.FlankerStalk--;
-                        return EZombieSpeciality.FLANKER_STALK;
-                    case "Mega":
-                        wave.Mega--;
-                        return EZombieSpeciality.MEGA;
-                    case "Normal":
-                        wave.Normal--;
-                        return EZombieSpeciality.NORMAL;
-                    case "Spirit":
-                        wave.Spirit--;
-                        return EZombieSpeciality.SPIRIT;
-                    case "Sprinter":
-                        wave.Sprinter--;
-                        return EZombieSpeciality.SPRINTER;
-                }
-            }
-            return EZombieSpeciality.NONE;
+            RoundSystemInstance?.Update();
+            ItemSystem.Update();
         }
     }
 }

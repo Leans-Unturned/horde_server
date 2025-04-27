@@ -24,6 +24,8 @@ namespace HordeServer
         public List<ConfigWave> Waves = [];
         public List<uint> RemainingZombiesAlert = [];
 
+        public uint StartingCredits = 500;
+
         public void LoadDefaults()
         {
             ZombiesAvailableNodes = [
