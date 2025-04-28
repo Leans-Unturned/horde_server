@@ -1,9 +1,8 @@
 extern alias UnityEngineCoreModule;
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Rocket.Core.Logging;
-using Rocket.Unturned;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using UnityEngine;
@@ -12,7 +11,6 @@ namespace HordeServer;
 
 class HordeUtils
 {
-    private static readonly System.Random random = new();
     public static List<uint> AlertsUsed = [];
     public static long zombiesToSpawn = 0;
     public static long zombiesAliveCountReference = 0;
@@ -50,7 +48,7 @@ class HordeUtils
             ZombieNodePosition zombieNodePosition;
             if (zombiesNodesToSpawn.Count > 0)
             {
-                int index = random.Next(zombiesNodesToSpawn.Count);
+                int index = Random.Range(0, zombiesNodesToSpawn.Count);
                 zombieNodePosition = zombiesNodesToSpawn[index];
                 zombiesNodesToSpawn.RemoveAt(index);
             }
@@ -90,7 +88,8 @@ class HordeUtils
                         if (HordeServerPlugin.instance.Configuration.Instance.DebugPlayerPosition)
                             Logger.Log($"node: {point.x},{point.y},{point.z} too far");
                         continue;
-                    };
+                    }
+                    ;
 
                     if (HordeServerPlugin.instance.Configuration.Instance.DebugZombies)
                         Logger.Log($"Zombie Spawned in: {point.x},{point.y}{point.z}");
@@ -156,12 +155,13 @@ class HordeUtils
 
     public static void ReceiveZombieDeathUpdate(UnturnedPlayer fromPlayer, string zombieType)
     {
+        // Special drop calculation
         if (Random.Range(0f, 100f) <= wave!.MaxAmmoChance)
         {
             foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
             {
                 ChatManager.serverSendMessage(
-                    HordeServerPlugin.instance!.Translate("max_ammo", player.DisplayName),
+                    HordeServerPlugin.instance!.Translate("max_ammo", fromPlayer.DisplayName),
                     new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
                     null,
                     player.SteamPlayer(),
@@ -237,10 +237,67 @@ class HordeUtils
         parameters.damage *= 1f / wave.HealthMultiplier;
     }
 
+    public static void HitPoints(ref DamageZombieParameters parameters, ref bool _)
+    {
+        object instigator = parameters.instigator;
+        if (instigator != null)
+        {
+            Logger.Log($"{instigator.GetType()}");
+        }
+    }
+
     public static void GiveMaxAmmo()
     {
-        
+        foreach (UnturnedPlayer player in HordeServerPlugin.alivePlayers)
+        {
+            ItemJar primaryWeapon = player.Inventory.getItem(0, 0);
+            ItemJar secondaryWeapon = player.Inventory.getItem(1, 0);
+
+            WeaponLoadout? primaryWeaponLoadout = null;
+            WeaponLoadout? secondaryWeaponLoadout = null;
+
+            // Getting available loadout for equipped weapons
+            foreach (WeaponLoadout loadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
+            {
+                if (loadout.weapondId == primaryWeapon.item.id)
+                    primaryWeaponLoadout = loadout;
+
+                if (loadout.weapondId == secondaryWeapon.item.id)
+                    secondaryWeaponLoadout = loadout;
+            }
+
+            void removePreviouslyAmmo(WeaponLoadout loadout)
+            {
+                for (byte page = 0; page < PlayerInventory.PAGES; page++)
+                {
+                    try
+                    {
+                        for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
+                        {
+                            if (player.Inventory.getItem(page, j).item.id == loadout.ammoId)
+                            {
+                                player.Inventory.removeItem(page, j);
+                                j--;
+                            }
+                        }
+                    }
+                    catch (System.Exception) { }
+                }
+            }
+
+            if (primaryWeaponLoadout != null)
+            {
+                removePreviouslyAmmo(primaryWeaponLoadout);
+                player.GiveItem(primaryWeaponLoadout.ammoId, primaryWeaponLoadout.ammoRefilQuantity);
+            }
+            if (secondaryWeaponLoadout != null)
+            {
+                removePreviouslyAmmo(secondaryWeaponLoadout);
+                player.GiveItem(secondaryWeaponLoadout.ammoId, secondaryWeaponLoadout.ammoRefilQuantity);
+            }
+        }
     }
+
     private static EZombieSpeciality GetRandomZombieFromWave()
     {
         if (wave == null)
@@ -271,7 +328,7 @@ class HordeUtils
 
         if (zombies.Count > 0)
         {
-            int index = random.Next(zombies.Count);
+            int index = Random.Range(0, zombies.Count);
             var zombieType = zombies[index];
 
             switch (zombieType)
@@ -333,5 +390,11 @@ class HordeUtils
             }
         }
         return EZombieSpeciality.NONE;
+    }
+
+    public static void RemoveZombiesRadiation()
+    {
+        foreach (Zombie zombie in zombiesAlive)
+            ZombieManager.regions[zombie.bound].isRadioactive = false;
     }
 }

@@ -27,7 +27,8 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                 {
                     oneIsAlive = true;
                     break;
-                };
+                }
+                ;
             }
 
             if (oneIsAlive)
@@ -101,21 +102,44 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
         }
 
         // Round Start
-        if (HordeUtils.zombiesToSpawn <= 0 && HordeUtils.zombiesAlive.Count <= 0 && actualTickBetweenRounds == 0)
+        if (HordeServerPlugin.alivePlayers.Count > 0)
         {
-            actualTickBetweenRounds = HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds;
-            HordeUtils.AlertsUsed = [];
-
-            wave++;
-
-            // Game Ended all waves has been reach
-            if (HordeServerPlugin.instance!.Configuration.Instance.Waves.Count <= wave)
+            if (HordeUtils.zombiesToSpawn <= 0 && HordeUtils.zombiesAlive.Count <= 0 && actualTickBetweenRounds == 0)
             {
+                actualTickBetweenRounds = HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds;
+                HordeUtils.AlertsUsed = [];
+
+                wave++;
+
+                // Game Ended all waves has been reach
+                if (HordeServerPlugin.instance!.Configuration.Instance.Waves.Count <= wave)
+                {
+                    HordeUtils.wave = HordeServerPlugin.instance!.Configuration.Instance.Waves[wave];
+                    foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
+                    {
+                        ChatManager.serverSendMessage(
+                            HordeServerPlugin.instance!.Translate("round_end"),
+                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                            null,
+                            player.SteamPlayer(),
+                            EChatMode.SAY,
+                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                            true
+                        );
+                    }
+
+                    RestartRound = true;
+                    return;
+                }
+
                 HordeUtils.wave = HordeServerPlugin.instance!.Configuration.Instance.Waves[wave];
+                HordeUtils.CalculateZombiesToSpawn();
+
+                System.Random random = new();
                 foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
                 {
                     ChatManager.serverSendMessage(
-                        HordeServerPlugin.instance!.Translate("round_end"),
+                        HordeServerPlugin.instance!.Translate("wave_started", wave, HordeUtils.zombiesToSpawn),
                         new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
                         null,
                         player.SteamPlayer(),
@@ -123,39 +147,19 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                         HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
                         true
                     );
-                }
 
-                RestartRound = true;
-                return;
-            }
+                    if (!HordeServerPlugin.alivePlayers.Contains(player))
+                    {
+                        ConfigPosition position = HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions[
+                                random.Next(HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
 
-            HordeUtils.wave = HordeServerPlugin.instance!.Configuration.Instance.Waves[wave];
-            HordeUtils.CalculateZombiesToSpawn();
-
-            System.Random random = new();
-            foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
-            {
-                ChatManager.serverSendMessage(
-                    HordeServerPlugin.instance!.Translate("wave_started", wave, HordeUtils.zombiesToSpawn),
-                    new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
-                    null,
-                    player.SteamPlayer(),
-                    EChatMode.SAY,
-                    HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
-                    true
-                );
-
-                if (!HordeServerPlugin.alivePlayers.Contains(player))
-                {
-                    ConfigPosition position = HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions[
-                            random.Next(HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
-
-                    player.Teleport(new(position.X, position.Y, position.Z), position.Angle);
-                    HordeServerPlugin.alivePlayers.Add(player);
+                        player.Teleport(new(position.X, position.Y, position.Z), position.Angle);
+                        HordeServerPlugin.alivePlayers.Add(player);
+                    }
                 }
             }
+            else if (HordeUtils.zombiesToSpawn <= 0 && HordeUtils.zombiesAlive.Count <= 0) actualTickBetweenRounds--;
         }
-        else if (HordeUtils.zombiesToSpawn <= 0 && HordeUtils.zombiesAlive.Count <= 0) actualTickBetweenRounds--;
 
         // Spawn Tickrate
         if (actualSpawnTick <= 0)

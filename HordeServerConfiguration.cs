@@ -5,6 +5,7 @@ namespace HordeServer
 {
     public class HordeServerConfiguration : IRocketPluginConfiguration
     {
+        public bool ForceRemoveZombieRadiation = true;
         public uint SpawnTickrate = 600;
         public uint RemainingCheckTickrate = 600;
         public uint TickrateBetweenRounds = 1000;
@@ -24,6 +25,7 @@ namespace HordeServer
         public List<ConfigWave> Waves = [];
         public List<uint> RemainingZombiesAlert = [];
         public List<WeaponLoadout> AvailableWeaponsToPurchase = [];
+        public List<PowerupLoadout> AvailablePowerupsToPurchase = [];
 
         public uint StartingCredits = 500;
 
@@ -441,5 +443,11 @@ namespace HordeServer
         public byte Toughness = 0;
         public byte Vitality = 0;
         public byte Warmblooded = 0;
+    }
+
+    public class PowerupLoadout
+    {
+        public ushort itemId = 0;
+        public string powerupType = "juggernog";
     }
 }

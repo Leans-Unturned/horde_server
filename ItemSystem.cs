@@ -28,8 +28,32 @@ namespace HordeServer
                 }
             }
 
+            // Checking if is some sort of powerup
+            foreach (PowerupLoadout powerUpLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailablePowerupsToPurchase)
+            {
+                if (powerUpLoadout.itemId == P.item.id)
+                {
+                    for (byte page = 0; page < PlayerInventory.PAGES; page++)
+                    {
+                        try
+                        {
+                            for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
+                            {
+                                if (player.Inventory.getItem(page, j).item.id == P.item.id)
+                                {
+                                    PowerupSystem.GivePlayerPowerupByType(player, powerUpLoadout.powerupType);
+                                    player.Inventory.removeItem(page, j);
+                                    return;
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+            }
+
             // In this situation the item is purchased
-            foreach (WeaponLoadout loadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
+            foreach (WeaponLoadout weaponLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
             {
                 void removePreviouslyAmmo()
                 {
@@ -39,7 +63,7 @@ namespace HordeServer
                         {
                             for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
                             {
-                                if (player.Inventory.getItem(page, j).item.id == loadout.ammoId)
+                                if (player.Inventory.getItem(page, j).item.id == weaponLoadout.ammoId)
                                 {
                                     player.Inventory.removeItem(page, j);
                                     j--;
@@ -52,17 +76,17 @@ namespace HordeServer
                 }
 
                 // If is the first weapon give it the ammo for that weapon
-                if (P.item.id == loadout.weapondId)
+                if (P.item.id == weaponLoadout.weapondId)
                 {
                     removePreviouslyAmmo();
-                    player.GiveItem(loadout.ammoId, loadout.ammoRefilQuantity);
+                    player.GiveItem(weaponLoadout.ammoId, weaponLoadout.ammoRefilQuantity);
                 }
 
                 // If the player receives ammo, is because he already have the weapon lets refresh the inventory
-                if (P.item.id == loadout.ammoId)
+                if (P.item.id == weaponLoadout.ammoId)
                 {
                     removePreviouslyAmmo();
-                    player.GiveItem(loadout.ammoId, loadout.ammoRefilQuantity);
+                    player.GiveItem(weaponLoadout.ammoId, weaponLoadout.ammoRefilQuantity);
                 }
             }
         }

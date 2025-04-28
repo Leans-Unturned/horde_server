@@ -1,7 +1,7 @@
 extern alias UnityEngineCoreModule;
 
+using System;
 using System.Collections.Generic;
-using Rocket.Core.Logging;
 using Rocket.Unturned.Player;
 using Rocket.Unturned.Skills;
 
@@ -20,6 +20,12 @@ namespace HordeServer
             {
                 playersSkills.Add(player, new());
             }
+        }
+
+        public static void ResetPlayerSkills(UnturnedPlayer player)
+        {
+            if (playersSkills.TryGetValue(player, out Skill _)) playersSkills[player] = new();
+            else playersSkills.Add(player, new());
         }
 
         public static void RefreshPlayersSkills()
@@ -112,5 +118,7 @@ namespace HordeServer
                 }
             }
         }
+
+        public static void Disconnect(UnturnedPlayer player) => playersSkills.Remove(player);
     }
 }

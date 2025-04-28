@@ -1,6 +1,5 @@
 ﻿extern alias UnityEngineCoreModule;
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -33,6 +32,7 @@ namespace HordeServer
             Rocket.Unturned.U.Events.OnPlayerConnected += OnPlayerConnected;
             Rocket.Unturned.U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
             DamageTool.damageZombieRequested += HordeUtils.CalculateZombieArmor;
+            DamageTool.damageZombieRequested += HordeUtils.HitPoints;
             UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
 
             string[] playersDirectory = System.IO.Directory.GetDirectories(Configuration.Instance.PlayersFolder);
@@ -93,6 +93,8 @@ namespace HordeServer
 
         private void OnPlayerDisconnected(UnturnedPlayer player)
         {
+            PowerupSystem.Disconnect(player);
+            SkillSystem.Disconnect(player);
             player.Events.OnDeath -= OnPlayerDead;
             player.Events.OnInventoryAdded -= ItemSystem.OnInventoryAdded;
             player.Events.OnInventoryRemoved -= ItemSystem.OnInventoryRemoved;
@@ -170,7 +172,8 @@ namespace HordeServer
                             {
                                 oneIsAlive = true;
                                 break;
-                            };
+                            }
+                            ;
                         }
 
                         if (oneIsAlive)
@@ -208,6 +211,9 @@ namespace HordeServer
         {
             RoundSystemInstance?.Update();
             ItemSystem.Update();
+
+            if (HordeServerPlugin.instance!.Configuration.Instance.ForceRemoveZombieRadiation)
+                HordeUtils.RemoveZombiesRadiation();
         }
     }
 }
