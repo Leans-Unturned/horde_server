@@ -140,6 +140,11 @@ namespace HordeServer
 
         private void OnPlayerDead(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
         {
+            ItemManager.askClearAllItems();
+
+            PowerupSystem.ResetPlayerPowerups(player);
+            SkillSystem.ResetPlayerSkills(player);
+            SkillSystem.RefreshPlayerSkills(player);
             alivePlayers.Remove(player);
 
             if (alivePlayers.Count <= 0)

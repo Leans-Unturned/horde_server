@@ -8,7 +8,7 @@ namespace HordeServer
 
     class PowerupSystem
     {
-        private static readonly Dictionary<UnturnedPlayer, List<string>> playersPowerups = [];
+        private static Dictionary<UnturnedPlayer, List<string>> playersPowerups = [];
 
         public static void GivePlayerPowerupByType(UnturnedPlayer player, string powerupType)
         {
@@ -22,10 +22,11 @@ namespace HordeServer
 
         public static void ResetPlayerPowerups(UnturnedPlayer player)
         {
-            SkillSystem.ResetPlayerSkills(player);
             if (playersPowerups.TryGetValue(player, out List<string> _)) playersPowerups[player] = [];
             else playersPowerups.Add(player, []);
         }
+
+        public static void ResetPlayersPowerups() => playersPowerups = [];
 
         private static bool GivePlayerJuggernog(UnturnedPlayer player)
         {
@@ -33,6 +34,7 @@ namespace HordeServer
             {
                 SkillSystem.UpdatePlayerSkill(player, "Vitality", 5);
                 SkillSystem.UpdatePlayerSkill(player, "Strength", 5);
+                SkillSystem.RefreshPlayerSkills(player);
             }
 
             if (playersPowerups.TryGetValue(player, out List<string> powerups))
@@ -56,6 +58,7 @@ namespace HordeServer
             void increaseSkills()
             {
                 SkillSystem.UpdatePlayerSkill(player, "Dexterity", 5);
+                SkillSystem.RefreshPlayerSkills(player);
             }
 
             if (playersPowerups.TryGetValue(player, out List<string> powerups))
@@ -79,6 +82,7 @@ namespace HordeServer
             void increaseSkills()
             {
                 SkillSystem.UpdatePlayerSkill(player, "cardio", 5);
+                SkillSystem.RefreshPlayerSkills(player);
             }
 
             if (playersPowerups.TryGetValue(player, out List<string> powerups))

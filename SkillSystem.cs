@@ -1,6 +1,5 @@
 extern alias UnityEngineCoreModule;
 
-using System;
 using System.Collections.Generic;
 using Rocket.Unturned.Player;
 using Rocket.Unturned.Skills;
@@ -94,28 +93,30 @@ namespace HordeServer
                 switch (skillUpdated)
                 {
                     case "Agriculture": skill.Agriculture = level; return;
-                    case "Cardio": skill.Agriculture = level; return;
-                    case "Cooking": skill.Agriculture = level; return;
-                    case "Crafting": skill.Agriculture = level; return;
-                    case "Dexerity": skill.Agriculture = level; return;
-                    case "Diving": skill.Agriculture = level; return;
-                    case "Engineer": skill.Agriculture = level; return;
-                    case "Exercise": skill.Agriculture = level; return;
-                    case "Fishing": skill.Agriculture = level; return;
-                    case "Healing": skill.Agriculture = level; return;
-                    case "Immunity": skill.Agriculture = level; return;
-                    case "Mechanic": skill.Agriculture = level; return;
-                    case "Outdoors": skill.Agriculture = level; return;
-                    case "Overkill": skill.Agriculture = level; return;
-                    case "Parkour": skill.Agriculture = level; return;
-                    case "Sharpshooter": skill.Agriculture = level; return;
-                    case "Sneakybeaky": skill.Agriculture = level; return;
-                    case "Strength": skill.Agriculture = level; return;
-                    case "Survival": skill.Agriculture = level; return;
-                    case "Toughness": skill.Agriculture = level; return;
-                    case "Vitality": skill.Agriculture = level; return;
-                    case "Warmblooded": skill.Agriculture = level; return;
+                    case "Cardio": skill.Cardio = level; return;
+                    case "Cooking": skill.Cooking = level; return;
+                    case "Crafting": skill.Crafting = level; return;
+                    case "Dexerity": skill.Dexerity = level; return;
+                    case "Diving": skill.Diving = level; return;
+                    case "Engineer": skill.Engineer = level; return;
+                    case "Exercise": skill.Exercise = level; return;
+                    case "Fishing": skill.Fishing = level; return;
+                    case "Healing": skill.Healing = level; return;
+                    case "Immunity": skill.Immunity = level; return;
+                    case "Mechanic": skill.Mechanic = level; return;
+                    case "Outdoors": skill.Outdoors = level; return;
+                    case "Overkill": skill.Overkill = level; return;
+                    case "Parkour": skill.Parkour = level; return;
+                    case "Sharpshooter": skill.Sharpshooter = level; return;
+                    case "Sneakybeaky": skill.Sneakybeaky = level; return;
+                    case "Strength": skill.Strength = level; return;
+                    case "Survival": skill.Survival = level; return;
+                    case "Toughness": skill.Toughness = level; return;
+                    case "Vitality": skill.Vitality = level; return;
+                    case "Warmblooded": skill.Warmblooded = level; return;
                 }
+
+                playersSkills[player] = skill;
             }
         }
 

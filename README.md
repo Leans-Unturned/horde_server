@@ -6,6 +6,8 @@ Transform a survival mode into a horde mode
 - [Server Configurations](https://github.com/LeandroTheDev/horde_server/tree/master/Templates)
 
 ### Get working
+The easy way is to get the basic template from one of the already configurated maps.
+
 First thing you need to change some configuration in dedicated server, go to Configs.json:
 
 ```json
@@ -18,7 +20,9 @@ First thing you need to change some configuration in dedicated server, go to Con
 }
 ```
 
-Now you need to run the server to generate the configurations, change the ``PlayersFolder`` and ``LevelName`` Configurations so the plugin can handle player disconnections correctly, also enable ``DebugPlayerPosition`` for the next step.
+Now you need to run the server to generate the configurations, change the ``PlayersFolder`` and ``LevelName`` Configurations so the plugin can handle player disconnections correctly.
+
+Update the configurations, from the template or create one.
 
 ### The next step is for configurating a new map for horde server
 - The player spawn should be the map lobby. (The real spawn will be set in plugin configuration)

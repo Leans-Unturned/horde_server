@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArenaKitsConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DatabaseAddress>127.0.0.1</DatabaseAddress>
+  <DatabaseName>unturned</DatabaseName>
+  <DatabaseUsername>user</DatabaseUsername>
+  <DatabasePassword>supersecret</DatabasePassword>
+  <DatabasePort>3306</DatabasePort>
+  <ArenaKitsTableName>Nuketown-ArenaKits</ArenaKitsTableName>
+  <ChatIconURL>https://add-image-url.com</ChatIconURL>
+  <KitCommandOnlyInArea>true</KitCommandOnlyInArea>
+  <KitCommandArenaPlayingCheck>false</KitCommandArenaPlayingCheck>
+  <KitCommandAreas>
+    <KitAreas>
+      <X1>15.5</X1>
+      <Y1>50</Y1>
+      <Z1>-241.5</Z1>
+      <X2>33.1</X2>
+      <Y2>60</Y2>
+      <Z2>-250.05</Z2>
+    </KitAreas>
+  </KitCommandAreas>
+  <Items>
+    <Kit>
+      <name>Dmitri</name>
+      <items>
+        <KitItem>
+          <Id>1182</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>1385</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>1386</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>1387</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>97</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+      </items>
+      <experience>
+        <Agriculture>0</Agriculture>
+        <Cardio>0</Cardio>
+        <Cooking>0</Cooking>
+        <Crafting>0</Crafting>
+        <Dexerity>0</Dexerity>
+        <Diving>0</Diving>
+        <Engineer>0</Engineer>
+        <Exercise>0</Exercise>
+        <Fishing>0</Fishing>
+        <Healing>0</Healing>
+        <Immunity>0</Immunity>
+        <Mechanic>0</Mechanic>
+        <Outdoors>0</Outdoors>
+        <Overkill>0</Overkill>
+        <Parkour>0</Parkour>
+        <Sharpshooter>0</Sharpshooter>
+        <Sneakybeaky>0</Sneakybeaky>
+        <Strength>0</Strength>
+        <Survival>0</Survival>
+        <Toughness>0</Toughness>
+        <Vitality>0</Vitality>
+        <Warmblooded>0</Warmblooded>
+      </experience>
+    </Kit>
+    <Kit>
+      <name>Nikolai</name>
+      <items>
+        <KitItem>
+          <Id>1182</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>305</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>306</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>313</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>97</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+      </items>
+      <experience>
+        <Agriculture>0</Agriculture>
+        <Cardio>0</Cardio>
+        <Cooking>0</Cooking>
+        <Crafting>0</Crafting>
+        <Dexerity>0</Dexerity>
+        <Diving>0</Diving>
+        <Engineer>0</Engineer>
+        <Exercise>0</Exercise>
+        <Fishing>0</Fishing>
+        <Healing>0</Healing>
+        <Immunity>0</Immunity>
+        <Mechanic>0</Mechanic>
+        <Outdoors>0</Outdoors>
+        <Overkill>0</Overkill>
+        <Parkour>0</Parkour>
+        <Sharpshooter>0</Sharpshooter>
+        <Sneakybeaky>0</Sneakybeaky>
+        <Strength>0</Strength>
+        <Survival>0</Survival>
+        <Toughness>0</Toughness>
+        <Vitality>0</Vitality>
+        <Warmblooded>0</Warmblooded>
+      </experience>
+    </Kit>
+    <Kit>
+      <name>Aleksandr</name>
+      <items>
+        <KitItem>
+          <Id>1182</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>1048</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>407</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>408</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>97</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+      </items>
+      <experience>
+        <Agriculture>0</Agriculture>
+        <Cardio>0</Cardio>
+        <Cooking>0</Cooking>
+        <Crafting>0</Crafting>
+        <Dexerity>0</Dexerity>
+        <Diving>0</Diving>
+        <Engineer>0</Engineer>
+        <Exercise>0</Exercise>
+        <Fishing>0</Fishing>
+        <Healing>0</Healing>
+        <Immunity>0</Immunity>
+        <Mechanic>0</Mechanic>
+        <Outdoors>0</Outdoors>
+        <Overkill>0</Overkill>
+        <Parkour>0</Parkour>
+        <Sharpshooter>0</Sharpshooter>
+        <Sneakybeaky>0</Sneakybeaky>
+        <Strength>0</Strength>
+        <Survival>0</Survival>
+        <Toughness>0</Toughness>
+        <Vitality>0</Vitality>
+        <Warmblooded>0</Warmblooded>
+      </experience>
+    </Kit>
+  </Items>
+</ArenaKitsConfiguration>

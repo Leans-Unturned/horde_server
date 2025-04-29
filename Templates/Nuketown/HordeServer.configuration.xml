@@ -1024,15 +1024,35 @@
   </RemainingZombiesAlert>
   <AvailableWeaponsToPurchase>
     <WeaponLoadout>
+      <weapondId>97</weapondId>
+      <ammoId>98</ammoId>
+      <ammoRefilQuantity>5</ammoRefilQuantity>
+    </WeaponLoadout>
+    <WeaponLoadout>
       <weapondId>101</weapondId>
       <ammoId>103</ammoId>
-      <ammoRefilQuantity>10</ammoRefilQuantity>
+      <ammoRefilQuantity>5</ammoRefilQuantity>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>380</weapondId>
       <ammoId>381</ammoId>
-      <ammoRefilQuantity>20</ammoRefilQuantity>
+      <ammoRefilQuantity>10</ammoRefilQuantity>
     </WeaponLoadout>
   </AvailableWeaponsToPurchase>
+  <AvailablePowerupsToPurchase>
+    <PowerupLoadout>
+      <itemId>1051</itemId>
+      <powerupType>juggernog</powerupType>
+    </PowerupLoadout>
+    <PowerupLoadout>
+      <itemId>1052</itemId>
+      <powerupType>speedcola</powerupType>
+    </PowerupLoadout>
+    <PowerupLoadout>
+      <itemId>1053</itemId>
+      <powerupType>estaminaup</powerupType>
+    </PowerupLoadout>
+  </AvailablePowerupsToPurchase>
   <StartingCredits>500</StartingCredits>
+  <HitCredits>10</HitCredits>
 </HordeServerConfiguration>

@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using Rocket.Core.Logging;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
+using UnityEngine;
 
 namespace HordeServer;
 class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
 {
     public bool RestartRound = false;
-    public int wave = 0;
+    public int wave = -1;
 
     private uint actualSpawnTick = spawnTickrate;
     private uint actualRemainingTick = 0;
@@ -41,8 +42,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                 HordeUtils.zombiesToSpawn = 0;
                 HordeUtils.wave = null;
                 LightingManager.time = 500;
-                wave = 0;
-                System.Random random = new();
+                wave = -1;
 
                 RestartRound = false;
                 HordeUtils.KillAllZombies();
@@ -61,6 +61,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                         true
                     );
 
+                    PowerupSystem.ResetPlayersPowerups();
                     SkillSystem.ResetPlayersSkills();
                     SkillSystem.RefreshPlayersSkills();
                     player.Experience = HordeServerPlugin.instance.Configuration.Instance.StartingCredits;
@@ -68,7 +69,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                     if (!player.Dead)
                     {
                         ConfigPosition position = HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions[
-                            random.Next(HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
+                            Random.Range(0, HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
 
                         player.Teleport(new(position.X, position.Y, position.Z), position.Angle);
                         HordeServerPlugin.alivePlayers.Add(player);
@@ -114,7 +115,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                 // Game Ended all waves has been reach
                 if (HordeServerPlugin.instance!.Configuration.Instance.Waves.Count <= wave)
                 {
-                    HordeUtils.wave = HordeServerPlugin.instance!.Configuration.Instance.Waves[wave];
+                    HordeUtils.wave = HordeServerPlugin.instance!.Configuration.Instance.Waves[wave].Clone();
                     foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
                     {
                         ChatManager.serverSendMessage(
@@ -132,14 +133,13 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                     return;
                 }
 
-                HordeUtils.wave = HordeServerPlugin.instance!.Configuration.Instance.Waves[wave];
+                HordeUtils.wave = HordeServerPlugin.instance!.Configuration.Instance.Waves[wave].Clone();
                 HordeUtils.CalculateZombiesToSpawn();
 
-                System.Random random = new();
                 foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
                 {
                     ChatManager.serverSendMessage(
-                        HordeServerPlugin.instance!.Translate("wave_started", wave, HordeUtils.zombiesToSpawn),
+                        HordeServerPlugin.instance!.Translate("wave_started", wave + 1, HordeUtils.zombiesToSpawn),
                         new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
                         null,
                         player.SteamPlayer(),
@@ -151,7 +151,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                     if (!HordeServerPlugin.alivePlayers.Contains(player))
                     {
                         ConfigPosition position = HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions[
-                                random.Next(HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
+                                Random.Range(0, HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
 
                         player.Teleport(new(position.X, position.Y, position.Z), position.Angle);
                         HordeServerPlugin.alivePlayers.Add(player);

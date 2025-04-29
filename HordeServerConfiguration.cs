@@ -28,6 +28,7 @@ namespace HordeServer
         public List<PowerupLoadout> AvailablePowerupsToPurchase = [];
 
         public uint StartingCredits = 500;
+        public uint HitCredits = 10;
 
         public void LoadDefaults()
         {
@@ -368,6 +369,21 @@ namespace HordeServer
                     ammoRefilQuantity = 10
                 }
             ];
+
+            AvailablePowerupsToPurchase = [
+                new() {
+                    itemId = 1051,
+                    powerupType = "juggernog"
+                },
+                new() {
+                    itemId = 1052,
+                    powerupType = "speedcola"
+                },
+                new() {
+                    itemId = 1053,
+                    powerupType = "estaminaup"
+                },
+            ];
         }
     }
 
@@ -410,13 +426,33 @@ namespace HordeServer
         public long Sprinter = 0;
         public float HealthMultiplier = 1.0f;
         public float MaxAmmoChance = 0.05f;
-    }
 
-    public class WeaponLoadout
-    {
-        public ushort weapondId = 0;
-        public ushort ammoId = 0;
-        public byte ammoRefilQuantity = 0;
+        public ConfigWave Clone()
+        {
+            return new ConfigWave
+            {
+                Acid = Acid,
+                BossEletric = BossEletric,
+                BossElverStomper = BossElverStomper,
+                BossFire = BossFire,
+                BossMagma = BossMagma,
+                BossNuclear = BossNuclear,
+                BossSprit = BossSprit,
+                BossWind = BossWind,
+                Burner = Burner,
+                Crawler = Crawler,
+                DLBlueVolatile = DLBlueVolatile,
+                DLRedVolatile = DLRedVolatile,
+                FlankerFriendly = FlankerFriendly,
+                FlankerStalk = FlankerStalk,
+                Mega = Mega,
+                Normal = Normal,
+                Spirit = Spirit,
+                Sprinter = Sprinter,
+                HealthMultiplier = HealthMultiplier,
+                MaxAmmoChance = MaxAmmoChance,
+            };
+        }
     }
 
     public class Skill
@@ -443,6 +479,13 @@ namespace HordeServer
         public byte Toughness = 0;
         public byte Vitality = 0;
         public byte Warmblooded = 0;
+    }
+
+    public class WeaponLoadout
+    {
+        public ushort weapondId = 0;
+        public ushort ammoId = 0;
+        public byte ammoRefilQuantity = 0;
     }
 
     public class PowerupLoadout

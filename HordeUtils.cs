@@ -240,9 +240,10 @@ class HordeUtils
     public static void HitPoints(ref DamageZombieParameters parameters, ref bool _)
     {
         object instigator = parameters.instigator;
-        if (instigator != null)
+        if (instigator is Player abstractPlayer)
         {
-            Logger.Log($"{instigator.GetType()}");
+            UnturnedPlayer player = UnturnedPlayer.FromPlayer(abstractPlayer);
+            player.Experience += HordeServerPlugin.instance!.Configuration.Instance.HitCredits;
         }
     }
 
