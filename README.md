@@ -1,6 +1,17 @@
 # HordeServer
 Transform a survival mode into a horde mode
 
+[![Plugin Preview on Youtube](https://img.youtube.com/vi/8puA4saUrTY/hqdefault.jpg)](https://www.youtube.com/watch?v=8puA4saUrTY)
+
+## TO DO
+- Pack a punch
+- Weapon reducer damage in config
+- Grenade Max Ammo
+- Max grenade in inventory in config
+- Grenades per round in config
+- Secondary equip in primary when no primary is available
+- First buy give more ammo for some reason
+
 ## Fully Map Template
 - [Nuketown](https://steamcommunity.com/sharedfiles/filedetails/?id=3471852710)
 - [Server Configurations](https://github.com/LeandroTheDev/horde_server/tree/master/Templates)
@@ -17,6 +28,10 @@ First thing you need to change some configuration in dedicated server, go to Con
     "Respawn_Night_Time": 999999999.0,
     "Damage_Multiplier": 1.0,
     "Armor_Multiplier": 1.0,
+},
+"Players": {
+    "Food_Use_Ticks": 999999999,
+    "Water_Use_Ticks": 999999999,
 }
 ```
 

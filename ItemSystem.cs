@@ -16,6 +16,27 @@ namespace HordeServer
         static bool SwapTickReset = false;
         static bool ClearItemsNextTick = false;
 
+        static private List<KeyValuePair<UnturnedPlayer, WeaponLoadout>> weaponEquipNextTick = [];
+
+        static private void RemovePreviouslyAmmo(UnturnedPlayer player, int ammoId)
+        {
+            for (byte page = 0; page < PlayerInventory.PAGES; page++)
+            {
+                try
+                {
+                    for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
+                    {
+                        if (player.Inventory.getItem(page, j).item.id == ammoId)
+                        {
+                            player.Inventory.removeItem(page, j);
+                            j--;
+                        }
+                    }
+                }
+                catch (Exception) { }
+            }
+        }
+
         static public void OnInventoryAdded(UnturnedPlayer player, InventoryGroup _, byte __, ItemJar P)
         {
             // Check if thhe items is swapped
@@ -55,37 +76,50 @@ namespace HordeServer
             // In this situation the item is purchased
             foreach (WeaponLoadout weaponLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
             {
-                void removePreviouslyAmmo()
-                {
-                    for (byte page = 0; page < PlayerInventory.PAGES; page++)
-                    {
-                        try
-                        {
-                            for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
-                            {
-                                if (player.Inventory.getItem(page, j).item.id == weaponLoadout.ammoId)
-                                {
-                                    player.Inventory.removeItem(page, j);
-                                    j--;
-                                }
-                            }
-                        }
-                        catch (Exception) { }
-                    }
-
-                }
-
                 // If is the first weapon give it the ammo for that weapon
                 if (P.item.id == weaponLoadout.weapondId)
                 {
-                    removePreviouslyAmmo();
-                    player.GiveItem(weaponLoadout.ammoId, weaponLoadout.ammoRefilQuantity);
+                    // Remove previously equipped weapon
+                    {
+                        ItemJar? equippedWeapon;
+                        if (weaponLoadout.primary)
+                            equippedWeapon = player.Inventory.getItem(0, 0);
+                        else
+                            equippedWeapon = player.Inventory.getItem(1, 0);
+
+                        // Check if exists (in theory is not necessary but...)
+                        if (equippedWeapon != null)
+                        {
+                            // Check if the weapon id is different from the equipped id
+                            if (equippedWeapon.item.id != P.item.id)
+                            {
+                                // Getting the ammo id
+                                foreach (WeaponLoadout checkLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
+                                {
+                                    if (checkLoadout.weapondId == equippedWeapon.item.id)
+                                    {
+                                        // Removing the ammo and the weapon
+                                        RemovePreviouslyAmmo(player, checkLoadout.ammoId);
+                                        if (weaponLoadout.primary) player.Inventory.removeItem(0, 0);
+                                        else player.Inventory.removeItem(1, 0);
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // For some reason in this function the item add is not yet in the inventory, we need to equip in the next tick
+                    // And for another reason the player receives ammo of the weapon in the horde purchase volume
+                    // and we need to remove it for handling the ammo system in the next tick
+                    weaponEquipNextTick.Add(new(player, weaponLoadout));
                 }
 
                 // If the player receives ammo, is because he already have the weapon lets refresh the inventory
                 if (P.item.id == weaponLoadout.ammoId)
                 {
-                    removePreviouslyAmmo();
+                    RemovePreviouslyAmmo(player, weaponLoadout.ammoId);
                     player.GiveItem(weaponLoadout.ammoId, weaponLoadout.ammoRefilQuantity);
                 }
             }
@@ -115,6 +149,63 @@ namespace HordeServer
 
             if (ClearItemsNextTick)
                 ItemManager.askClearAllItems();
+
+            if (weaponEquipNextTick.Count > 0)
+            {
+                // Try equip items
+                for (int i = weaponEquipNextTick.Count - 1; i >= 0; i--)
+                {
+                    var entry = weaponEquipNextTick[i];
+                    UnturnedPlayer player = entry.Key;
+
+                    bool equipSuccess = false;
+                    for (byte page = 0; page < PlayerInventory.PAGES; page++)
+                    {
+                        try
+                        {
+                            byte itemCount = player.Inventory.getItemCount(page);
+
+                            for (byte itemIndex = 0; itemIndex < itemCount; itemIndex++)
+                            {
+                                ItemJar? item = player.Inventory.getItem(page, itemIndex);
+                                if (item == null) continue;
+
+                                if (item.item.id == entry.Value.weapondId)
+                                {
+                                    // If the weapon is not on primary or secondary slot, add to it
+                                    if (page != 0 && page != 1)
+                                    {
+                                        player.Inventory.removeItem(page, itemIndex);
+                                        if (entry.Value.primary) player.Inventory.tryAddItem(item.item, 0, 0, 0, 0);
+                                        else player.Inventory.tryAddItem(item.item, 0, 0, 1, 0);
+                                        equipSuccess = true;
+                                    }
+                                    // If the weapon is already on the primary or secondary slot equip it
+                                    else
+                                    {
+                                        player.Inventory.player.equipment.tryEquip(page, item.x, item.y);
+
+                                        RemovePreviouslyAmmo(player, entry.Value.ammoId);
+                                        player.GiveItem(entry.Value.ammoId, entry.Value.ammoRefilQuantity);
+                                        weaponEquipNextTick.RemoveAt(i);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                        if (equipSuccess) break;
+                    }
+
+                }
+
+                // Insane bug or exploit treatment
+                if (weaponEquipNextTick.Count > 2)
+                {
+                    Logger.LogWarning($"Something is strange in weapon equip system, {weaponEquipNextTick.Count}");
+                    weaponEquipNextTick = [];
+                };
+            }
 
             SwapTickReset = false;
             ClearItemsNextTick = false;

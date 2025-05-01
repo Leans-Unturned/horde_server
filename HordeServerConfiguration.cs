@@ -486,6 +486,7 @@ namespace HordeServer
         public ushort weapondId = 0;
         public ushort ammoId = 0;
         public byte ammoRefilQuantity = 0;
+        public bool primary = true;
     }
 
     public class PowerupLoadout

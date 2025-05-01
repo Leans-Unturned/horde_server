@@ -143,7 +143,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.1</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>0</Acid>
@@ -165,7 +165,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.2</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>1</Acid>
@@ -187,7 +187,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.3</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>1</Acid>
@@ -209,7 +209,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.4</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>2</Acid>
@@ -231,7 +231,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.5</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>3</Acid>
@@ -253,7 +253,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.6</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>4</Acid>
@@ -275,7 +275,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.7</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>4</Acid>
@@ -297,7 +297,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.8</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>6</Acid>
@@ -319,7 +319,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.9</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>0</Acid>
@@ -341,7 +341,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>8</Acid>
@@ -363,7 +363,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.1</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>28</Acid>
@@ -385,7 +385,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.2</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>28</Acid>
@@ -407,7 +407,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.3</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>28</Acid>
@@ -429,7 +429,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.4</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>28</Acid>
@@ -451,7 +451,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.5</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>28</Acid>
@@ -473,7 +473,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.6</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>28</Acid>
@@ -495,7 +495,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.7</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>28</Acid>
@@ -517,7 +517,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.8</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>28</Acid>
@@ -539,7 +539,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.9</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>0</Acid>
@@ -561,7 +561,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>48</Acid>
@@ -583,7 +583,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.1</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>88</Acid>
@@ -605,7 +605,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.2</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>100</Acid>
@@ -627,7 +627,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.3</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>100</Acid>
@@ -649,7 +649,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.4</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>100</Acid>
@@ -671,7 +671,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.5</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>100</Acid>
@@ -693,7 +693,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.6</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>100</Acid>
@@ -715,7 +715,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.7</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>100</Acid>
@@ -737,7 +737,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.8</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>100</Acid>
@@ -759,7 +759,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.9</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>0</Acid>
@@ -781,7 +781,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>20</Acid>
@@ -803,7 +803,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.1</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>20</Acid>
@@ -825,7 +825,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.2</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>20</Acid>
@@ -847,7 +847,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.3</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>20</Acid>
@@ -869,7 +869,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.4</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>20</Acid>
@@ -891,7 +891,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.5</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>20</Acid>
@@ -913,7 +913,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.6</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>20</Acid>
@@ -935,7 +935,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.7</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>20</Acid>
@@ -957,7 +957,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.8</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>20</Acid>
@@ -979,7 +979,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.9</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
       <Acid>0</Acid>
@@ -1001,7 +1001,7 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>4</HealthMultiplier>
-      <MaxAmmoChance>0.05</MaxAmmoChance>
+      <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
   </Waves>
   <RemainingZombiesAlert>
@@ -1027,16 +1027,43 @@
       <weapondId>97</weapondId>
       <ammoId>98</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>false</primary>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>101</weapondId>
       <ammoId>103</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>true</primary>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>380</weapondId>
       <ammoId>381</ammoId>
       <ammoRefilQuantity>10</ammoRefilQuantity>
+      <primary>true</primary>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>112</weapondId>
+      <ammoId>113</ammoId>
+      <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>true</primary>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>363</weapondId>
+      <ammoId>6</ammoId>
+      <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>true</primary>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>1021</weapondId>
+      <ammoId>1022</ammoId>
+      <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>false</primary>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>1369</weapondId>
+      <ammoId>1371</ammoId>
+      <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>false</primary>
     </WeaponLoadout>
   </AvailableWeaponsToPurchase>
   <AvailablePowerupsToPurchase>

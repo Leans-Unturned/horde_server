@@ -57,7 +57,7 @@ namespace HordeServer
         {
             void increaseSkills()
             {
-                SkillSystem.UpdatePlayerSkill(player, "Dexterity", 5);
+                SkillSystem.UpdatePlayerSkill(player, "Dexerity", 5);
                 SkillSystem.RefreshPlayerSkills(player);
             }
 
@@ -81,7 +81,7 @@ namespace HordeServer
         {
             void increaseSkills()
             {
-                SkillSystem.UpdatePlayerSkill(player, "cardio", 5);
+                SkillSystem.UpdatePlayerSkill(player, "Cardio", 5);
                 SkillSystem.RefreshPlayerSkills(player);
             }
 
