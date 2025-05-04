@@ -7,9 +7,6 @@ Transform a survival mode into a horde mode
 ## TO DO
 - Pack a punch
 - Weapon reducer damage in config
-- Grenade Max Ammo
-- Max grenade in inventory in config
-- Grenades per round in config
 
 ## Fully Map Template
 - [Nuketown](https://steamcommunity.com/sharedfiles/filedetails/?id=3471852710)

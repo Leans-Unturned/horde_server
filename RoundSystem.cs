@@ -16,6 +16,8 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
     private uint actualRemainingTick = 0;
     private uint actualTickBetweenRounds = tickrateBetweenRounds;
 
+    private bool shouldAlertRoundEnded = false;
+
     public void Update()
     {
         // Round Restart
@@ -119,7 +121,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                     foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
                     {
                         ChatManager.serverSendMessage(
-                            HordeServerPlugin.instance!.Translate("round_end"),
+                            HordeServerPlugin.instance!.Translate("round_finish"),
                             new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
                             null,
                             player.SteamPlayer(),
@@ -148,6 +150,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                         true
                     );
 
+                    // Teleport dead players to the area again
                     if (!HordeServerPlugin.alivePlayers.Contains(player))
                     {
                         ConfigPosition position = HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions[
@@ -157,8 +160,29 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                         HordeServerPlugin.alivePlayers.Add(player);
                     }
                 }
+
+                shouldAlertRoundEnded = true;
             }
-            else if (HordeUtils.zombiesToSpawn <= 0 && HordeUtils.zombiesAlive.Count <= 0) actualTickBetweenRounds--;
+            else if (HordeUtils.zombiesToSpawn <= 0 && HordeUtils.zombiesAlive.Count <= 0)
+            {
+                if (shouldAlertRoundEnded)
+                {
+                    foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
+                    {
+                        ChatManager.serverSendMessage(
+                            HordeServerPlugin.instance!.Translate("round_end"),
+                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                            null,
+                            player.SteamPlayer(),
+                            EChatMode.SAY,
+                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                            true
+                        );
+                    }
+                    shouldAlertRoundEnded = false;
+                }
+                actualTickBetweenRounds--;
+            };
         }
 
         // Spawn Tickrate

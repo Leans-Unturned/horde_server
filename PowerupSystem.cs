@@ -2,6 +2,7 @@ extern alias UnityEngineCoreModule;
 
 using System.Collections.Generic;
 using Rocket.Unturned.Player;
+using SDG.Unturned;
 
 namespace HordeServer
 {
@@ -99,6 +100,68 @@ namespace HordeServer
                 increaseSkills();
                 return true;
             }
+        }
+
+        private static ushort GetPlayerCurrentGrenade(UnturnedPlayer player)
+        {
+            if (playersPowerups.TryGetValue(player, out List<string> value))
+            {
+                if (value.Contains("some_future_powerup_grenade")) return 1100; // Sticky Grenade
+                if (value.Contains("some_future_powerup_grenade")) return 1520; // Impact Grenade
+                if (value.Contains("some_future_powerup_grenade")) return 1838; // Bounce Grenade
+            }
+
+            return 254; // Fragmentation Grenade
+        }
+
+        public static void GiveMaxGrenadesForPlayer(UnturnedPlayer player)
+        {
+            ushort playerGrenade = GetPlayerCurrentGrenade(player);
+            byte totalGrenades = 0;
+            // Get total grenades
+            for (byte page = 0; page < PlayerInventory.PAGES; page++)
+            {
+                try
+                {
+                    for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
+                    {
+                        if (player.Inventory.getItem(page, j).item.id == playerGrenade)
+                        {
+                            totalGrenades++;
+                        }
+                    }
+                }
+                catch (System.Exception) { }
+            }
+
+            uint grenadesToReceive = HordeServerPlugin.instance!.Configuration.Instance.MaxGrenades - totalGrenades;
+            for (int i = 0; i < grenadesToReceive; i++)
+                player.Inventory.tryAddItemAuto(new(playerGrenade, true), false, false, false, false);
+        }
+
+        public static void GiveRoundGrenadeForPlayer(UnturnedPlayer player)
+        {
+            ushort playerGrenade = GetPlayerCurrentGrenade(player);
+            byte totalGrenades = 0;
+            // Get total grenades
+            for (byte page = 0; page < PlayerInventory.PAGES; page++)
+            {
+                try
+                {
+                    for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
+                    {
+                        if (player.Inventory.getItem(page, j).item.id == playerGrenade)
+                        {
+                            totalGrenades++;
+                        }
+                    }
+                }
+                catch (System.Exception) { }
+            }
+
+            uint grenadesToReceive = HordeServerPlugin.instance!.Configuration.Instance.MaxGrenades - totalGrenades;
+            if (grenadesToReceive > 0)
+                player.Inventory.tryAddItemAuto(new(playerGrenade, true), false, false, false, false);
         }
 
         public static void Disconnect(UnturnedPlayer player) => playersPowerups.Remove(player);

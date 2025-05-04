@@ -194,7 +194,8 @@ namespace HordeServer
         public override TranslationList DefaultTranslations => new()
         {
             {"round_started", "Horde Starting soon..."},
-            {"round_end", "Congratulations, you survived the Horde!!!"},
+            {"round_end", "Wave complete..."},
+            {"round_finish", "Congratulations, you survived the Horde!!!"},
             {"round_fail", "All survivors died, restarting round..."},
             {"wave_started", "Wave {0}, Zombies: {1}"},
             {"wave_remaining", "Remaining Zombies: {0}" },

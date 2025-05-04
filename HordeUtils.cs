@@ -297,6 +297,8 @@ class HordeUtils
                 removePreviouslyAmmo(secondaryWeaponLoadout);
                 player.GiveItem(secondaryWeaponLoadout.ammoId, secondaryWeaponLoadout.ammoRefilQuantity);
             }
+
+            PowerupSystem.GiveMaxGrenadesForPlayer(player);
         }
 
         if (uniquePlayer != null)

@@ -29,6 +29,7 @@ namespace HordeServer
 
         public uint StartingCredits = 500;
         public uint HitCredits = 10;
+        public uint MaxGrenades = 4;
 
         public void LoadDefaults()
         {
