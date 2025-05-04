@@ -1082,4 +1082,5 @@
   </AvailablePowerupsToPurchase>
   <StartingCredits>500</StartingCredits>
   <HitCredits>10</HitCredits>
+  <MaxGrenades>4</MaxGrenades>
 </HordeServerConfiguration>
