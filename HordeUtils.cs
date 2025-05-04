@@ -248,9 +248,9 @@ class HordeUtils
         }
     }
 
-    public static void GiveMaxAmmo()
+    public static void GiveMaxAmmo(UnturnedPlayer? uniquePlayer = null)
     {
-        foreach (UnturnedPlayer player in HordeServerPlugin.alivePlayers)
+        void GiveAmmo(UnturnedPlayer player)
         {
             ItemJar primaryWeapon = player.Inventory.getItem(0, 0);
             ItemJar secondaryWeapon = player.Inventory.getItem(1, 0);
@@ -297,6 +297,17 @@ class HordeUtils
                 removePreviouslyAmmo(secondaryWeaponLoadout);
                 player.GiveItem(secondaryWeaponLoadout.ammoId, secondaryWeaponLoadout.ammoRefilQuantity);
             }
+        }
+
+        if (uniquePlayer != null)
+        {
+            GiveAmmo(uniquePlayer);
+            return;
+        }
+
+        foreach (UnturnedPlayer player in HordeServerPlugin.alivePlayers)
+        {
+            GiveAmmo(player);
         }
     }
 

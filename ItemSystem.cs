@@ -2,6 +2,7 @@ extern alias UnityEngineCoreModule;
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rocket.Core.Logging;
 using Rocket.Unturned.Enumerations;
 using Rocket.Unturned.Player;
@@ -17,6 +18,7 @@ namespace HordeServer
         static bool ClearItemsNextTick = false;
 
         static private List<KeyValuePair<UnturnedPlayer, WeaponLoadout>> weaponEquipNextTick = [];
+        static private List<UnturnedPlayer> secondaryOnPrimaryBugTreatment = [];
 
         static private void RemovePreviouslyAmmo(UnturnedPlayer player, int ammoId)
         {
@@ -183,11 +185,26 @@ namespace HordeServer
                                     // If the weapon is already on the primary or secondary slot equip it
                                     else
                                     {
+                                        // If is not a primary weapon and it is equipped on primary, we need to remove it
+                                        // and place on secondary
+                                        if (!entry.Value.primary && page == 0)
+                                        {
+                                            player.Inventory.removeItem(0, 0);
+                                            player.Inventory.removeItem(1, 0);
+                                            player.Inventory.tryAddItem(item.item, 0, 0, 1, 0);
+                                            break;
+                                        }
                                         player.Inventory.player.equipment.tryEquip(page, item.x, item.y);
 
                                         RemovePreviouslyAmmo(player, entry.Value.ammoId);
                                         player.GiveItem(entry.Value.ammoId, entry.Value.ammoRefilQuantity);
                                         weaponEquipNextTick.RemoveAt(i);
+
+                                        HordeUtils.GiveMaxAmmo(player);
+
+                                        // Why you give ammo 2 times in a row?
+                                        // Simple the game code is bugged, the first time you give ammo it will multiply by a strange amount
+                                        // The second time is normal
                                     }
                                     break;
                                 }

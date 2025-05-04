@@ -1,6 +1,7 @@
 # HordeServer
 Transform a survival mode into a horde mode
 
+### Preview on Youtube
 [![Plugin Preview on Youtube](https://img.youtube.com/vi/8puA4saUrTY/hqdefault.jpg)](https://www.youtube.com/watch?v=8puA4saUrTY)
 
 ## TO DO
@@ -9,8 +10,6 @@ Transform a survival mode into a horde mode
 - Grenade Max Ammo
 - Max grenade in inventory in config
 - Grenades per round in config
-- Secondary equip in primary when no primary is available
-- First buy give more ammo for some reason
 
 ## Fully Map Template
 - [Nuketown](https://steamcommunity.com/sharedfiles/filedetails/?id=3471852710)
