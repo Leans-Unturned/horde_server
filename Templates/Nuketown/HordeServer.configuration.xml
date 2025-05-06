@@ -183,7 +183,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>0</Mega>
-      <Normal>20</Normal>
+      <Normal>13</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.3</HealthMultiplier>
@@ -199,13 +199,13 @@
       <BossSprit>0</BossSprit>
       <BossWind>0</BossWind>
       <Burner>0</Burner>
-      <Crawler>10</Crawler>
+      <Crawler>7</Crawler>
       <DLBlueVolatile>0</DLBlueVolatile>
       <DLRedVolatile>0</DLRedVolatile>
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>0</Mega>
-      <Normal>30</Normal>
+      <Normal>17</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.4</HealthMultiplier>
@@ -221,13 +221,13 @@
       <BossSprit>0</BossSprit>
       <BossWind>0</BossWind>
       <Burner>1</Burner>
-      <Crawler>15</Crawler>
+      <Crawler>10</Crawler>
       <DLBlueVolatile>0</DLBlueVolatile>
       <DLRedVolatile>0</DLRedVolatile>
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>0</Mega>
-      <Normal>40</Normal>
+      <Normal>20</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.5</HealthMultiplier>
@@ -243,13 +243,13 @@
       <BossSprit>0</BossSprit>
       <BossWind>0</BossWind>
       <Burner>2</Burner>
-      <Crawler>20</Crawler>
+      <Crawler>13</Crawler>
       <DLBlueVolatile>0</DLBlueVolatile>
       <DLRedVolatile>0</DLRedVolatile>
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>0</Mega>
-      <Normal>60</Normal>
+      <Normal>26</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.6</HealthMultiplier>
@@ -265,13 +265,13 @@
       <BossSprit>0</BossSprit>
       <BossWind>0</BossWind>
       <Burner>3</Burner>
-      <Crawler>30</Crawler>
+      <Crawler>10</Crawler>
       <DLBlueVolatile>0</DLBlueVolatile>
       <DLRedVolatile>0</DLRedVolatile>
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>0</Mega>
-      <Normal>90</Normal>
+      <Normal>30</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.7</HealthMultiplier>
@@ -287,13 +287,13 @@
       <BossSprit>0</BossSprit>
       <BossWind>0</BossWind>
       <Burner>3</Burner>
-      <Crawler>30</Crawler>
+      <Crawler>12</Crawler>
       <DLBlueVolatile>0</DLBlueVolatile>
       <DLRedVolatile>0</DLRedVolatile>
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>1</Mega>
-      <Normal>100</Normal>
+      <Normal>35</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.8</HealthMultiplier>
@@ -309,13 +309,13 @@
       <BossSprit>0</BossSprit>
       <BossWind>0</BossWind>
       <Burner>5</Burner>
-      <Crawler>40</Crawler>
+      <Crawler>15</Crawler>
       <DLBlueVolatile>0</DLBlueVolatile>
       <DLRedVolatile>0</DLRedVolatile>
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>2</Mega>
-      <Normal>150</Normal>
+      <Normal>40</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.9</HealthMultiplier>
@@ -353,13 +353,13 @@
       <BossSprit>0</BossSprit>
       <BossWind>0</BossWind>
       <Burner>15</Burner>
-      <Crawler>45</Crawler>
+      <Crawler>20</Crawler>
       <DLBlueVolatile>0</DLBlueVolatile>
       <DLRedVolatile>0</DLRedVolatile>
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>2</Mega>
-      <Normal>180</Normal>
+      <Normal>45</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.1</HealthMultiplier>
@@ -375,38 +375,16 @@
       <BossSprit>0</BossSprit>
       <BossWind>0</BossWind>
       <Burner>15</Burner>
-      <Crawler>45</Crawler>
+      <Crawler>20</Crawler>
       <DLBlueVolatile>0</DLBlueVolatile>
       <DLRedVolatile>0</DLRedVolatile>
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>2</Mega>
-      <Normal>160</Normal>
+      <Normal>50</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.2</HealthMultiplier>
-      <MaxAmmoChance>1</MaxAmmoChance>
-    </ConfigWave>
-    <ConfigWave>
-      <Acid>28</Acid>
-      <BossEletric>0</BossEletric>
-      <BossElverStomper>0</BossElverStomper>
-      <BossFire>0</BossFire>
-      <BossMagma>0</BossMagma>
-      <BossNuclear>0</BossNuclear>
-      <BossSprit>0</BossSprit>
-      <BossWind>0</BossWind>
-      <Burner>35</Burner>
-      <Crawler>45</Crawler>
-      <DLBlueVolatile>0</DLBlueVolatile>
-      <DLRedVolatile>0</DLRedVolatile>
-      <FlankerFriendly>0</FlankerFriendly>
-      <FlankerStalk>0</FlankerStalk>
-      <Mega>2</Mega>
-      <Normal>140</Normal>
-      <Spirit>0</Spirit>
-      <Sprinter>0</Sprinter>
-      <HealthMultiplier>1.3</HealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -424,8 +402,30 @@
       <DLRedVolatile>0</DLRedVolatile>
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
+      <Mega>2</Mega>
+      <Normal>60</Normal>
+      <Spirit>0</Spirit>
+      <Sprinter>0</Sprinter>
+      <HealthMultiplier>1.3</HealthMultiplier>
+      <MaxAmmoChance>1</MaxAmmoChance>
+    </ConfigWave>
+    <ConfigWave>
+      <Acid>28</Acid>
+      <BossEletric>0</BossEletric>
+      <BossElverStomper>0</BossElverStomper>
+      <BossFire>0</BossFire>
+      <BossMagma>0</BossMagma>
+      <BossNuclear>0</BossNuclear>
+      <BossSprit>0</BossSprit>
+      <BossWind>0</BossWind>
+      <Burner>35</Burner>
+      <Crawler>30</Crawler>
+      <DLBlueVolatile>0</DLBlueVolatile>
+      <DLRedVolatile>0</DLRedVolatile>
+      <FlankerFriendly>0</FlankerFriendly>
+      <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>140</Normal>
+      <Normal>50</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.4</HealthMultiplier>
@@ -447,7 +447,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>140</Normal>
+      <Normal>50</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.5</HealthMultiplier>
@@ -469,7 +469,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>140</Normal>
+      <Normal>50</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.6</HealthMultiplier>
@@ -491,7 +491,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>140</Normal>
+      <Normal>50</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.7</HealthMultiplier>
@@ -513,7 +513,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>140</Normal>
+      <Normal>50</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.8</HealthMultiplier>
@@ -529,13 +529,13 @@
       <BossSprit>0</BossSprit>
       <BossWind>0</BossWind>
       <Burner>85</Burner>
-      <Crawler>15</Crawler>
+      <Crawler>10</Crawler>
       <DLBlueVolatile>0</DLBlueVolatile>
       <DLRedVolatile>0</DLRedVolatile>
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>80</Normal>
+      <Normal>30</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.9</HealthMultiplier>
@@ -579,7 +579,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>140</Normal>
+      <Normal>50</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.1</HealthMultiplier>
@@ -601,7 +601,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>140</Normal>
+      <Normal>50</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.2</HealthMultiplier>
@@ -623,7 +623,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>100</Normal>
+      <Normal>40</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.3</HealthMultiplier>
@@ -645,7 +645,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>100</Normal>
+      <Normal>40</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.4</HealthMultiplier>
@@ -667,7 +667,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>100</Normal>
+      <Normal>40</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.5</HealthMultiplier>
@@ -689,7 +689,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>100</Normal>
+      <Normal>40</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.6</HealthMultiplier>
@@ -711,7 +711,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>100</Normal>
+      <Normal>40</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.7</HealthMultiplier>
@@ -733,7 +733,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>100</Normal>
+      <Normal>40</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.8</HealthMultiplier>
@@ -755,7 +755,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>4</Mega>
-      <Normal>100</Normal>
+      <Normal>40</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.9</HealthMultiplier>
@@ -799,7 +799,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>6</Mega>
-      <Normal>200</Normal>
+      <Normal>70</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.1</HealthMultiplier>
@@ -821,7 +821,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>6</Mega>
-      <Normal>200</Normal>
+      <Normal>70</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.2</HealthMultiplier>
@@ -843,7 +843,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>6</Mega>
-      <Normal>200</Normal>
+      <Normal>70</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.3</HealthMultiplier>
@@ -865,7 +865,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>6</Mega>
-      <Normal>200</Normal>
+      <Normal>70</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.4</HealthMultiplier>
@@ -887,7 +887,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>6</Mega>
-      <Normal>200</Normal>
+      <Normal>70</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.5</HealthMultiplier>
@@ -909,7 +909,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>6</Mega>
-      <Normal>200</Normal>
+      <Normal>70</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.6</HealthMultiplier>
@@ -931,7 +931,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>6</Mega>
-      <Normal>200</Normal>
+      <Normal>70</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.7</HealthMultiplier>
@@ -953,7 +953,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>6</Mega>
-      <Normal>200</Normal>
+      <Normal>70</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.8</HealthMultiplier>
@@ -975,7 +975,7 @@
       <FlankerFriendly>0</FlankerFriendly>
       <FlankerStalk>0</FlankerStalk>
       <Mega>6</Mega>
-      <Normal>200</Normal>
+      <Normal>70</Normal>
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.9</HealthMultiplier>

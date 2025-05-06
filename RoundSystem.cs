@@ -159,6 +159,8 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                         player.Teleport(new(position.X, position.Y, position.Z), position.Angle);
                         HordeServerPlugin.alivePlayers.Add(player);
                     }
+
+                    PowerupSystem.GiveRoundGrenadeForPlayer(player);
                 }
 
                 shouldAlertRoundEnded = true;
@@ -182,7 +184,8 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                     shouldAlertRoundEnded = false;
                 }
                 actualTickBetweenRounds--;
-            };
+            }
+            ;
         }
 
         // Spawn Tickrate

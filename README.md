@@ -1,6 +1,11 @@
 # HordeServer
 Transform a survival mode into a horde mode
 
+### Gameplay
+- Players can have only two weapons the primary and secondary
+- Players cannot manually level up skill
+- Players will respawn after every round end
+
 ### Preview on Youtube
 [![Plugin Preview on Youtube](https://img.youtube.com/vi/8puA4saUrTY/hqdefault.jpg)](https://www.youtube.com/watch?v=8puA4saUrTY)
 

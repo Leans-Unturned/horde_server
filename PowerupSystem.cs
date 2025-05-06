@@ -1,6 +1,7 @@
 extern alias UnityEngineCoreModule;
 
 using System.Collections.Generic;
+using System.Linq;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 
@@ -40,7 +41,26 @@ namespace HordeServer
 
             if (playersPowerups.TryGetValue(player, out List<string> powerups))
             {
-                if (powerups.Contains("juggernog")) return false;
+                if (powerups.Contains("juggernog"))
+                {
+                    var refundValue = HordeServerPlugin.instance!.Configuration.Instance.AvailablePowerupsToPurchase
+                        .FirstOrDefault(powerup => powerup.powerupType == "estaminaup")?.refundValue ?? 0;
+
+                    if (refundValue > 0)
+                    {
+                        player.Experience += refundValue;
+                        ChatManager.serverSendMessage(
+                            HordeServerPlugin.instance!.Translate("refund_powerup", refundValue),
+                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                            null,
+                            player.SteamPlayer(),
+                            EChatMode.SAY,
+                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                            true
+                        );
+                    }
+                    return false;
+                }
 
                 playersPowerups[player].Add("juggernog");
                 increaseSkills();
@@ -64,7 +84,26 @@ namespace HordeServer
 
             if (playersPowerups.TryGetValue(player, out List<string> powerups))
             {
-                if (powerups.Contains("speedcola")) return false;
+                if (powerups.Contains("speedcola"))
+                {
+                    var refundValue = HordeServerPlugin.instance!.Configuration.Instance.AvailablePowerupsToPurchase
+                        .FirstOrDefault(powerup => powerup.powerupType == "speedcola")?.refundValue ?? 0;
+
+                    if (refundValue > 0)
+                    {
+                        player.Experience += refundValue;
+                        ChatManager.serverSendMessage(
+                            HordeServerPlugin.instance!.Translate("refund_powerup", refundValue),
+                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                            null,
+                            player.SteamPlayer(),
+                            EChatMode.SAY,
+                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                            true
+                        );
+                    }
+                    return false;
+                }
 
                 playersPowerups[player].Add("speedcola");
                 increaseSkills();
@@ -88,7 +127,26 @@ namespace HordeServer
 
             if (playersPowerups.TryGetValue(player, out List<string> powerups))
             {
-                if (powerups.Contains("estaminaup")) return false;
+                if (powerups.Contains("estaminaup"))
+                {
+                    var refundValue = HordeServerPlugin.instance!.Configuration.Instance.AvailablePowerupsToPurchase
+                        .FirstOrDefault(powerup => powerup.powerupType == "estaminaup")?.refundValue ?? 0;
+
+                    if (refundValue > 0)
+                    {
+                        player.Experience += refundValue;
+                        ChatManager.serverSendMessage(
+                            HordeServerPlugin.instance!.Translate("refund_powerup", refundValue),
+                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                            null,
+                            player.SteamPlayer(),
+                            EChatMode.SAY,
+                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                            true
+                        );
+                    }
+                    return false;
+                }
 
                 playersPowerups[player].Add("estaminaup");
                 increaseSkills();

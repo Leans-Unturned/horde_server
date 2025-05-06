@@ -200,6 +200,9 @@ namespace HordeServer
             {"wave_started", "Wave {0}, Zombies: {1}"},
             {"wave_remaining", "Remaining Zombies: {0}" },
             {"max_ammo", "Max Ammo, finded by: {0}" },
+            {"refund_ammo", "Ammo purchased, refunded: {0} credits" },
+            {"refund_powerup", "Powerup already equipped, refunded: {0} credits" },
+            {"main_weapon_moved", "Your weapon has been removed because you moved out of your equipment!" },
         };
     }
 

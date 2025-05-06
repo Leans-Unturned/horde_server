@@ -363,26 +363,35 @@ namespace HordeServer
                     weapondId = 101,
                     ammoId = 103,
                     ammoRefilQuantity = 5,
+                    primary = true,
+                    refundValue = 500,
+                    ammoRefundValue = 200
                 },
                 new() {
                     weapondId = 380,
                     ammoId = 381,
-                    ammoRefilQuantity = 10
+                    ammoRefilQuantity = 10,
+                    primary = true,
+                    refundValue = 500,
+                    ammoRefundValue = 200
                 }
             ];
 
             AvailablePowerupsToPurchase = [
                 new() {
                     itemId = 1051,
-                    powerupType = "juggernog"
+                    powerupType = "juggernog",
+                    refundValue = 2500
                 },
                 new() {
                     itemId = 1052,
-                    powerupType = "speedcola"
+                    powerupType = "speedcola",
+                    refundValue = 3000
                 },
                 new() {
                     itemId = 1053,
-                    powerupType = "estaminaup"
+                    powerupType = "estaminaup",
+                    refundValue = 2000
                 },
             ];
         }
@@ -488,11 +497,14 @@ namespace HordeServer
         public ushort ammoId = 0;
         public byte ammoRefilQuantity = 0;
         public bool primary = true;
+        public uint refundValue = 0;
+        public uint ammoRefundValue = 0;
     }
 
     public class PowerupLoadout
     {
         public ushort itemId = 0;
         public string powerupType = "juggernog";
+        public uint refundValue = 0;
     }
 }
