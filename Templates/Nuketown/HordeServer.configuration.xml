@@ -1028,56 +1028,74 @@
       <ammoId>98</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
       <primary>false</primary>
+      <refundValue>0</refundValue>
+      <ammoRefundValue>0</ammoRefundValue>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>101</weapondId>
       <ammoId>103</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
       <primary>true</primary>
+      <refundValue>500</refundValue>
+      <ammoRefundValue>250</ammoRefundValue>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>380</weapondId>
       <ammoId>381</ammoId>
       <ammoRefilQuantity>10</ammoRefilQuantity>
       <primary>true</primary>
+      <refundValue>500</refundValue>
+      <ammoRefundValue>250</ammoRefundValue>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>112</weapondId>
       <ammoId>113</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
       <primary>true</primary>
+      <refundValue>1500</refundValue>
+      <ammoRefundValue>500</ammoRefundValue>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>363</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
       <primary>true</primary>
+      <refundValue>1600</refundValue>
+      <ammoRefundValue>650</ammoRefundValue>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>1021</weapondId>
       <ammoId>1022</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
       <primary>false</primary>
+      <refundValue>1000</refundValue>
+      <ammoRefundValue>400</ammoRefundValue>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>1369</weapondId>
       <ammoId>1371</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
       <primary>false</primary>
+      <refundValue>1700</refundValue>
+      <ammoRefundValue>800</ammoRefundValue>
     </WeaponLoadout>
   </AvailableWeaponsToPurchase>
+  <AvailablePowerupsToPurchase>
   <AvailablePowerupsToPurchase>
     <PowerupLoadout>
       <itemId>1051</itemId>
       <powerupType>juggernog</powerupType>
+      <refundValue>2500</refundValue>
     </PowerupLoadout>
     <PowerupLoadout>
       <itemId>1052</itemId>
       <powerupType>speedcola</powerupType>
+      <refundValue>3000</refundValue>
     </PowerupLoadout>
     <PowerupLoadout>
       <itemId>1053</itemId>
       <powerupType>estaminaup</powerupType>
+      <refundValue>2000</refundValue>
     </PowerupLoadout>
   </AvailablePowerupsToPurchase>
   <StartingCredits>500</StartingCredits>

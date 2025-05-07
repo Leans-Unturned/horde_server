@@ -2,6 +2,7 @@ extern alias UnityEngineCoreModule;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Rocket.Core.Logging;
 using Rocket.Unturned.Enumerations;
 using Rocket.Unturned.Player;
@@ -13,10 +14,13 @@ namespace HordeServer
     class ItemSystem
     {
         static private List<KeyValuePair<UnturnedPlayer, Item>> itemSwapped = [];
+        private static readonly Dictionary<UnturnedPlayer, uint> ignoredRefunds = [];
         static bool SwapTickReset = false;
         static bool ClearItemsNextTick = false;
 
         static private List<KeyValuePair<UnturnedPlayer, WeaponLoadout>> weaponEquipNextTick = [];
+        static private List<KeyValuePair<UnturnedPlayer, Item>> weaponReplaceNextTick = [];
+        static private List<UnturnedPlayer> weaponInventoryIgnoreNextTick = [];
 
         static private void RemovePreviouslyAmmo(UnturnedPlayer player, int ammoId)
         {
@@ -51,27 +55,7 @@ namespace HordeServer
                         // Yes the player put the weapon in inventory
                         if (weaponLoadout.weapondId == P.item.id)
                         {
-                            byte[] itemMetadata = P.item.metadata;
-                            player.Inventory.removeItem((byte)inventoryGroup, inventoryIndex);
-
-                            SDG.Unturned.Item itemToRespawn = new(P.item.id, true)
-                            {
-                                amount = 1,
-                                metadata = itemMetadata
-                            };
-
-                            if (weaponLoadout.primary) player.Inventory.tryAddItem(itemToRespawn, 0, 0, 0, 0);
-                            else player.Inventory.tryAddItem(itemToRespawn, 0, 0, 1, 0);
-
-                            // ChatManager.serverSendMessage(
-                            //     HordeServerPlugin.instance!.Translate("main_weapon_moved"),
-                            //     new UnityEngineCoreModule.UnityEngine.Color(255, 0, 0),
-                            //     null,
-                            //     player.SteamPlayer(),
-                            //     EChatMode.SAY,
-                            //     HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
-                            //     true
-                            // );
+                            weaponReplaceNextTick.Add(new(player, new(inventoryGroup, inventoryIndex, P)));
                             break;
                         }
                     }
@@ -101,6 +85,13 @@ namespace HordeServer
                         catch (Exception) { }
                     }
                 }
+            }
+
+            // Ignore weapon receive for this event
+            if (weaponInventoryIgnoreNextTick.Contains(player))
+            {
+                weaponInventoryIgnoreNextTick.Remove(player);
+                return;
             }
 
             // In this situation the item is purchased
@@ -140,6 +131,10 @@ namespace HordeServer
                         }
                     }
 
+                    // Ignore the next: 2 ticks, before detecting ammo refunds
+                    ignoredRefunds.Remove(player);
+                    ignoredRefunds.Add(player, 2);
+
                     // For some reason in this function the item add is not yet in the inventory, we need to equip in the next tick
                     // And for another reason the player receives ammo of the weapon in the horde purchase volume
                     // and we need to remove it for handling the ammo system in the next tick
@@ -149,7 +144,7 @@ namespace HordeServer
                 // If the player receives ammo, is because he already have the weapon lets refresh the inventory
                 if (P.item.id == weaponLoadout.ammoId)
                 {
-                    if (weaponLoadout.ammoRefundValue > 0)
+                    if (weaponLoadout.ammoRefundValue > 0 && !ignoredRefunds.ContainsKey(player))
                     {
                         player.Experience += weaponLoadout.ammoRefundValue;
 
@@ -189,6 +184,19 @@ namespace HordeServer
 
         static public void Update()
         {
+            if (ignoredRefunds.Count > 0)
+            {
+                foreach (var key in ignoredRefunds.Keys.ToList())
+                {
+                    ignoredRefunds[key]--;
+
+                    if (ignoredRefunds[key] <= 0)
+                    {
+                        ignoredRefunds.Remove(key);
+                    }
+                }
+            }
+
             if (SwapTickReset)
                 itemSwapped = [];
 
@@ -239,15 +247,22 @@ namespace HordeServer
                                         }
                                         player.Inventory.player.equipment.tryEquip(page, item.x, item.y);
 
-                                        RemovePreviouslyAmmo(player, entry.Value.ammoId);
-                                        player.GiveItem(entry.Value.ammoId, entry.Value.ammoRefilQuantity);
-                                        weaponEquipNextTick.RemoveAt(i);
+                                        // Only give ammo if weaponInventory is not ignored
+                                        if (!weaponInventoryIgnoreNextTick.Contains(player))
+                                        {
+                                            weaponInventoryIgnoreNextTick.Remove(player);
 
-                                        // Why you give ammo 2 times in a row?
-                                        // Simple the game code is bugged, the first time you give ammo it will multiply by a strange amount
-                                        // The second time is normal
-                                        RemovePreviouslyAmmo(player, entry.Value.ammoId);
-                                        player.GiveItem(entry.Value.ammoId, entry.Value.ammoRefilQuantity);
+                                            RemovePreviouslyAmmo(player, entry.Value.ammoId);
+                                            player.GiveItem(entry.Value.ammoId, entry.Value.ammoRefilQuantity);
+                                            weaponEquipNextTick.RemoveAt(i);
+
+                                            // Why you give ammo 2 times in a row?
+                                            // Simple the game code is bugged, the first time you give ammo it will multiply by a strange amount
+                                            // The second time is normal
+                                            RemovePreviouslyAmmo(player, entry.Value.ammoId);
+                                            player.GiveItem(entry.Value.ammoId, entry.Value.ammoRefilQuantity);
+                                        }
+                                        else weaponEquipNextTick.RemoveAt(i);
                                     }
                                     break;
                                 }
@@ -265,7 +280,38 @@ namespace HordeServer
                     Logger.LogWarning($"Something is strange in weapon equip system, {weaponEquipNextTick.Count}");
                     weaponEquipNextTick = [];
                 }
-                ;
+            }
+
+            if (weaponReplaceNextTick.Count > 0)
+            {
+                for (int i = weaponReplaceNextTick.Count - 1; i >= 0; i--)
+                {
+                    var entry = weaponReplaceNextTick[i];
+                    weaponInventoryIgnoreNextTick.Remove(entry.Key);
+                    weaponInventoryIgnoreNextTick.Add(entry.Key);
+                    foreach (WeaponLoadout weaponLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
+                    {
+                        if (weaponLoadout.weapondId == entry.Value.item.item.id)
+                        {
+                            byte[] itemMetadata = entry.Value.item.item.metadata;
+                            entry.Key.Inventory.removeItem(entry.Value.inventoryPage, entry.Value.inventoryIndex);
+
+                            SDG.Unturned.Item itemToRespawn = new(entry.Value.item.item.id, true)
+                            {
+                                amount = 1,
+                                metadata = itemMetadata
+                            };
+
+                            if (weaponLoadout.primary) entry.Key.Inventory.tryAddItem(itemToRespawn, 0, 0, 0, 0);
+                            else entry.Key.Inventory.tryAddItem(itemToRespawn, 0, 0, 1, 0);
+
+                            weaponEquipNextTick.Add(new(entry.Key, weaponLoadout));
+
+                            continue;
+                        }
+                    }
+                }
+                weaponReplaceNextTick = [];
             }
 
             SwapTickReset = false;
