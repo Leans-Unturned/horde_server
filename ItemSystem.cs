@@ -14,13 +14,17 @@ namespace HordeServer
     class ItemSystem
     {
         static private List<KeyValuePair<UnturnedPlayer, Item>> itemSwapped = [];
+        // Player / tickrate
         private static readonly Dictionary<UnturnedPlayer, uint> ignoredRefunds = [];
         static bool SwapTickReset = false;
         static bool ClearItemsNextTick = false;
 
         static private List<KeyValuePair<UnturnedPlayer, WeaponLoadout>> weaponEquipNextTick = [];
         static private List<KeyValuePair<UnturnedPlayer, Item>> weaponReplaceNextTick = [];
-        static private List<UnturnedPlayer> weaponInventoryIgnoreNextTick = [];
+        // Variable to ignore next player receive item handling
+        private static readonly List<UnturnedPlayer> weaponInventoryIgnoreNextTick = [];
+        // Player / tickrate for weaponInventoryIgnoreNextTick be removed, when tickrate is 0 it will be removed from both variables
+        private static readonly Dictionary<UnturnedPlayer, uint> weaponInventoryResetIgnoreNextTickOnNextTick = [];
 
         static private void RemovePreviouslyAmmo(UnturnedPlayer player, int ammoId)
         {
@@ -43,7 +47,7 @@ namespace HordeServer
 
         static public void OnInventoryAdded(UnturnedPlayer player, InventoryGroup inventoryGroup, byte inventoryIndex, ItemJar P)
         {
-            // Check if thhe items is swapped
+            // Check if the items is swapped
             for (int i = itemSwapped.Count - 1; i >= 0; i--)
             {
                 var entry = itemSwapped[i];
@@ -133,7 +137,7 @@ namespace HordeServer
 
                     // Ignore the next: 2 ticks, before detecting ammo refunds
                     ignoredRefunds.Remove(player);
-                    ignoredRefunds.Add(player, 2);
+                    ignoredRefunds.Add(player, 4);
 
                     // For some reason in this function the item add is not yet in the inventory, we need to equip in the next tick
                     // And for another reason the player receives ammo of the weapon in the horde purchase volume
@@ -184,6 +188,19 @@ namespace HordeServer
 
         static public void Update()
         {
+            { // weaponInventoryResetIgnoreNextTickOnNextTick handler
+                // If is 0 remove it from both lists
+                foreach (KeyValuePair<UnturnedPlayer, uint> keyValuePair in weaponInventoryResetIgnoreNextTickOnNextTick.ToList())
+                {
+                    if (keyValuePair.Value == 0)
+                    {
+                        weaponInventoryIgnoreNextTick.Remove(keyValuePair.Key);
+                        weaponInventoryResetIgnoreNextTickOnNextTick.Remove(keyValuePair.Key);
+                    }
+                    else weaponInventoryResetIgnoreNextTickOnNextTick[keyValuePair.Key]--;
+                }
+            }
+
             if (ignoredRefunds.Count > 0)
             {
                 foreach (var key in ignoredRefunds.Keys.ToList())
@@ -250,10 +267,9 @@ namespace HordeServer
                                         // Only give ammo if weaponInventory is not ignored
                                         if (!weaponInventoryIgnoreNextTick.Contains(player))
                                         {
-                                            weaponInventoryIgnoreNextTick.Remove(player);
-
                                             RemovePreviouslyAmmo(player, entry.Value.ammoId);
                                             player.GiveItem(entry.Value.ammoId, entry.Value.ammoRefilQuantity);
+
                                             weaponEquipNextTick.RemoveAt(i);
 
                                             // Why you give ammo 2 times in a row?
@@ -262,7 +278,11 @@ namespace HordeServer
                                             RemovePreviouslyAmmo(player, entry.Value.ammoId);
                                             player.GiveItem(entry.Value.ammoId, entry.Value.ammoRefilQuantity);
                                         }
-                                        else weaponEquipNextTick.RemoveAt(i);
+                                        else
+                                        {
+                                            weaponInventoryIgnoreNextTick.Remove(player);
+                                            weaponEquipNextTick.RemoveAt(i);
+                                        }
                                     }
                                     break;
                                 }
@@ -289,6 +309,7 @@ namespace HordeServer
                     var entry = weaponReplaceNextTick[i];
                     weaponInventoryIgnoreNextTick.Remove(entry.Key);
                     weaponInventoryIgnoreNextTick.Add(entry.Key);
+                    weaponInventoryResetIgnoreNextTickOnNextTick.Add(entry.Key, 2); // Ignore for 2 ticks
                     foreach (WeaponLoadout weaponLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
                     {
                         if (weaponLoadout.weapondId == entry.Value.item.item.id)

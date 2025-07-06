@@ -202,6 +202,10 @@ namespace HordeServer
             {"max_ammo", "Max Ammo, finded by: {0}" },
             {"refund_ammo", "Ammo purchased, refunded: {0} credits" },
             {"refund_powerup", "Powerup already equipped, refunded: {0} credits" },
+            {"receive_powerup", "{0} received"},
+            {"juggernog", "Juggernog"},
+            {"estaminaup", "Estamina UP"},
+            {"speedcola", "Speed Cola"},
             {"main_weapon_moved", "Your weapon has been removed because you moved out of your equipment!" },
         };
     }

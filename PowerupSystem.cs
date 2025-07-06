@@ -37,6 +37,16 @@ namespace HordeServer
                 SkillSystem.UpdatePlayerSkill(player, "Vitality", 5);
                 SkillSystem.UpdatePlayerSkill(player, "Strength", 5);
                 SkillSystem.RefreshPlayerSkills(player);
+
+                ChatManager.serverSendMessage(
+                    HordeServerPlugin.instance!.Translate("receive_powerup", HordeServerPlugin.instance!.Translate("juggernog")),
+                    new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                    null,
+                    player.SteamPlayer(),
+                    EChatMode.SAY,
+                    HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                    true
+                );
             }
 
             if (playersPowerups.TryGetValue(player, out List<string> powerups))
@@ -80,6 +90,16 @@ namespace HordeServer
             {
                 SkillSystem.UpdatePlayerSkill(player, "Dexerity", 5);
                 SkillSystem.RefreshPlayerSkills(player);
+
+                ChatManager.serverSendMessage(
+                    HordeServerPlugin.instance!.Translate("receive_powerup", HordeServerPlugin.instance!.Translate("speedcola")),
+                    new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                    null,
+                    player.SteamPlayer(),
+                    EChatMode.SAY,
+                    HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                    true
+                );
             }
 
             if (playersPowerups.TryGetValue(player, out List<string> powerups))
@@ -123,6 +143,16 @@ namespace HordeServer
             {
                 SkillSystem.UpdatePlayerSkill(player, "Cardio", 5);
                 SkillSystem.RefreshPlayerSkills(player);
+
+                ChatManager.serverSendMessage(
+                    HordeServerPlugin.instance!.Translate("receive_powerup", HordeServerPlugin.instance!.Translate("estaminaup")),
+                    new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                    null,
+                    player.SteamPlayer(),
+                    EChatMode.SAY,
+                    HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                    true
+                );
             }
 
             if (playersPowerups.TryGetValue(player, out List<string> powerups))
@@ -223,6 +253,5 @@ namespace HordeServer
         }
 
         public static void Disconnect(UnturnedPlayer player) => playersPowerups.Remove(player);
-
     }
 }
