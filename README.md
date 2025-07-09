@@ -7,7 +7,7 @@ Transform a survival mode into a horde mode
 - Players will respawn after every round end
 
 ### Preview on Youtube
-[![Plugin Preview on Youtube](https://img.youtube.com/vi/8puA4saUrTY/hqdefault.jpg)](https://www.youtube.com/watch?v=8puA4saUrTY)
+[![Plugin Preview on Youtube](https://img.youtube.com/vi/QND2QVwtSbo/hqdefault.jpg)](https://youtu.be/QND2QVwtSbo)
 
 ## TO DO
 - Pack a punch
