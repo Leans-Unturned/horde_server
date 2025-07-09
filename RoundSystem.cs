@@ -46,6 +46,8 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                 LightingManager.time = 500;
                 wave = -1;
 
+                DoorSystem.RespawnDoors();
+
                 RestartRound = false;
                 HordeUtils.KillAllZombies();
                 ItemManager.askClearAllItems();

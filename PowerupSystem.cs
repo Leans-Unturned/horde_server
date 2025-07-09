@@ -1,5 +1,6 @@
 extern alias UnityEngineCoreModule;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rocket.Unturned.Player;
@@ -19,7 +20,27 @@ namespace HordeServer
                 case "juggernog": GivePlayerJuggernog(player); return;
                 case "speedcola": GivePlayerSpeedCola(player); return;
                 case "estaminaup": GivePlayerEstaminaup(player); return;
+                case "packapunch": GivePackAPunch(player); return;
+                case "grenades": GiveMaxGrenadesForPlayer(player, true); return;
             }
+        }
+
+        private static void GivePackAPunch(UnturnedPlayer player)
+        {
+            ChatManager.serverSendMessage(
+                HordeServerPlugin.instance!.Translate("HEY, PACK A PUNCH IS NOT DEVELOPTED YET, WHAT ARE YOU DOING HERE?"),
+                new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                null,
+                player.SteamPlayer(),
+                EChatMode.SAY,
+                HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                true
+            );
+
+            var refundValue = HordeServerPlugin.instance!.Configuration.Instance.AvailablePowerupsToPurchase
+                        .FirstOrDefault(powerup => powerup.powerupType == "packapunch")?.refundValue ?? 0;
+
+            player.Experience += refundValue;
         }
 
         public static void ResetPlayerPowerups(UnturnedPlayer player)
@@ -202,7 +223,7 @@ namespace HordeServer
             return 254; // Fragmentation Grenade
         }
 
-        public static void GiveMaxGrenadesForPlayer(UnturnedPlayer player)
+        public static void GiveMaxGrenadesForPlayer(UnturnedPlayer player, bool receiveRefund = false)
         {
             ushort playerGrenade = GetPlayerCurrentGrenade(player);
             byte totalGrenades = 0;
@@ -219,10 +240,30 @@ namespace HordeServer
                         }
                     }
                 }
-                catch (System.Exception) { }
+                catch (Exception) { }
             }
 
             uint grenadesToReceive = HordeServerPlugin.instance!.Configuration.Instance.MaxGrenades - totalGrenades;
+
+            if (receiveRefund && grenadesToReceive == 0)
+            {
+                var refundValue = HordeServerPlugin.instance!.Configuration.Instance.AvailablePowerupsToPurchase
+                        .FirstOrDefault(powerup => powerup.powerupType == "grenades")?.refundValue ?? 0;
+
+                player.Experience += refundValue;
+
+                ChatManager.serverSendMessage(
+                    HordeServerPlugin.instance!.Translate("refund_powerup", refundValue),
+                    new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                    null,
+                    player.SteamPlayer(),
+                    EChatMode.SAY,
+                    HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                    true
+                );
+                return;
+            }
+
             for (int i = 0; i < grenadesToReceive; i++)
                 player.Inventory.tryAddItemAuto(new(playerGrenade, true), false, false, false, false);
         }

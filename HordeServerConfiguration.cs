@@ -6,6 +6,7 @@ namespace HordeServer
     public class HordeServerConfiguration : IRocketPluginConfiguration
     {
         public bool ForceRemoveZombieRadiation = true;
+        public bool ForceRemovePlayerRadiation = true;
         public uint SpawnTickrate = 600;
         public uint RemainingCheckTickrate = 600;
         public uint TickrateBetweenRounds = 1000;
@@ -14,6 +15,7 @@ namespace HordeServer
         public int MapCenterRadius = 10000;
         public int MaximumZombieNodeDistanceToSpawn = 150;
         public bool DebugPlayerPosition = false;
+        public bool DebugBarricadesPosition = false;
         public bool DebugZombies = false;
         public string PlayersFolder = "SteamLibrary/steamapps/common/U3DS/Servers/myserver/Players/";
         public string LevelName = "PEI";
@@ -26,6 +28,7 @@ namespace HordeServer
         public List<uint> RemainingZombiesAlert = [];
         public List<WeaponLoadout> AvailableWeaponsToPurchase = [];
         public List<PowerupLoadout> AvailablePowerupsToPurchase = [];
+        public List<Door> AvailableDoorsToPurchase = [];
 
         public uint StartingCredits = 500;
         public uint HitCredits = 10;
@@ -392,6 +395,98 @@ namespace HordeServer
                     itemId = 1053,
                     powerupType = "estaminaup",
                     refundValue = 2000
+                },
+                new() {
+                    itemId = 1054,
+                    powerupType = "packapunch",
+                    refundValue = 5000
+                },
+                new() {
+                    itemId = 1055,
+                    powerupType = "grenades",
+                    refundValue = 750
+                },
+            ];
+
+            AvailableDoorsToPurchase = [
+                // Laundry White House
+                new() {
+                pos = new(51.65f, 54.04f, -78.41f),
+                    rotation = new(-0.50111f, -0.49888f, -0.49888f, 0.50111f),
+                    cost = 750,
+                    assetId = 30,
+                },
+
+                // To upstars White House
+                new() {
+                    pos = new(47.99f, 54.04f, -72.36f),
+                    rotation = new(-0.50360f, -0.49637f, -0.49637f, 0.50360f),
+                    cost = 800,
+                    assetId = 30,
+                },
+
+                // 1 Upstairs White House
+                new() {
+                    pos = new(58.70f, 58.79f, -82.03f),
+                    rotation = new(-0.70705f, 0.00897f, 0.00897f, 0.70705f),
+                    cost = 1000,
+                    assetId = 30,
+                },
+
+                // Speed Cola White House
+                new() {
+                    pos = new(58.62f, 58.79f, -89.52f),
+                    rotation = new(-0.70703f, 0.01051f, 0.01051f, 0.70703f),
+                    cost = 1500,
+                    assetId = 30,
+                },
+
+                // 2 Upstairs Back Window White House 
+                new() {
+                    pos = new(61.08f, 59.79f, -84.72f),
+                    rotation = new(-0.49629f, 0.50368f, 0.50368f, 0.49629f),
+                    cost = 1000,
+                    assetId = 30,
+                },
+
+                // Back House White House 
+                new() {
+                    pos = new(73.68f, 54.00f, -65.68f),
+                    rotation = new(0.00140f, -0.70711f, -0.70711f, -0.00140f),
+                    cost = 1650,
+                    assetId = 30,
+                },
+
+                // Laundry Brown House
+                new() {
+                    pos = new(4.13f, 54.04f, -83.54f),
+                    rotation = new(-0.49209f, 0.50779f, 0.50779f, 0.49209f),
+                    cost = 750,
+                    assetId = 30,
+                },
+
+                // To upstars Brown House
+                new() {
+                    pos = new(7.56f, 54.04f, -89.56f),
+                    rotation = new(0.48605f, -0.51357f, -0.51357f, -0.48605f),
+                    cost = 800,
+                    assetId = 30,
+                },
+
+                // 1 Upstairs Brown House
+                new() {
+                    pos = new(-2.78f, 58.79f, -79.66f),
+                    rotation = new(0.01159f, 0.70701f, 0.70701f, -0.01159f),
+                    cost = 1000,
+                    assetId = 30,
+                },
+
+                // 2 Upstairs Back Window White House 
+                new() {
+                    pos = new(-4.98f, 59.79f, -76.98f),
+                    rotation = new(0.50276f, 0.49722f, 0.49722f, -0.50276f),
+                    cost = 1000,
+                    assetId = 30,
                 },
             ];
         }

@@ -54,6 +54,13 @@ If everything was done correctly when starting the server, everything should now
 ### Considerations
 - I strongly recommend that you use ``DebugZombies`` config before asking for help in map configuration
 
+### To Do
+- Pack a punch
+- Remove barricade from inventory when opening the barricade
+- Special grenades
+- Heal powerup
+- Aim powerup
+
 # Building
 
 *Windows*: The project uses dotnet 4.8, consider installing into your machine, you need visual studio, simple open the solution file open the Build section and hit the build button (ctrl + shift + b) or you can do into powershell the command dotnet build -c Debug if you have installed dotnet 4.8.

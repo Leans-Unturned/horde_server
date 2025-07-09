@@ -1,7 +1,9 @@
 ﻿extern alias UnityEngineCoreModule;
 
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Rocket.API.Collections;
 using Rocket.Core.Logging;
@@ -35,24 +37,38 @@ namespace HordeServer
             DamageTool.damageZombieRequested += HordeUtils.HitPoints;
             UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
 
-            string[] playersDirectory = System.IO.Directory.GetDirectories(Configuration.Instance.PlayersFolder);
-            foreach (string playerFolder in playersDirectory)
+            try
             {
-                string clothingPath = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Clothing.dat");
-                if (File.Exists(clothingPath)) File.Delete(clothingPath);
+                string[] playersDirectory = System.IO.Directory.GetDirectories(Configuration.Instance.PlayersFolder);
+                foreach (string playerFolder in playersDirectory)
+                {
+                    string clothingPath = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Clothing.dat");
+                    if (File.Exists(clothingPath)) File.Delete(clothingPath);
 
-                string inventoryPath = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Inventory.dat");
-                if (File.Exists(inventoryPath)) File.Delete(inventoryPath);
+                    string inventoryPath = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Inventory.dat");
+                    if (File.Exists(inventoryPath)) File.Delete(inventoryPath);
 
-                string position = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Player.dat");
-                if (File.Exists(position)) File.Delete(position);
+                    string position = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Player.dat");
+                    if (File.Exists(position)) File.Delete(position);
 
-                string life = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Life.dat");
-                if (File.Exists(life)) File.Delete(life);
+                    string life = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Life.dat");
+                    if (File.Exists(life)) File.Delete(life);
 
-                string skills = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Skills.dat");
-                if (File.Exists(skills)) File.Delete(skills);
+                    string skills = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Skills.dat");
+                    if (File.Exists(skills)) File.Delete(skills);
+                }
             }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Invalid directory for players, please check the PlayerFolder configuration for HordeServer, exception: {ex.Message}");
+            }
+
+            BarricadeDrop.OnSalvageRequested_Global += DoorSystem.TryOpenDoor;
+            System.Timers.Timer doorRefreshTimer = new();
+            doorRefreshTimer.AutoReset = true;
+            doorRefreshTimer.Interval = 1000;
+            doorRefreshTimer.Elapsed += (_, __) => DoorSystem.RefreshOwnerships();
+            doorRefreshTimer.Enabled = true;
 
             Logger.Log("HordeServer instanciated, by LeandroTheDev");
         }
@@ -140,7 +156,7 @@ namespace HordeServer
 
         private void OnPlayerDead(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
         {
-            ItemManager.askClearAllItems();
+            UnityTickrate.ClearAllItemsInNextTick = true;
 
             PowerupSystem.ResetPlayerPowerups(player);
             SkillSystem.ResetPlayerSkills(player);
@@ -202,17 +218,22 @@ namespace HordeServer
             {"max_ammo", "Max Ammo, finded by: {0}" },
             {"refund_ammo", "Ammo purchased, refunded: {0} credits" },
             {"refund_powerup", "Powerup already equipped, refunded: {0} credits" },
+            {"refund_powerup_grenade", "Grenades already full, refunded: {0} credits" },
             {"receive_powerup", "{0} received"},
             {"juggernog", "Juggernog"},
             {"estaminaup", "Estamina UP"},
             {"speedcola", "Speed Cola"},
             {"main_weapon_moved", "Your weapon has been removed because you moved out of your equipment!" },
+            {"not_enough_money", "Not enough money, necessary: {0}"},
+            {"door_open", "Door opened, you lose: {0} money"},
+            {"door_opened", "Door opened by {0}, with: {1} money"},
         };
     }
 
     class UnityTickrate : MonoBehaviour
     {
         public RoundSystem? RoundSystemInstance;
+        public static bool ClearAllItemsInNextTick = false;
 
         public void Start()
         {
@@ -227,6 +248,14 @@ namespace HordeServer
 
             if (HordeServerPlugin.instance!.Configuration.Instance.ForceRemoveZombieRadiation)
                 HordeUtils.RemoveZombiesRadiation();
+            if (HordeServerPlugin.instance!.Configuration.Instance.ForceRemovePlayerRadiation)
+                HordeUtils.RemovePlayersRadiation();
+
+            if (ClearAllItemsInNextTick)
+            {
+                ClearAllItemsInNextTick = false;
+                ItemManager.askClearAllItems();
+            }
         }
     }
 }

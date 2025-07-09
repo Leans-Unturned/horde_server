@@ -15,7 +15,7 @@ namespace HordeServer
     {
         static private List<KeyValuePair<UnturnedPlayer, Item>> itemSwapped = [];
         // Player / tickrate
-        private static readonly Dictionary<UnturnedPlayer, uint> ignoredRefunds = [];
+        public static readonly Dictionary<UnturnedPlayer, uint> ignoredRefunds = [];
         static bool SwapTickReset = false;
         static bool ClearItemsNextTick = false;
 
@@ -28,6 +28,7 @@ namespace HordeServer
 
         static private void RemovePreviouslyAmmo(UnturnedPlayer player, int ammoId)
         {
+            
             for (byte page = 0; page < PlayerInventory.PAGES; page++)
             {
                 try
@@ -136,6 +137,8 @@ namespace HordeServer
                     }
 
                     // Ignore the next: 2 ticks, before detecting ammo refunds
+                    // This is necessary on first buy so the system does not refund for the ammo received
+                    // in first buy
                     ignoredRefunds.Remove(player);
                     ignoredRefunds.Add(player, 4);
 
