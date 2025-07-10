@@ -266,11 +266,13 @@ class HordeUtils
             // Getting available loadout for equipped weapons
             foreach (WeaponLoadout loadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
             {
-                if (loadout.weapondId == primaryWeapon.item.id)
-                    primaryWeaponLoadout = loadout;
+                if (primaryWeapon?.item != null)
+                    if (loadout.weapondId == primaryWeapon.item.id)
+                        primaryWeaponLoadout = loadout;
 
-                if (loadout.weapondId == secondaryWeapon.item.id)
-                    secondaryWeaponLoadout = loadout;
+                if (secondaryWeapon?.item != null)
+                    if (loadout.weapondId == secondaryWeapon.item.id)
+                        secondaryWeaponLoadout = loadout;
             }
 
             void removePreviouslyAmmo(WeaponLoadout loadout)
