@@ -1033,6 +1033,7 @@
       <primary>false</primary>
       <refundValue>0</refundValue>
       <ammoRefundValue>0</ammoRefundValue>
+      <baseDamage>0.3</baseDamage>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>101</weapondId>
@@ -1041,6 +1042,7 @@
       <primary>true</primary>
       <refundValue>500</refundValue>
       <ammoRefundValue>250</ammoRefundValue>
+      <baseDamage>1</baseDamage>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>380</weapondId>
@@ -1049,6 +1051,7 @@
       <primary>true</primary>
       <refundValue>500</refundValue>
       <ammoRefundValue>250</ammoRefundValue>
+      <baseDamage>0.5</baseDamage>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>112</weapondId>
@@ -1057,6 +1060,7 @@
       <primary>true</primary>
       <refundValue>1500</refundValue>
       <ammoRefundValue>500</ammoRefundValue>
+      <baseDamage>0.5</baseDamage>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>363</weapondId>
@@ -1065,6 +1069,7 @@
       <primary>true</primary>
       <refundValue>1600</refundValue>
       <ammoRefundValue>650</ammoRefundValue>
+      <baseDamage>0.3</baseDamage>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>1021</weapondId>
@@ -1073,6 +1078,7 @@
       <primary>false</primary>
       <refundValue>1000</refundValue>
       <ammoRefundValue>400</ammoRefundValue>
+      <baseDamage>0.5</baseDamage>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>1369</weapondId>
@@ -1081,6 +1087,7 @@
       <primary>false</primary>
       <refundValue>1700</refundValue>
       <ammoRefundValue>800</ammoRefundValue>
+      <baseDamage>0.3</baseDamage>
     </WeaponLoadout>
   </AvailableWeaponsToPurchase>
   <AvailablePowerupsToPurchase>
