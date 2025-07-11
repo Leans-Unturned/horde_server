@@ -30,6 +30,7 @@ namespace HordeServer
         private static readonly Dictionary<UnturnedPlayer, uint> weaponInventoryResetIgnoreNextTickOnNextTick = [];
         private static List<UnturnedPlayer> refreshPrimaryWeaponNextTick = [];
         private static List<UnturnedPlayer> refreshSecondaryWeaponNextTick = [];
+        private static List<KeyValuePair<UnturnedPlayer, Item>> removeItemNextTick = [];
 
         static private void RemovePreviouslyAmmo(UnturnedPlayer player, int ammoId)
         {
@@ -53,6 +54,12 @@ namespace HordeServer
 
         static public void OnInventoryAdded(UnturnedPlayer player, InventoryGroup inventoryGroup, byte inventoryIndex, ItemJar P)
         {
+            if (IsDisabledInventoryItem(P))
+            {
+                removeItemNextTick.Add(new(player, new(inventoryGroup, inventoryIndex, P)));
+                return;
+            }
+
             // Check if the items is swapped
             for (int i = itemSwapped.Count - 1; i >= 0; i--)
             {
@@ -242,6 +249,14 @@ namespace HordeServer
             }
         }
 
+        static public bool IsDisabledInventoryItem(ItemJar P)
+        {
+            if (HordeServerPlugin.instance!.Configuration.Instance.DisabledInventoryIds.Contains(P.item.id))
+                return true;
+            else
+                return false;
+        }
+
         static public void Update()
         {
             { // weaponInventoryResetIgnoreNextTickOnNextTick handler
@@ -407,6 +422,15 @@ namespace HordeServer
                 }
                 refreshSecondaryWeaponNextTick = [];
             }
+
+            if (removeItemNextTick.Count > 0)
+            {
+                foreach (KeyValuePair<UnturnedPlayer, Item> keyValue in removeItemNextTick)
+                    keyValue.Key.Inventory.removeItem(keyValue.Value.inventoryPage, keyValue.Value.inventoryIndex);
+
+                removeItemNextTick = [];
+            }
+
 
             SwapTickReset = false;
             ClearItemsNextTick = false;

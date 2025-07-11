@@ -30,6 +30,7 @@ namespace HordeServer
         public List<PowerupLoadout> AvailablePowerupsToPurchase = [];
         public List<Door> AvailableDoorsToPurchase = [];
         public List<PackAPunchWeapon> AvailablePackAPunch = [];
+        public List<ushort> DisabledInventoryIds = [];
 
         public uint StartingCredits = 500;
         public uint HitCredits = 10;
@@ -652,6 +653,85 @@ namespace HordeServer
                         6.0f,
                     ]
                 },
+            ];
+
+            DisabledInventoryIds = [
+                // Custom Sights
+                21,
+                22,
+                146,
+                147,
+                148,
+                153,
+                296,
+                302,
+                476,
+                1004,
+                1201,
+                1363,
+                1442,
+                // Default Sights
+                5,
+                19,
+                102,
+                110,
+                114,
+                118,
+                124,
+                128,
+                131,
+                134,
+                299,
+                349,
+                358,
+                364,
+                475,
+                486,
+                521,
+                1001,
+                1019,
+                1025,
+                1028,
+                1038,
+                1043,
+                1367,
+                1370,
+                1376,
+                1378,
+                1380,
+                1383,
+                1448,
+                1478,
+                1482,
+                1486,
+                1489,
+                // Grips
+                8,
+                143,
+                145,
+                // Barrels
+                7,
+                144,
+                149,
+                150,
+                477,
+                1190,
+                1191,
+                117,
+                350,
+                354,
+                1002,
+                1167,
+                1338,
+                1444,
+                // Tacticals
+                151,
+                152,
+                1007,
+                1008,
+                1438,
+                // Barricade
+                30
             ];
         }
     }

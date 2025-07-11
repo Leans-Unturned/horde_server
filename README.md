@@ -9,13 +9,9 @@ Transform a survival mode into a horde mode
 ### Preview on Youtube
 [![Plugin Preview on Youtube](https://img.youtube.com/vi/QND2QVwtSbo/hqdefault.jpg)](https://youtu.be/QND2QVwtSbo)
 
-## TO DO
-- Pack a punch
-- Weapon reducer damage in config
-
-## Fully Map Template
+## Full Map Template
 - [Nuketown](https://steamcommunity.com/sharedfiles/filedetails/?id=3471852710)
-- [Server Configurations](https://github.com/LeandroTheDev/horde_server/tree/master/Templates)
+- > [Server Configurations](https://github.com/LeandroTheDev/horde_server/tree/master/Templates)
 
 ### Get working
 The easy way is to get the basic template from one of the already configurated maps.
