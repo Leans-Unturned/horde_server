@@ -37,7 +37,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
             if (oneIsAlive)
             {
                 shouldAlertRoundEnded = false;
-                
+
                 actualSpawnTick = HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate;
                 actualTickBetweenRounds = HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds;
                 actualRemainingTick = HordeServerPlugin.instance!.Configuration.Instance.RemainingCheckTickrate;
@@ -70,6 +70,8 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                     PowerupSystem.ResetPlayersPowerups();
                     SkillSystem.ResetPlayersSkills();
                     SkillSystem.RefreshPlayersSkills();
+                    ItemSystem.RefreshPrimaryLoadout(player);
+                    ItemSystem.RefreshSecondaryLoadout(player);
                     player.Experience = HordeServerPlugin.instance.Configuration.Instance.StartingCredits;
 
                     if (!player.Dead)
@@ -157,6 +159,9 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                     // Teleport dead players to the area again
                     if (!HordeServerPlugin.alivePlayers.Contains(player) && !player.Dead)
                     {
+                        ItemSystem.RefreshPrimaryLoadout(player);
+                        ItemSystem.RefreshSecondaryLoadout(player);
+
                         ConfigPosition position = HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions[
                                 Random.Range(0, HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
 

@@ -29,6 +29,7 @@ namespace HordeServer
         public List<WeaponLoadout> AvailableWeaponsToPurchase = [];
         public List<PowerupLoadout> AvailablePowerupsToPurchase = [];
         public List<Door> AvailableDoorsToPurchase = [];
+        public List<PackAPunchWeapon> AvailablePackAPunch = [];
 
         public uint StartingCredits = 500;
         public uint HitCredits = 10;
@@ -368,7 +369,8 @@ namespace HordeServer
                     ammoRefilQuantity = 5,
                     primary = true,
                     refundValue = 500,
-                    ammoRefundValue = 200
+                    ammoRefundValue = 200,
+                    baseDamage = 2.0f
                 },
                 new() {
                     weapondId = 380,
@@ -376,7 +378,8 @@ namespace HordeServer
                     ammoRefilQuantity = 10,
                     primary = true,
                     refundValue = 500,
-                    ammoRefundValue = 200
+                    ammoRefundValue = 200,
+                    baseDamage = 1.0f
                 }
             ];
 
@@ -488,6 +491,167 @@ namespace HordeServer
                     cost = 1000,
                     assetId = 30,
                 },
+
+                // Pack a Punch brown House
+                new() {
+                    pos = new(-27.63f, 53.82f, -78.26f),
+                    rotation = new(-0.48098f, 0.51832f, 0.51832f, 0.48098f),
+                    cost = 1000,
+                    assetId = 30,
+                },
+            ];
+
+            AvailablePackAPunch = [
+                // 1911
+                new() {
+                    Id = 97,
+                    AvailableLevelsMetada = [
+                        [0,0,0,0,0,0,221,1,98,0,7,1,1,100,100,100,100,100],
+                        [0,0,0,0,0,0,221,1,98,0,7,1,1,100,100,100,100,100],
+                        [0,0,151,0,0,0,221,1,98,0,7,1,1,100,100,100,100,100],
+                    ],
+                    AvailableLevelsDamage = [
+                        0.5f,
+                        1.0f,
+                        1.5f,
+                        2.0f,
+                        2.5f,
+                        3.0f,
+                        4.5f,
+                        5.0f,
+                        5.5f,
+                        6.0f,
+                    ]
+                },
+                // Masterkey
+                new() {
+                    Id = 380,
+                    AvailableLevelsMetada = [],
+                    AvailableLevelsDamage = [
+                        1.0f,
+                        2.0f,
+                        3.0f,
+                        4.0f,
+                        5.0f,
+                        6.0f,
+                        7.0f,
+                        8.0f,
+                        9.0f,
+                        10.0f,
+                    ]
+                },
+                // Schofield
+                new() {
+                    Id = 101,
+                    AvailableLevelsMetada = [
+                        [102,0,0,0,0,0,221,1,103,0,5,1,1,100,100,100,100,100],
+                        [102,0,151,0,0,0,221,1,103,0,5,1,1,100,100,100,100,100],
+                        [102,0,151,0,8,0,221,1,103,0,5,1,1,100,100,100,100,100],
+                        [146,0,151,0,145,0,221,1,103,0,5,1,1,100,100,100,65,100],
+                    ],
+                    AvailableLevelsDamage = [
+                        2.0f,
+                        4.0f,
+                        6.0f,
+                        8.0f,
+                        12.0f,
+                        14.0f,
+                        16.0f,
+                        18.0f,
+                        20.0f,
+                        22.0f,
+                    ]
+                },
+                // Avenger
+                new() {
+                    Id = 1021,
+                    AvailableLevelsMetada = [
+                        [0,0,0,0,0,0,150,0,254,3,13,1,1,100,100,100,100,100],
+                        [0,0,0,0,0,0,149,0,254,3,13,1,1,100,100,100,100,100],
+                        [0,0,151,0,0,0,149,0,254,3,13,1,1,100,100,100,100,100],
+                    ],
+                    AvailableLevelsDamage = [
+                        1.0f,
+                        1.5f,
+                        2.0f,
+                        2.5f,
+                        3.0f,
+                        3.5f,
+                        4.0f,
+                        4.5f,
+                        5.0f,
+                        5.5f,
+                    ]
+                },
+                // Bluntforce
+                new() {
+                    Id = 112,
+                    AvailableLevelsMetada = [
+                        [114,0,0,0,8,0,0,0,113,0,8,1,1,100,100,100,100,100],
+                        [146,0,0,0,8,0,0,0,113,0,8,1,1,100,100,100,100,100],
+                        [0,0,151,0,0,0,149,0,254,3,13,1,1,100,100,100,100,100],
+                    ],
+                    AvailableLevelsDamage = [
+                        1.0f,
+                        2.0f,
+                        3.0f,
+                        4.0f,
+                        5.0f,
+                        6.0f,
+                        7.0f,
+                        8.0f,
+                        9.0f,
+                        10.0f,
+                    ]
+                },
+                // Bulldog
+                new() {
+                    Id = 1369,
+                    AvailableLevelsMetada = [
+                        [90,5,0,0,0,0,166,4,91,5,45,2,1,100,100,100,100,100],
+                        [147,0,0,0,0,0,166,4,91,5,45,2,1,100,100,100,100,100],
+                        [147,0,0,0,0,0,167,4,91,5,45,2,1,100,100,100,100,100],
+                        [147,0,0,0,8,0,167,4,91,5,45,2,1,100,100,100,100,100],
+                        [147,0,0,0,145,0,167,4,91,5,45,2,1,100,100,100,100,100]
+                    ],
+                    AvailableLevelsDamage = [
+                        0.5f,
+                        1.0f,
+                        1.5f,
+                        2.0f,
+                        2.5f,
+                        3.0f,
+                        4.5f,
+                        5.0f,
+                        5.5f,
+                        6.0f,
+                    ]
+                },
+                // Mapplestrike
+                new() {
+                    Id = 363,
+                    AvailableLevelsMetada = [
+                        [108,1,0,0,0,0,150,0,6,0,30,2,1,100,100,100,100,100],
+                        [108,1,0,0,8,0,150,0,6,0,30,2,1,100,100,100,100,100],
+                        [146,0,0,0,8,0,150,0,6,0,30,2,1,100,100,100,100,100],
+                        [146,0,151,0,8,0,150,0,6,0,30,2,1,100,100,100,100,100],
+                        [146,0,151,0,8,0,149,0,6,0,30,2,1,100,100,100,100,100],
+                        [146,0,151,0,145,0,149,0,6,0,30,2,1,100,100,100,100,100],
+                        [148,0,151,0,145,0,149,0,6,0,30,2,1,100,100,100,100,100]
+                    ],
+                    AvailableLevelsDamage = [
+                        0.5f,
+                        1.0f,
+                        1.5f,
+                        2.0f,
+                        2.5f,
+                        3.0f,
+                        4.5f,
+                        5.0f,
+                        5.5f,
+                        6.0f,
+                    ]
+                },
             ];
         }
     }
@@ -594,6 +758,7 @@ namespace HordeServer
         public bool primary = true;
         public uint refundValue = 0;
         public uint ammoRefundValue = 0;
+        public float baseDamage = 1.0f;
     }
 
     public class PowerupLoadout
@@ -601,5 +766,12 @@ namespace HordeServer
         public ushort itemId = 0;
         public string powerupType = "juggernog";
         public uint refundValue = 0;
+    }
+
+    public class PackAPunchWeapon
+    {
+        public ushort Id = 1;
+        public List<byte[]> AvailableLevelsMetada = [];
+        public List<float> AvailableLevelsDamage = [];
     }
 }

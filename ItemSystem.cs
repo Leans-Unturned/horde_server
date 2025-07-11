@@ -13,22 +13,27 @@ namespace HordeServer
 
     class ItemSystem
     {
+        static public Dictionary<UnturnedPlayer, WeaponLoadout> primaryWeapon = [];
+        static public Dictionary<UnturnedPlayer, WeaponLoadout> secondaryWeapon = [];
+
         static private List<KeyValuePair<UnturnedPlayer, Item>> itemSwapped = [];
         // Player / tickrate
         public static readonly Dictionary<UnturnedPlayer, uint> ignoredRefunds = [];
         static bool SwapTickReset = false;
         static bool ClearItemsNextTick = false;
 
-        static private List<KeyValuePair<UnturnedPlayer, WeaponLoadout>> weaponEquipNextTick = [];
+        static public List<KeyValuePair<UnturnedPlayer, WeaponLoadout>> weaponEquipNextTick = [];
         static private List<KeyValuePair<UnturnedPlayer, Item>> weaponReplaceNextTick = [];
         // Variable to ignore next player receive item handling
         private static readonly List<UnturnedPlayer> weaponInventoryIgnoreNextTick = [];
         // Player / tickrate for weaponInventoryIgnoreNextTick be removed, when tickrate is 0 it will be removed from both variables
         private static readonly Dictionary<UnturnedPlayer, uint> weaponInventoryResetIgnoreNextTickOnNextTick = [];
+        private static List<UnturnedPlayer> refreshPrimaryWeaponNextTick = [];
+        private static List<UnturnedPlayer> refreshSecondaryWeaponNextTick = [];
 
         static private void RemovePreviouslyAmmo(UnturnedPlayer player, int ammoId)
         {
-            
+
             for (byte page = 0; page < PlayerInventory.PAGES; page++)
             {
                 try
@@ -146,6 +151,17 @@ namespace HordeServer
                     // And for another reason the player receives ammo of the weapon in the horde purchase volume
                     // and we need to remove it for handling the ammo system in the next tick
                     weaponEquipNextTick.Add(new(player, weaponLoadout));
+
+                    if (weaponLoadout.primary)
+                    {
+                        refreshPrimaryWeaponNextTick.Add(player);
+                        PowerupSystem.ResetPlayerPrimaryPackAPunch(player);
+                    }
+                    else
+                    {
+                        refreshSecondaryWeaponNextTick.Add(player);
+                        PowerupSystem.ResetPlayerSecondaryPackAPunch(player);
+                    }
                 }
 
                 // If the player receives ammo, is because he already have the weapon lets refresh the inventory
@@ -187,6 +203,43 @@ namespace HordeServer
         static public void OnItemDropped(PlayerInventory _, SDG.Unturned.Item __, ref bool ___)
         {
             ClearItemsNextTick = true;
+        }
+
+        static public void RefreshPrimaryLoadout(UnturnedPlayer player)
+        {
+            ItemJar item = player.Player.inventory.getItem(0, 0);
+            if (item?.item == null)
+            {
+                primaryWeapon.Remove(player);
+                return;
+            }
+
+            foreach (WeaponLoadout loadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
+            {
+                if (loadout.weapondId == item.item.id && loadout.primary)
+                {
+                    primaryWeapon[player] = loadout;
+                    return;
+                }
+            }
+        }
+        static public void RefreshSecondaryLoadout(UnturnedPlayer player)
+        {
+            ItemJar item = player.Player.inventory.getItem(1, 0);
+            if (item?.item == null)
+            {
+                secondaryWeapon.Remove(player);
+                return;
+            }
+
+            foreach (WeaponLoadout loadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
+            {
+                if (loadout.weapondId == item.item.id && !loadout.primary)
+                {
+                    secondaryWeapon[player] = loadout;
+                    return;
+                }
+            }
         }
 
         static public void Update()
@@ -336,6 +389,23 @@ namespace HordeServer
                     }
                 }
                 weaponReplaceNextTick = [];
+            }
+
+            if (refreshPrimaryWeaponNextTick.Count > 0)
+            {
+                foreach (UnturnedPlayer player in refreshPrimaryWeaponNextTick)
+                {
+                    RefreshPrimaryLoadout(player);
+                }
+                refreshPrimaryWeaponNextTick = [];
+            }
+            if (refreshSecondaryWeaponNextTick.Count > 0)
+            {
+                foreach (UnturnedPlayer player in refreshSecondaryWeaponNextTick)
+                {
+                    RefreshSecondaryLoadout(player);
+                }
+                refreshSecondaryWeaponNextTick = [];
             }
 
             SwapTickReset = false;

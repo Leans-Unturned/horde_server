@@ -235,7 +235,27 @@ class HordeUtils
             return;
         }
 
-        parameters.damage *= 1f / wave.HealthMultiplier;
+        if (parameters.instigator is Player abstractPlayer)
+        {
+            parameters.damage *= 1f / wave.HealthMultiplier;
+
+            UnturnedPlayer player = UnturnedPlayer.FromPlayer(abstractPlayer);
+            if (player.Player?.equipment?.itemID == null) return;
+
+            // Weapon damage modifier
+            if (ItemSystem.primaryWeapon.ContainsKey(player))
+                if (player.Player.equipment.itemID == ItemSystem.primaryWeapon[player].weapondId)
+                {
+                    parameters.damage *= ItemSystem.primaryWeapon[player].baseDamage;
+                    return;
+                }
+            if (ItemSystem.secondaryWeapon.ContainsKey(player))
+                if (player.Player.equipment.itemID == ItemSystem.secondaryWeapon[player].weapondId)
+                {
+                    parameters.damage *= ItemSystem.secondaryWeapon[player].baseDamage;
+                    return;
+                }
+        }
     }
 
     public static void HitPoints(ref DamageZombieParameters parameters, ref bool _)

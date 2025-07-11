@@ -161,6 +161,8 @@ namespace HordeServer
             PowerupSystem.ResetPlayerPowerups(player);
             SkillSystem.ResetPlayerSkills(player);
             SkillSystem.RefreshPlayerSkills(player);
+            ItemSystem.primaryWeapon.Remove(player);
+            ItemSystem.secondaryWeapon.Remove(player);
             alivePlayers.Remove(player);
 
             if (alivePlayers.Count <= 0)
@@ -227,6 +229,9 @@ namespace HordeServer
             {"not_enough_money", "Not enough money, necessary: {0}"},
             {"door_open", "Door opened, you lose: {0} money"},
             {"door_opened", "Door opened by {0}, with: {1} money"},
+            {"packapunch_unavailable", "Unavailable Pack a Punch"},
+            {"packapunch_maxlevel", "Pack a Punch is on Max Level"},
+            {"packapunch", "Pack a Punch Received"},
         };
     }
 
