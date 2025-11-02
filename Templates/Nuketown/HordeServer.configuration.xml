@@ -1091,7 +1091,6 @@
     </WeaponLoadout>
   </AvailableWeaponsToPurchase>
   <AvailablePowerupsToPurchase>
-  <AvailablePowerupsToPurchase>
     <PowerupLoadout>
       <itemId>1051</itemId>
       <powerupType>juggernog</powerupType>
