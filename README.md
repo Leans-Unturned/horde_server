@@ -11,32 +11,14 @@ Transform a survival mode into a horde mode
 
 ## Full Map Template
 - [Nuketown](https://steamcommunity.com/sharedfiles/filedetails/?id=3471852710)
-- > [Server Configurations](https://github.com/LeandroTheDev/horde_server/tree/master/Templates)
+- > [Server Configurations](https://github.com/Leans-Unturned/horde_server/tree/master/Templates)
 
 ### Get working
-The easy way is to get the basic template from one of the already configurated maps.
+The easy way is to get the basic [template](https://github.com/Leans-Unturned/horde_server/tree/master/Templates) from one of the already configurated maps.
 
-First thing you need to change some configuration in dedicated server, go to Configs.json:
+Update the configurations from the template or create one, the template must be the same as the map if not the same the plugin will just break.
 
-```json
-"Zombies": {
-    "Spawn_Chance": 100.0,
-    "Respawn_Day_Time": 999999999.0,
-    "Respawn_Night_Time": 999999999.0,
-    "Damage_Multiplier": 1.0,
-    "Armor_Multiplier": 1.0,
-},
-"Players": {
-    "Food_Use_Ticks": 999999999,
-    "Water_Use_Ticks": 999999999,
-}
-```
-
-Now you need to run the server to generate the configurations, change the ``PlayersFolder`` and ``LevelName`` Configurations so the plugin can handle player disconnections correctly.
-
-Update the configurations, from the template or create one.
-
-### The next step is for configurating a new map for horde server
+### Creating a Map compatible
 - The player spawn should be the map lobby. (The real spawn will be set in plugin configuration)
 - The zombies is recommended to be all stored in one place, (In the game code the zombies cannot be spawned just respawned in a different location, is totally necessary that all available zombies has spawned for the plugin to handle the zombies spawn), recommended to be near the player spawn lobby
 - Add only a unique navigation with infinite agro option, so the zombies will automatically hunt the players (The spawned zombies in maps needs to be inside this navigation)

@@ -42,6 +42,17 @@ namespace HordeServer
             // the only thing allowed to heal players passively.
             Provider.modeConfigData.Players.Health_Regen_Ticks = uint.MaxValue;
 
+            // Horde mode balancing baked into the plugin instead of relying on every server's
+            // Configs.json being edited by hand: max zombie spawn/respawn, vanilla damage/armor
+            // multipliers untouched (horde difficulty is scaled elsewhere), food/water never deplete.
+            Provider.modeConfigData.Zombies.Spawn_Chance = 100.0f;
+            Provider.modeConfigData.Zombies.Respawn_Day_Time = 999999999.0f;
+            Provider.modeConfigData.Zombies.Respawn_Night_Time = 999999999.0f;
+            Provider.modeConfigData.Zombies.Damage_Multiplier = 1.0f;
+            Provider.modeConfigData.Zombies.Armor_Multiplier = 1.0f;
+            Provider.modeConfigData.Players.Food_Use_Ticks = uint.MaxValue;
+            Provider.modeConfigData.Players.Water_Use_Ticks = uint.MaxValue;
+
             // Weapons no longer have a fixed primary/secondary slot in the config (WeaponLoadout.primary
             // was removed), placement is now decided dynamically at purchase time. But the asset itself
             // still carries its own baked-in Slot (PRIMARY/SECONDARY/etc from the .dat), which would still
