@@ -35,6 +35,7 @@ namespace HordeServer
         public List<PowerupLoadout> AvailablePowerupsToPurchase = [];
         public List<Door> AvailableDoorsToPurchase = [];
         public List<PackAPunchWeapon> AvailablePackAPunch = [];
+        public List<MysteryBoxLoadout> AvailableMysteryBoxes = [];
         public List<ushort> DisabledInventoryIds = [];
 
         public uint StartingCredits = 500;
@@ -844,6 +845,10 @@ namespace HordeServer
         public uint refundValue = 0;
         public uint ammoRefundValue = 0;
         public float baseDamage = 1.0f;
+        // Opt-in flag for this weapon to be part of the MysteryBoxSystem random pool, kept right
+        // next to the weapon's own definition so the pool never has to duplicate ids in a separate
+        // list that could drift out of sync
+        public bool canReceiveOnMysteryBox = false;
     }
 
     public class PowerupLoadout
@@ -858,5 +863,15 @@ namespace HordeServer
         public ushort Id = 1;
         public List<byte[]> AvailableLevelsMetada = [];
         public List<float> AvailableLevelsDamage = [];
+    }
+
+    public class MysteryBoxLoadout
+    {
+        // The vendor item that represents "buy a mystery box". Must NOT be a weapon (ItemGunAsset)
+        // and must not collide with any weapondId/ammoId/PowerupLoadout.itemId or DisabledInventoryIds,
+        // otherwise another system strips it before MysteryBoxSystem ever gets to see it
+        public ushort itemId = 0;
+        // The random pool is every AvailableWeaponsToPurchase entry with canReceiveOnMysteryBox = true,
+        // there is no separate weapon id list here to avoid it drifting out of sync with that config
     }
 }

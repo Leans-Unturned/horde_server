@@ -1034,6 +1034,7 @@
       <refundValue>0</refundValue>
       <ammoRefundValue>0</ammoRefundValue>
       <baseDamage>0.3</baseDamage>
+      <canReceiveOnMysteryBox>false</canReceiveOnMysteryBox>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>101</weapondId>
@@ -1043,6 +1044,7 @@
       <refundValue>500</refundValue>
       <ammoRefundValue>250</ammoRefundValue>
       <baseDamage>1</baseDamage>
+      <canReceiveOnMysteryBox>false</canReceiveOnMysteryBox>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>380</weapondId>
@@ -1052,6 +1054,7 @@
       <refundValue>500</refundValue>
       <ammoRefundValue>250</ammoRefundValue>
       <baseDamage>0.5</baseDamage>
+      <canReceiveOnMysteryBox>false</canReceiveOnMysteryBox>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>112</weapondId>
@@ -1061,6 +1064,7 @@
       <refundValue>1500</refundValue>
       <ammoRefundValue>500</ammoRefundValue>
       <baseDamage>0.5</baseDamage>
+      <canReceiveOnMysteryBox>false</canReceiveOnMysteryBox>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>363</weapondId>
@@ -1070,6 +1074,7 @@
       <refundValue>1600</refundValue>
       <ammoRefundValue>650</ammoRefundValue>
       <baseDamage>0.3</baseDamage>
+      <canReceiveOnMysteryBox>false</canReceiveOnMysteryBox>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>1021</weapondId>
@@ -1079,6 +1084,7 @@
       <refundValue>1000</refundValue>
       <ammoRefundValue>400</ammoRefundValue>
       <baseDamage>0.5</baseDamage>
+      <canReceiveOnMysteryBox>false</canReceiveOnMysteryBox>
     </WeaponLoadout>
     <WeaponLoadout>
       <weapondId>1369</weapondId>
@@ -1088,6 +1094,7 @@
       <refundValue>1700</refundValue>
       <ammoRefundValue>800</ammoRefundValue>
       <baseDamage>0.3</baseDamage>
+      <canReceiveOnMysteryBox>false</canReceiveOnMysteryBox>
     </WeaponLoadout>
   </AvailableWeaponsToPurchase>
   <AvailablePowerupsToPurchase>
@@ -1484,6 +1491,11 @@
       </AvailableLevelsDamage>
     </PackAPunchWeapon>
   </AvailablePackAPunch>
+  <AvailableMysteryBoxes>
+    <MysteryBoxLoadout>
+      <itemId>????? TO DO PLEASE BOBODEV DON'T FORGET TO UPDATE THIS</itemId>
+    </MysteryBoxLoadout>
+  </AvailableMysteryBoxes>
   <DisabledInventoryIds>
     <unsignedShort>21</unsignedShort>
     <unsignedShort>22</unsignedShort>

@@ -180,6 +180,30 @@ namespace HordeServer
                 }
             }
 
+            // Checking if is a MysteryBox purchase
+            foreach (MysteryBoxLoadout mysteryBox in HordeServerPlugin.instance!.Configuration.Instance.AvailableMysteryBoxes)
+            {
+                if (mysteryBox.itemId == P.item.id)
+                {
+                    for (byte page = 0; page < PlayerInventory.PAGES; page++)
+                    {
+                        try
+                        {
+                            for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
+                            {
+                                if (player.Inventory.getItem(page, j).item.id == P.item.id)
+                                {
+                                    player.Inventory.removeItem(page, j);
+                                    MysteryBoxSystem.Open(player, mysteryBox);
+                                    return;
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+            }
+
             // Ignore weapon receive for this event
             if (weaponInventoryIgnoreNextTick.Contains(player))
             {
