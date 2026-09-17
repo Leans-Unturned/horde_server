@@ -57,18 +57,15 @@ class HordeUtils
         || wave == null
         || HordeServerPlugin.instance == null) return;
 
-        // Getting all zombie instances from the map
-        List<Zombie> zombieNodes = [];
-        ZombieManager.getZombiesInRadius(new(
-            HordeServerPlugin.instance.Configuration.Instance.MapCenterPosition.X,
-            HordeServerPlugin.instance.Configuration.Instance.MapCenterPosition.Y,
-            HordeServerPlugin.instance.Configuration.Instance.MapCenterPosition.Z),
-            HordeServerPlugin.instance.Configuration.Instance.MapCenterRadius, zombieNodes);
+        // Getting all zombie instances from the map. ZombieManager.getZombiesInRadius is not used
+        // here because it only scans the single navmesh region containing a given center point and
+        // expects a squared radius, both easy to get wrong for a whole-map query
+        List<Zombie> zombieNodes = UnityEngineCoreModule.UnityEngine.Object.FindObjectsOfType<Zombie>()?.ToList() ?? [];
 
         if (zombieNodes.Count == 0)
         {
             if (HordeServerPlugin.instance.Configuration.Instance.DebugZombies)
-                Logger.LogError("Cannot find any zombie node in map center, try increasing the radius and checking the position");
+                Logger.LogError("Cannot find any zombie in the map");
             return;
         }
 

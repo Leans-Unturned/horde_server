@@ -11,8 +11,6 @@ namespace HordeServer
         public uint RemainingCheckTickrate = 600;
         public uint TickrateBetweenRounds = 1000;
         public int SecondsAfterRoundFail = 10;
-        public ConfigPosition MapCenterPosition = new();
-        public int MapCenterRadius = 10000;
         public int MaximumZombieNodeDistanceToSpawn = 150;
         public float DeathItemsClearRadius = 10f;
         public uint HitsToKillPlayer = 2;
@@ -708,14 +706,6 @@ namespace HordeServer
                 30
             ];
         }
-    }
-
-    public class ConfigPosition
-    {
-        public float X = 0;
-        public float Y = 0;
-        public float Z = 0;
-        public float Angle = 0.0f;
     }
 
     public class ConfigWave

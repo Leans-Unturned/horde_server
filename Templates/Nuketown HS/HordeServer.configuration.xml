@@ -6,13 +6,6 @@
   <RemainingCheckTickrate>600</RemainingCheckTickrate>
   <TickrateBetweenRounds>1000</TickrateBetweenRounds>
   <SecondsAfterRoundFail>10</SecondsAfterRoundFail>
-  <MapCenterPosition>
-    <X>27.2</X>
-    <Y>52.9</Y>
-    <Z>-78.7</Z>
-    <Angle>0</Angle>
-  </MapCenterPosition>
-  <MapCenterRadius>100000</MapCenterRadius>
   <MaximumZombieNodeDistanceToSpawn>150</MaximumZombieNodeDistanceToSpawn>
   <ZombieCountIncreasePerPlayer>0.5</ZombieCountIncreasePerPlayer>
   <ZombieHealthIncreasePerPlayer>0.0</ZombieHealthIncreasePerPlayer>
