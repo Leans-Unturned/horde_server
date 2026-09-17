@@ -17,6 +17,8 @@ namespace HordeServer
         public float DeathItemsClearRadius = 10f;
         public uint HitsToKillPlayer = 2;
         public uint HitsToKillPlayerWithJuggernog = 4;
+        public float HealthRegenDelay = 2f;
+        public float HealthRegenDuration = 1f;
         public bool DebugPlayerPosition = false;
         public bool DebugBarricadesPosition = false;
         public bool DebugZombies = false;

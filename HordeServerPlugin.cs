@@ -31,6 +31,12 @@ namespace HordeServer
 
             unityTickrate = gameObject.AddComponent<UnityTickrate>();
 
+            // Vanilla passive health regen (PlayerLife, +1hp tick when food/water > 90) would add
+            // stray HP between zombie hits, breaking the deterministic hits-to-kill math and fighting
+            // the delay/duration timing of HealthRegenSystem. Disable it, HealthRegenSystem is now
+            // the only thing allowed to heal players passively.
+            Provider.modeConfigData.Players.Health_Regen_Ticks = uint.MaxValue;
+
             Rocket.Unturned.U.Events.OnPlayerConnected += OnPlayerConnected;
             Rocket.Unturned.U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
             DamageTool.damageZombieRequested += HordeUtils.CalculateZombieArmor;
@@ -113,6 +119,7 @@ namespace HordeServer
         {
             PowerupSystem.Disconnect(player);
             SkillSystem.Disconnect(player);
+            HealthRegenSystem.Disconnect(player);
             player.Events.OnDeath -= OnPlayerDead;
             player.Events.OnInventoryAdded -= ItemSystem.OnInventoryAdded;
             player.Events.OnInventoryRemoved -= ItemSystem.OnInventoryRemoved;
@@ -256,6 +263,7 @@ namespace HordeServer
         {
             RoundSystemInstance?.Update();
             ItemSystem.Update();
+            HealthRegenSystem.Update();
 
             if (HordeServerPlugin.instance!.Configuration.Instance.ForceRemoveZombieRadiation)
                 HordeUtils.RemoveZombiesRadiation();

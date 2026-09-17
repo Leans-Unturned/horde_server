@@ -276,9 +276,11 @@ class HordeUtils
     /// </summary>
     public static void CalculatePlayerLifeFromZombieHit(ref DamagePlayerParameters parameters, ref bool _)
     {
-        if (parameters.cause != EDeathCause.ZOMBIE) return;
-
         UnturnedPlayer player = UnturnedPlayer.FromPlayer(parameters.player);
+        // Regen delay resets on any damage cause, not just zombie hits
+        HealthRegenSystem.RegisterHit(player);
+
+        if (parameters.cause != EDeathCause.ZOMBIE) return;
 
         uint hitsToKill = PowerupSystem.PlayerHasPowerup(player, "juggernog")
             ? HordeServerPlugin.instance!.Configuration.Instance.HitsToKillPlayerWithJuggernog
