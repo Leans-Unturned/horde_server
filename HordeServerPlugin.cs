@@ -256,6 +256,7 @@ namespace HordeServer
             {"juggernog", "Juggernog"},
             {"estaminaup", "Estamina UP"},
             {"speedcola", "Speed Cola"},
+            {"sharpshooter", "Sharpshooter"},
             {"main_weapon_moved", "Your weapon has been removed because you moved out of your equipment!" },
             {"unauthorized_weapon", "This weapon is not authorized on this server, it has been removed" },
             {"weapon_drop_denied", "You cannot drop this weapon or ammo" },

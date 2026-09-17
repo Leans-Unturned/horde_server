@@ -25,6 +25,7 @@ namespace HordeServer
                 case "estaminaup": GivePlayerEstaminaup(player); return;
                 case "packapunch": GivePackAPunch(player); return;
                 case "grenades": GiveMaxGrenadesForPlayer(player, true); return;
+                case "sharpshooter": GivePlayerSharpshooter(player); return;
             }
         }
 
@@ -460,6 +461,59 @@ namespace HordeServer
         // Every grenade item id the horde economy can hand out, kept as a single source of truth so
         // ItemSystem's drop-block doesn't have to duplicate/guess this list
         public static readonly ushort[] GrenadeItemIds = [254, 1100, 1520, 1838];
+
+        private static bool GivePlayerSharpshooter(UnturnedPlayer player)
+        {
+            void increaseSkills()
+            {
+                SkillSystem.UpdatePlayerSkill(player, "Sharpshooter", 5);
+                SkillSystem.RefreshPlayerSkills(player);
+
+                ChatManager.serverSendMessage(
+                    HordeServerPlugin.instance!.Translate("receive_powerup", HordeServerPlugin.instance!.Translate("sharpshooter")),
+                    new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                    null,
+                    player.SteamPlayer(),
+                    EChatMode.SAY,
+                    HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                    true
+                );
+            }
+
+            if (playersPowerups.TryGetValue(player, out List<string> powerups))
+            {
+                if (powerups.Contains("sharpshooter"))
+                {
+                    var refundValue = HordeServerPlugin.instance!.Configuration.Instance.AvailablePowerupsToPurchase
+                        .FirstOrDefault(powerup => powerup.powerupType == "sharpshooter")?.refundValue ?? 0;
+
+                    if (refundValue > 0)
+                    {
+                        player.Experience += refundValue;
+                        ChatManager.serverSendMessage(
+                            HordeServerPlugin.instance!.Translate("refund_powerup", refundValue),
+                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                            null,
+                            player.SteamPlayer(),
+                            EChatMode.SAY,
+                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                            true
+                        );
+                    }
+                    return false;
+                }
+
+                playersPowerups[player].Add("sharpshooter");
+                increaseSkills();
+                return true;
+            }
+            else
+            {
+                playersPowerups.Add(player, ["sharpshooter"]);
+                increaseSkills();
+                return true;
+            }
+        }
 
         private static ushort GetPlayerCurrentGrenade(UnturnedPlayer player)
         {

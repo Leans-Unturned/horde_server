@@ -1118,6 +1118,11 @@
       <itemId>1055</itemId>
       <powerupType>grenades</powerupType>
       <refundValue>750</refundValue>
+    </PowerupLoadout>    
+    <PowerupLoadout>
+      <itemId>BOBODEV ADD THE CORRECT ITEM HERE!!!!!!!!!!</itemId>
+      <powerupType>sharpshooter</powerupType>
+      <refundValue>2500</refundValue>
     </PowerupLoadout>
   </AvailablePowerupsToPurchase>
   <AvailableDoorsToPurchase>
