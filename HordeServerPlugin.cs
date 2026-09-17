@@ -90,23 +90,29 @@ namespace HordeServer
 
             try
             {
-                string[] playersDirectory = System.IO.Directory.GetDirectories(PlayersFolder);
-                foreach (string playerFolder in playersDirectory)
+                // Nothing to clean up yet (fresh server, no player has ever joined), and Level.info
+                // is not guaranteed to be populated this early in plugin load, avoid relying on
+                // GetDirectories/Level.info throwing to detect either case
+                if (System.IO.Directory.Exists(PlayersFolder) && Level.info != null)
                 {
-                    string clothingPath = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Clothing.dat");
-                    if (File.Exists(clothingPath)) File.Delete(clothingPath);
+                    string[] playersDirectory = System.IO.Directory.GetDirectories(PlayersFolder);
+                    foreach (string playerFolder in playersDirectory)
+                    {
+                        string clothingPath = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Clothing.dat");
+                        if (File.Exists(clothingPath)) File.Delete(clothingPath);
 
-                    string inventoryPath = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Inventory.dat");
-                    if (File.Exists(inventoryPath)) File.Delete(inventoryPath);
+                        string inventoryPath = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Inventory.dat");
+                        if (File.Exists(inventoryPath)) File.Delete(inventoryPath);
 
-                    string position = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Player.dat");
-                    if (File.Exists(position)) File.Delete(position);
+                        string position = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Player.dat");
+                        if (File.Exists(position)) File.Delete(position);
 
-                    string life = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Life.dat");
-                    if (File.Exists(life)) File.Delete(life);
+                        string life = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Life.dat");
+                        if (File.Exists(life)) File.Delete(life);
 
-                    string skills = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Skills.dat");
-                    if (File.Exists(skills)) File.Delete(skills);
+                        string skills = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Skills.dat");
+                        if (File.Exists(skills)) File.Delete(skills);
+                    }
                 }
             }
             catch (Exception ex)
