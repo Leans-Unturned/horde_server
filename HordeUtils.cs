@@ -331,6 +331,24 @@ class HordeUtils
         parameters.applyGlobalArmorMultiplier = false;
     }
 
+    // Pack-a-Punch forces a gun's state bytes (sight/tactical/grip/barrel/magazine) directly from
+    // config, without ever giving the player a real attachment item. The vanilla attach/detach RPCs
+    // mint a genuine attachment item out of whatever is encoded in state when the player removes or
+    // replaces one, so if left alone Pack-a-Punch would be a free-loot exploit. Block any attachment
+    // change on a currently pack-a-punched weapon, this same handler is shared by all 5 attachment
+    // slot events since they all use the same signature
+    public static void BlockPackAPunchAttachmentChange(PlayerEquipment equipment, UseableGun gun, SDG.Unturned.Item oldItem, ItemJar newItem, ref bool shouldAllow)
+    {
+        UnturnedPlayer? player = UnturnedPlayer.FromPlayer(equipment.player);
+        if (player == null) return;
+
+        byte page = equipment.equippedPage;
+        if (page != 0 && page != 1) return;
+
+        if (PowerupSystem.IsPackAPunched(player, page))
+            shouldAllow = false;
+    }
+
     public static void GiveMaxAmmo(UnturnedPlayer? uniquePlayer = null)
     {
         void GiveAmmo(UnturnedPlayer player)

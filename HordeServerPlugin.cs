@@ -59,6 +59,11 @@ namespace HordeServer
             DamageTool.damageZombieRequested += HordeUtils.CalculateZombieArmor;
             DamageTool.damageZombieRequested += HordeUtils.HitPoints;
             DamageTool.damagePlayerRequested += HordeUtils.CalculatePlayerLifeFromZombieHit;
+            UseableGun.onChangeSightRequested += HordeUtils.BlockPackAPunchAttachmentChange;
+            UseableGun.onChangeTacticalRequested += HordeUtils.BlockPackAPunchAttachmentChange;
+            UseableGun.onChangeGripRequested += HordeUtils.BlockPackAPunchAttachmentChange;
+            UseableGun.onChangeBarrelRequested += HordeUtils.BlockPackAPunchAttachmentChange;
+            UseableGun.onChangeMagazineRequested += HordeUtils.BlockPackAPunchAttachmentChange;
             UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
             PlayerSkills.OnExperienceChanged_Global += ItemSystem.OnPlayerExperienceChanged;
 

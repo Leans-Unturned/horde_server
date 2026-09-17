@@ -280,6 +280,16 @@ namespace HordeServer
         public static void ResetPlayerPrimaryPackAPunch(UnturnedPlayer player) => packAPunchPrimary.Remove(player);
         public static void ResetPlayerSecondaryPackAPunch(UnturnedPlayer player) => packAPunchSecondary.Remove(player);
 
+        // Whether the weapon currently equipped in the given slot (0 primary, 1 secondary) has been
+        // pack-a-punched, its state bytes were forced from AvailableLevelsMetada rather than real
+        // attachment items, so detaching/replacing an attachment on it would mint free loot
+        public static bool IsPackAPunched(UnturnedPlayer player, byte page)
+        {
+            if (page == 0) return packAPunchPrimary.ContainsKey(player);
+            if (page == 1) return packAPunchSecondary.ContainsKey(player);
+            return false;
+        }
+
         public static void ResetPlayersPowerups()
         {
             playersPowerups = [];
@@ -446,6 +456,10 @@ namespace HordeServer
                 return true;
             }
         }
+
+        // Every grenade item id the horde economy can hand out, kept as a single source of truth so
+        // ItemSystem's drop-block doesn't have to duplicate/guess this list
+        public static readonly ushort[] GrenadeItemIds = [254, 1100, 1520, 1838];
 
         private static ushort GetPlayerCurrentGrenade(UnturnedPlayer player)
         {

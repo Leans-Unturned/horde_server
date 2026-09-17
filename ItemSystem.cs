@@ -379,6 +379,9 @@ namespace HordeServer
                 }
             }
 
+            if (!isTrackedEconomyItem)
+                isTrackedEconomyItem = PowerupSystem.GrenadeItemIds.Contains(item.id);
+
             if (!isTrackedEconomyItem) return;
 
             shouldAllow = false;
