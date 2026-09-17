@@ -62,7 +62,8 @@ class HordeUtils
                 continue;
             }
 
-            if (DoorSystem.OpenedDoorIndexes.Contains(doorIndex))
+            // DoorIndex 0 means no gate (same convention as DoorSystem), always active
+            if (doorIndex == 0 || DoorSystem.OpenedDoorIndexes.Contains(doorIndex))
                 positions.Add(node.transform.position);
         }
 
@@ -85,23 +86,13 @@ class HordeUtils
         || wave == null
         || HordeServerPlugin.instance == null) return;
 
-        // Getting all zombie instances from the map. ZombieManager.getZombiesInRadius is not used
-        // here because it only scans the single navmesh region containing a given center point and
-        // expects a squared radius, both easy to get wrong for a whole-map query
-        List<Zombie> zombieNodes = UnityEngineCoreModule.UnityEngine.Object.FindObjectsOfType<Zombie>()?.ToList() ?? [];
-
-        if (zombieNodes.Count == 0)
-        {
-            if (HordeServerPlugin.instance.Configuration.Instance.DebugZombies)
-                Logger.LogError("Cannot find any zombie in the map");
-            return;
-        }
+        bool debug = HordeServerPlugin.instance.Configuration.Instance.DebugZombies;
 
         List<UnityEngineCoreModule.UnityEngine.Vector3> zombieSpawnPositions = GetZombieSpawnNodePositions();
 
         if (zombieSpawnPositions.Count == 0)
         {
-            if (HordeServerPlugin.instance.Configuration.Instance.DebugZombies)
+            if (debug)
                 Logger.LogError($"Cannot find any location node named \"{ZombieSpawnNodeName}\" in the map, add some in the map editor");
             return;
         }
@@ -109,69 +100,85 @@ class HordeUtils
         List<UnityEngineCoreModule.UnityEngine.Vector3> zombiesNodesToSpawn = new(zombieSpawnPositions);
         foreach (UnityEngineCoreModule.UnityEngine.Vector3 _ in zombieSpawnPositions)
         {
-            // Randomly get a zombie node to spawn
-            UnityEngineCoreModule.UnityEngine.Vector3 point;
-            if (zombiesNodesToSpawn.Count > 0)
+            if (zombiesNodesToSpawn.Count == 0) return;
+
+            int nodeIndex = Random.Range(0, zombiesNodesToSpawn.Count);
+            UnityEngineCoreModule.UnityEngine.Vector3 point = zombiesNodesToSpawn[nodeIndex];
+            zombiesNodesToSpawn.RemoveAt(nodeIndex);
+
+            // Skip nodes that are too far from all alive players
+            bool nodeTooFar = false;
+            foreach (UnturnedPlayer alivePlayer in HordeServerPlugin.alivePlayers)
             {
-                int index = Random.Range(0, zombiesNodesToSpawn.Count);
-                point = zombiesNodesToSpawn[index];
-                zombiesNodesToSpawn.RemoveAt(index);
+                float distance = UnityEngineCoreModule.UnityEngine.Vector3.Distance(alivePlayer.Position, point);
+                if (HordeServerPlugin.instance.Configuration.Instance.DebugPlayerPosition)
+                    Logger.Log($"{alivePlayer.SteamName} node: {point.x},{point.y},{point.z} distance: {distance}");
+
+                if (distance > HordeServerPlugin.instance.Configuration.Instance.MaximumZombieNodeDistanceToSpawn)
+                {
+                    nodeTooFar = true;
+                    break;
+                }
             }
-            else return;
+            if (nodeTooFar)
+            {
+                if (HordeServerPlugin.instance.Configuration.Instance.DebugPlayerPosition)
+                    Logger.Log($"node: {point.x},{point.y},{point.z} too far");
+                continue;
+            }
 
-            // Create the zombie instance
-            EZombieSpeciality speciality = GetRandomZombieFromWave();
-            byte type = 1;
-            GetRandomZombieClothing(type, out byte shirt, out byte pants, out byte hat, out byte gear);
+            // Each zombie belongs to a navmesh bound region. Reviving a zombie at a position
+            // outside its own bound causes the zombie to glitch (fly, spawn dead). Always look up
+            // the bound that contains the spawn point and pick a dead zombie from that bound's list
+            if (!LevelNavigation.tryGetBounds(point, out byte bound))
+            {
+                if (debug)
+                    Logger.LogWarning($"[ZombieSpawn] No navmesh bound at {point.x:F1},{point.y:F1},{point.z:F1} — node is outside nav areas, skipping");
+                continue;
+            }
 
-            bool zombieSpawned = false;
+            if (ZombieManager.regions == null || bound >= ZombieManager.regions.Length)
+            {
+                if (debug)
+                    Logger.LogWarning($"[ZombieSpawn] bound {bound} out of range (regions.Length={ZombieManager.regions?.Length ?? -1}), skipping");
+                continue;
+            }
 
-            // Try to spawn a zombie with one of the available zombie nodes
-            foreach (Zombie zombie in zombieNodes)
+            Zombie? deadZombie = null;
+            foreach (Zombie zombie in ZombieManager.regions[bound].zombies)
             {
                 if (zombie.isDead)
                 {
-                    bool nodeeToFar = false;
-                    foreach (UnturnedPlayer alivePlayer in HordeServerPlugin.alivePlayers)
-                    {
-                        float distance = UnityEngineCoreModule.UnityEngine.Vector3.Distance(alivePlayer.Position, point);
-                        if (HordeServerPlugin.instance.Configuration.Instance.DebugPlayerPosition)
-                            Logger.Log($"{alivePlayer.SteamName} node: {point.x},{point.y},{point.z} distance: {distance}");
-
-                        if (distance > HordeServerPlugin.instance.Configuration.Instance.MaximumZombieNodeDistanceToSpawn)
-                        {
-                            nodeeToFar = true;
-                            break;
-                        }
-                    }
-                    if (nodeeToFar)
-                    {
-                        if (HordeServerPlugin.instance.Configuration.Instance.DebugPlayerPosition)
-                            Logger.Log($"node: {point.x},{point.y},{point.z} too far");
-                        continue;
-                    }
-                    ;
-
-                    if (HordeServerPlugin.instance.Configuration.Instance.DebugZombies)
-                        Logger.Log($"Zombie Spawned in: {point.x},{point.y}{point.z}");
-
-                    zombie.sendRevive(type, (byte)speciality, shirt, pants, hat, gear, point, Random.Range(0f, 360f));
-                    zombiesAlive.Add(zombie);
-                    zombiesToSpawn--;
-
-                    if (zombiesToSpawn <= 0) return;
-                    zombieSpawned = true;
+                    deadZombie = zombie;
                     break;
                 }
             }
 
-            // All zombies is alive
-            if (!zombieSpawned)
+            if (deadZombie == null)
             {
-                if (HordeServerPlugin.instance.Configuration.Instance.DebugZombies)
-                    Logger.LogWarning("No zombies spawned in the tick, because all available zombies nodes is alive");
-                break;
+                if (debug)
+                    Logger.LogWarning($"[ZombieSpawn] All zombies in bound {bound} are alive, skipping position {point.x:F1},{point.y:F1},{point.z:F1}");
+                continue;
             }
+
+            EZombieSpeciality speciality = GetRandomZombieFromWave();
+            // Use the zombie's own type (set by the map), not a hardcoded value — passing a type
+            // that doesn't exist in the map's zombie tables causes the zombie to spawn dead
+            byte type = deadZombie.type;
+            GetRandomZombieClothing(type, out byte shirt, out byte pants, out byte hat, out byte gear);
+
+            // Spawn slightly above the node so the zombie doesn't clip into terrain geometry
+            var spawnPoint = point + new UnityEngineCoreModule.UnityEngine.Vector3(0f, 0.5f, 0f);
+            deadZombie.sendRevive(type, (byte)speciality, shirt, pants, hat, gear, spawnPoint, Random.Range(0f, 360f));
+            if (HordeServerPlugin.instance.Configuration.Instance.ForceRemoveZombieRadiation)
+                RemoveZombiesRadiation();
+            zombiesAlive.Add(deadZombie);
+            zombiesToSpawn--;
+
+            if (debug)
+                Logger.Log($"[ZombieSpawn] Spawned: bound={bound} type={type} speciality={speciality} pos={point.x:F1},{point.y:F1},{point.z:F1} isDead={deadZombie.isDead} hp={deadZombie.GetHealth()}");
+
+            if (zombiesToSpawn <= 0) return;
         }
     }
 

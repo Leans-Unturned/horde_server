@@ -515,7 +515,16 @@ namespace HordeServer
                                     if (page != entry.TargetSlot)
                                     {
                                         player.Inventory.removeItem(page, itemIndex);
+                                        // OnInventoryRemoved fired above and may have added this weapon to
+                                        // itemSwapped, mistaking the system's own relocation for a manual
+                                        // player swap — clear it now so OnInventoryAdded won't trigger
+                                        // weaponReplaceNextTick and loop the main_weapon_moved message
+                                        itemSwapped.RemoveAll(e => e.Key == player && e.Value.item.item.id == entry.Loadout.weapondId);
                                         EvictSlotForRelocation(player, entry.TargetSlot);
+                                        // Prevent OnInventoryAdded from treating this system relocation
+                                        // as a new purchase and adding another weaponEquipNextTick entry
+                                        weaponInventoryIgnoreNextTick.Remove(player);
+                                        weaponInventoryIgnoreNextTick.Add(player);
                                         bool relocated = player.Inventory.tryAddItem(item.item, 0, 0, entry.TargetSlot, 0);
                                         if (!relocated)
                                             Logger.LogWarning($"Failed to relocate weapon {entry.Loadout.weapondId} into slot {entry.TargetSlot} for {player.CSteamID}");
