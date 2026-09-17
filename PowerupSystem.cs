@@ -30,9 +30,9 @@ namespace HordeServer
 
         private static void GivePackAPunch(UnturnedPlayer player)
         {
-            void UpgradeWeapon(WeaponLoadout loadout, PackAPunchWeapon weapon, int nextLevel)
+            void UpgradeWeapon(WeaponLoadout loadout, PackAPunchWeapon weapon, int nextLevel, byte page)
             {
-                if (loadout.primary)
+                if (page == 0)
                 {
                     if (nextLevel < weapon.AvailableLevelsMetada.Count)
                     {
@@ -46,7 +46,7 @@ namespace HordeServer
 
                         player.Inventory.tryAddItem(updatedWeapon, 0, 0, 0, 0);
 
-                        ItemSystem.weaponEquipNextTick.Add(new(player, loadout));
+                        ItemSystem.weaponEquipNextTick.Add(new(player, loadout) { TargetSlot = 0 });
                     }
 
                     if (nextLevel < weapon.AvailableLevelsDamage.Count)
@@ -79,7 +79,7 @@ namespace HordeServer
 
                         player.Inventory.tryAddItem(updatedWeapon, 0, 0, 1, 0);
 
-                        ItemSystem.weaponEquipNextTick.Add(new(player, loadout));
+                        ItemSystem.weaponEquipNextTick.Add(new(player, loadout) { TargetSlot = 1 });
                     }
 
                     if (nextLevel < weapon.AvailableLevelsDamage.Count)
@@ -166,7 +166,11 @@ namespace HordeServer
                 return;
             }
 
-            if (equippedLoadout.primary)
+            // The weapon was already confirmed equipped (matched via player.Player.equipment.itemID
+            // above), so equippedPage reliably tells us which slot (0 or 1) it's actually sitting in
+            byte equippedPage = player.Player!.equipment.equippedPage;
+
+            if (equippedPage == 0)
             {
                 if (packAPunchPrimary.TryGetValue(player, out PackAPunchEquippment value))
                 {
@@ -189,10 +193,10 @@ namespace HordeServer
                         return;
                     }
 
-                    UpgradeWeapon(equippedLoadout, weapon, value.level + 1);
+                    UpgradeWeapon(equippedLoadout, weapon, value.level + 1, equippedPage);
                 }
                 else if (weapon.AvailableLevelsMetada.Count > 0 || weapon.AvailableLevelsDamage.Count > 0)
-                    UpgradeWeapon(equippedLoadout, weapon, 0);
+                    UpgradeWeapon(equippedLoadout, weapon, 0, equippedPage);
                 else
                 {
                     ChatManager.serverSendMessage(
@@ -234,10 +238,10 @@ namespace HordeServer
                         return;
                     }
 
-                    UpgradeWeapon(equippedLoadout, weapon, value.level + 1);
+                    UpgradeWeapon(equippedLoadout, weapon, value.level + 1, equippedPage);
                 }
                 else if (weapon.AvailableLevelsMetada.Count > 0)
-                    UpgradeWeapon(equippedLoadout, weapon, 0);
+                    UpgradeWeapon(equippedLoadout, weapon, 0, equippedPage);
                 else
                 {
                     ChatManager.serverSendMessage(

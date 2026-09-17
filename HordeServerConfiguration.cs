@@ -374,7 +374,6 @@ namespace HordeServer
                     weapondId = 101,
                     ammoId = 103,
                     ammoRefilQuantity = 5,
-                    primary = true,
                     refundValue = 500,
                     ammoRefundValue = 200,
                     baseDamage = 2.0f
@@ -383,7 +382,6 @@ namespace HordeServer
                     weapondId = 380,
                     ammoId = 381,
                     ammoRefilQuantity = 10,
-                    primary = true,
                     refundValue = 500,
                     ammoRefundValue = 200,
                     baseDamage = 1.0f
@@ -841,7 +839,6 @@ namespace HordeServer
         public ushort weapondId = 0;
         public ushort ammoId = 0;
         public byte ammoRefilQuantity = 0;
-        public bool primary = true;
         public uint refundValue = 0;
         public uint ammoRefundValue = 0;
         public float baseDamage = 1.0f;

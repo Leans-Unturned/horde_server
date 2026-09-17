@@ -37,6 +37,17 @@ namespace HordeServer
             // the only thing allowed to heal players passively.
             Provider.modeConfigData.Players.Health_Regen_Ticks = uint.MaxValue;
 
+            // Weapons no longer have a fixed primary/secondary slot in the config (WeaponLoadout.primary
+            // was removed), placement is now decided dynamically at purchase time. But the asset itself
+            // still carries its own baked-in Slot (PRIMARY/SECONDARY/etc from the .dat), which would still
+            // block tryAddItem/tryEquip from placing it in whichever slot is free. Force every purchasable
+            // weapon's asset to accept either slot 0 or 1, this must be reapplied on every asset load
+            foreach (WeaponLoadout weaponLoadout in Configuration.Instance.AvailableWeaponsToPurchase)
+            {
+                if (Assets.find(EAssetType.ITEM, weaponLoadout.weapondId) is ItemAsset asset)
+                    asset.slot = ESlotType.SECONDARY;
+            }
+
             Rocket.Unturned.U.Events.OnPlayerConnected += OnPlayerConnected;
             Rocket.Unturned.U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
             DamageTool.damageZombieRequested += HordeUtils.CalculateZombieArmor;

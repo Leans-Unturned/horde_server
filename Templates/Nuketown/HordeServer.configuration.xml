@@ -1030,7 +1030,6 @@
       <weapondId>97</weapondId>
       <ammoId>98</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
-      <primary>false</primary>
       <refundValue>0</refundValue>
       <ammoRefundValue>0</ammoRefundValue>
       <baseDamage>0.3</baseDamage>
@@ -1040,7 +1039,6 @@
       <weapondId>101</weapondId>
       <ammoId>103</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
-      <primary>true</primary>
       <refundValue>500</refundValue>
       <ammoRefundValue>250</ammoRefundValue>
       <baseDamage>1</baseDamage>
@@ -1050,7 +1048,6 @@
       <weapondId>380</weapondId>
       <ammoId>381</ammoId>
       <ammoRefilQuantity>10</ammoRefilQuantity>
-      <primary>true</primary>
       <refundValue>500</refundValue>
       <ammoRefundValue>250</ammoRefundValue>
       <baseDamage>0.5</baseDamage>
@@ -1060,7 +1057,6 @@
       <weapondId>112</weapondId>
       <ammoId>113</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
-      <primary>true</primary>
       <refundValue>1500</refundValue>
       <ammoRefundValue>500</ammoRefundValue>
       <baseDamage>0.5</baseDamage>
@@ -1070,7 +1066,6 @@
       <weapondId>363</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
-      <primary>true</primary>
       <refundValue>1600</refundValue>
       <ammoRefundValue>650</ammoRefundValue>
       <baseDamage>0.3</baseDamage>
@@ -1080,7 +1075,6 @@
       <weapondId>1021</weapondId>
       <ammoId>1022</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
-      <primary>false</primary>
       <refundValue>1000</refundValue>
       <ammoRefundValue>400</ammoRefundValue>
       <baseDamage>0.5</baseDamage>
@@ -1090,7 +1084,6 @@
       <weapondId>1369</weapondId>
       <ammoId>1371</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
-      <primary>false</primary>
       <refundValue>1700</refundValue>
       <ammoRefundValue>800</ammoRefundValue>
       <baseDamage>0.3</baseDamage>

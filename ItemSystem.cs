@@ -34,6 +34,9 @@ namespace HordeServer
         {
             public UnturnedPlayer Player;
             public WeaponLoadout Loadout;
+            // Slot (0 primary, 1 secondary) this weapon must end up equipped in, decided at purchase/
+            // pack-a-punch/relocation time, since weapons no longer have a fixed slot of their own
+            public byte TargetSlot;
             // How many consecutive ticks the weapon has not been found anywhere in the inventory
             public uint MissedTicks;
 
@@ -43,7 +46,22 @@ namespace HordeServer
                 Loadout = loadout;
             }
         }
-        static private List<KeyValuePair<UnturnedPlayer, Item>> weaponReplaceNextTick = [];
+        public class PendingWeaponReplace
+        {
+            public UnturnedPlayer Player;
+            // Where the weapon currently is (the bag slot it was manually moved into)
+            public Item CurrentLocation;
+            // The slot (0 or 1) it was equipped in before being moved, it must snap back there
+            public byte TargetSlot;
+
+            public PendingWeaponReplace(UnturnedPlayer player, Item currentLocation, byte targetSlot)
+            {
+                Player = player;
+                CurrentLocation = currentLocation;
+                TargetSlot = targetSlot;
+            }
+        }
+        static private List<PendingWeaponReplace> weaponReplaceNextTick = [];
         // Variable to ignore next player receive item handling
         private static readonly List<UnturnedPlayer> weaponInventoryIgnoreNextTick = [];
         // Player / tickrate for weaponInventoryIgnoreNextTick be removed, when tickrate is 0 it will be removed from both variables
@@ -91,6 +109,24 @@ namespace HordeServer
             }
 
             player.Inventory.removeItem(page, 0);
+        }
+
+        // Decides which slot a newly purchased/received weapon should end up in, now that weapons
+        // don't have a fixed primary/secondary identity: fill whichever slot is empty first, and if
+        // both are already occupied, replace whatever the player currently has in hand
+        static private byte DetermineTargetSlotForPurchase(UnturnedPlayer player)
+        {
+            ItemJar? slot0 = player.Inventory.getItem(0, 0);
+            if (slot0?.item == null) return 0;
+
+            ItemJar? slot1 = player.Inventory.getItem(1, 0);
+            if (slot1?.item == null) return 1;
+
+            byte equippedPage = player.Player.equipment.equippedPage;
+            if (equippedPage == 0 || equippedPage == 1) return equippedPage;
+
+            // Not holding either weapon (e.g. holding a tool/melee), default to replacing primary
+            return 0;
         }
 
         static private void RemovePreviouslyAmmo(UnturnedPlayer player, int ammoId)
@@ -148,7 +184,7 @@ namespace HordeServer
                         // Yes the player put the weapon in inventory
                         if (weaponLoadout.weapondId == P.item.id)
                         {
-                            weaponReplaceNextTick.Add(new(player, new(inventoryGroup, inventoryIndex, P)));
+                            weaponReplaceNextTick.Add(new(player, new(inventoryGroup, inventoryIndex, P), entry.Value.inventoryPage));
                             break;
                         }
                     }
@@ -217,13 +253,11 @@ namespace HordeServer
                 // If is the first weapon give it the ammo for that weapon
                 if (P.item.id == weaponLoadout.weapondId)
                 {
-                    // Remove previously equipped weapon
+                    byte targetSlot = DetermineTargetSlotForPurchase(player);
+
+                    // Remove previously equipped weapon occupying the target slot
                     {
-                        ItemJar? equippedWeapon;
-                        if (weaponLoadout.primary)
-                            equippedWeapon = player.Inventory.getItem(0, 0);
-                        else
-                            equippedWeapon = player.Inventory.getItem(1, 0);
+                        ItemJar? equippedWeapon = player.Inventory.getItem(targetSlot, 0);
 
                         // Check if exists (in theory is not necessary but...)
                         if (equippedWeapon != null)
@@ -238,8 +272,7 @@ namespace HordeServer
                                     {
                                         // Removing the ammo and the weapon
                                         RemovePreviouslyAmmo(player, checkLoadout.ammoId);
-                                        if (weaponLoadout.primary) player.Inventory.removeItem(0, 0);
-                                        else player.Inventory.removeItem(1, 0);
+                                        player.Inventory.removeItem(targetSlot, 0);
 
                                         break;
                                     }
@@ -257,9 +290,9 @@ namespace HordeServer
                     // For some reason in this function the item add is not yet in the inventory, we need to equip in the next tick
                     // And for another reason the player receives ammo of the weapon in the horde purchase volume
                     // and we need to remove it for handling the ammo system in the next tick
-                    weaponEquipNextTick.Add(new(player, weaponLoadout));
+                    weaponEquipNextTick.Add(new(player, weaponLoadout) { TargetSlot = targetSlot });
 
-                    if (weaponLoadout.primary)
+                    if (targetSlot == 0)
                     {
                         refreshPrimaryWeaponNextTick.Add(player);
                         PowerupSystem.ResetPlayerPrimaryPackAPunch(player);
@@ -354,7 +387,7 @@ namespace HordeServer
 
             foreach (WeaponLoadout loadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
             {
-                if (loadout.weapondId == item.item.id && loadout.primary)
+                if (loadout.weapondId == item.item.id)
                 {
                     primaryWeapon[player] = loadout;
                     return;
@@ -372,7 +405,7 @@ namespace HordeServer
 
             foreach (WeaponLoadout loadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
             {
-                if (loadout.weapondId == item.item.id && !loadout.primary)
+                if (loadout.weapondId == item.item.id)
                 {
                     secondaryWeapon[player] = loadout;
                     return;
@@ -475,37 +508,21 @@ namespace HordeServer
                                 {
                                     foundItem = true;
 
-                                    // If the weapon is not on primary or secondary slot, add to it
-                                    if (page != 0 && page != 1)
+                                    // Weapon landed somewhere other than its target slot (bag, or the
+                                    // other weapon slot, since GiveItem/tryAddItem can put it wherever
+                                    // there's room), relocate it there. Equip + ammo happen next tick
+                                    // once it's found already sitting in the target slot
+                                    if (page != entry.TargetSlot)
                                     {
                                         player.Inventory.removeItem(page, itemIndex);
-                                        if (entry.Loadout.primary) player.Inventory.tryAddItem(item.item, 0, 0, 0, 0);
-                                        else player.Inventory.tryAddItem(item.item, 0, 0, 1, 0);
+                                        EvictSlotForRelocation(player, entry.TargetSlot);
+                                        if (!player.Inventory.tryAddItem(item.item, 0, 0, entry.TargetSlot, 0))
+                                            Logger.LogWarning($"Failed to relocate weapon {entry.Loadout.weapondId} into slot {entry.TargetSlot} for {player.CSteamID}");
                                         equipSuccess = true;
                                     }
-                                    // If the weapon is already on the primary or secondary slot equip it
+                                    // Weapon is already in its target slot, equip it
                                     else
                                     {
-                                        // If is not a primary weapon and it is equipped on primary, we need to remove it
-                                        // and place on secondary. This can happen when the weapon's real
-                                        // in-game equip slot disagrees with its "primary" config flag
-                                        if (!entry.Loadout.primary && page == 0)
-                                        {
-                                            EvictSlotForRelocation(player, 1);
-                                            player.Inventory.removeItem(0, 0);
-                                            if (!player.Inventory.tryAddItem(item.item, 0, 0, 1, 0))
-                                                Logger.LogWarning($"Failed to relocate secondary weapon {entry.Loadout.weapondId} into slot 1 for {player.CSteamID}, check if it is configured with the correct primary/secondary slot");
-                                            break;
-                                        }
-                                        // Symmetric case: a primary weapon ended up in the secondary slot
-                                        if (entry.Loadout.primary && page == 1)
-                                        {
-                                            EvictSlotForRelocation(player, 0);
-                                            player.Inventory.removeItem(1, 0);
-                                            if (!player.Inventory.tryAddItem(item.item, 0, 0, 0, 0))
-                                                Logger.LogWarning($"Failed to relocate primary weapon {entry.Loadout.weapondId} into slot 0 for {player.CSteamID}, check if it is configured with the correct primary/secondary slot");
-                                            break;
-                                        }
                                         player.Inventory.player.equipment.tryEquip(page, item.x, item.y);
 
                                         // Only give ammo if weaponInventory is not ignored
@@ -568,36 +585,36 @@ namespace HordeServer
                 for (int i = weaponReplaceNextTick.Count - 1; i >= 0; i--)
                 {
                     var entry = weaponReplaceNextTick[i];
-                    weaponInventoryIgnoreNextTick.Remove(entry.Key);
-                    weaponInventoryIgnoreNextTick.Add(entry.Key);
+                    weaponInventoryIgnoreNextTick.Remove(entry.Player);
+                    weaponInventoryIgnoreNextTick.Add(entry.Player);
                     // Remove before adding: this player may already have a pending entry if both
                     // weapons were moved out of their slots in the same tick (e.g. swapping primary
                     // and secondary), and Dictionary.Add throws on a duplicate key
-                    weaponInventoryResetIgnoreNextTickOnNextTick.Remove(entry.Key);
-                    weaponInventoryResetIgnoreNextTickOnNextTick.Add(entry.Key, 2); // Ignore for 2 ticks
+                    weaponInventoryResetIgnoreNextTickOnNextTick.Remove(entry.Player);
+                    weaponInventoryResetIgnoreNextTickOnNextTick.Add(entry.Player, 2); // Ignore for 2 ticks
                     foreach (WeaponLoadout weaponLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
                     {
-                        if (weaponLoadout.weapondId == entry.Value.item.item.id)
+                        if (weaponLoadout.weapondId == entry.CurrentLocation.item.item.id)
                         {
-                            byte[] itemMetadata = entry.Value.item.item.metadata;
-                            entry.Key.Inventory.removeItem(entry.Value.inventoryPage, entry.Value.inventoryIndex);
+                            byte[] itemMetadata = entry.CurrentLocation.item.item.metadata;
+                            entry.Player.Inventory.removeItem(entry.CurrentLocation.inventoryPage, entry.CurrentLocation.inventoryIndex);
 
-                            SDG.Unturned.Item itemToRespawn = new(entry.Value.item.item.id, true)
+                            SDG.Unturned.Item itemToRespawn = new(entry.CurrentLocation.item.item.id, true)
                             {
                                 amount = 1,
                                 metadata = itemMetadata
                             };
 
-                            if (weaponLoadout.primary) entry.Key.Inventory.tryAddItem(itemToRespawn, 0, 0, 0, 0);
-                            else entry.Key.Inventory.tryAddItem(itemToRespawn, 0, 0, 1, 0);
+                            EvictSlotForRelocation(entry.Player, entry.TargetSlot);
+                            entry.Player.Inventory.tryAddItem(itemToRespawn, 0, 0, entry.TargetSlot, 0);
 
-                            weaponEquipNextTick.Add(new(entry.Key, weaponLoadout));
+                            weaponEquipNextTick.Add(new(entry.Player, weaponLoadout) { TargetSlot = entry.TargetSlot });
 
                             ChatManager.serverSendMessage(
                                 HordeServerPlugin.instance!.Translate("main_weapon_moved"),
                                 new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
                                 null,
-                                entry.Key.SteamPlayer(),
+                                entry.Player.SteamPlayer(),
                                 EChatMode.SAY,
                                 HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
                                 true
