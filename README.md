@@ -6,6 +6,9 @@ Transform a survival mode into a horde mode
 - Players cannot manually level up skill
 - Players will respawn after every round end
 
+### Recommendations
+- [arena_kits](https://github.com/Leans-Unturned/arena_kits) to spawn players with kits
+
 ### Preview on Youtube
 [![Plugin Preview on Youtube](https://img.youtube.com/vi/QND2QVwtSbo/hqdefault.jpg)](https://youtu.be/QND2QVwtSbo)
 
@@ -30,6 +33,7 @@ Update the configurations from the template or create one, the template must be 
 - Powerups: to add powerups you must add the item id the player will buy on the horde purchase on the map editor and then use the same id in the ``AvailablePowerupsToPurchase`` entry  so the plugin will handle it correctly.
 - Pack-A-Punch, to a pack a punch work propertly you must create a new entry for every weapon the player can have in the map. The configuration is: ``AvailablePackAPunch``, you can obtain the ``base64Binary`` by using the command: ``/exportweaponmetadata`` on the currently equipped weapon and the attachments set.
 - Every item you put in horde purchase that is not a weapon you must added the id in ``DisabledInventoryIds`` so will be deleted automatically
+- Zombies Clothes are selected by the index 1 (the 2 option) on the editor zombies spawn, the index 0 is for the spawn lobby zombies
 
 If everything was done correctly when starting the server, everything should now be working as expected. any questions about the procedures, you can ask in the discussion tab.
 

@@ -122,10 +122,7 @@ class HordeUtils
             // Create the zombie instance
             EZombieSpeciality speciality = GetRandomZombieFromWave();
             byte type = 1;
-            byte shirt = 1;
-            byte pants = 1;
-            byte hat = 1;
-            byte gear = 1;
+            GetRandomZombieClothing(type, out byte shirt, out byte pants, out byte hat, out byte gear);
 
             bool zombieSpawned = false;
 
@@ -483,6 +480,32 @@ class HordeUtils
         {
             GiveAmmo(player);
         }
+    }
+
+    // Randomizes clothing the same way the engine's own (internal, so not callable from a plugin)
+    // ZombieTable.GetSpawnClothingParameters does: roll each slot (Shirt/Pants/Hat/Gear) against its
+    // "chance" from the map's Zombies.dat/Cloth editor, picking a random item within that slot's table
+    // or 255 (no item) on a miss. Falls back to the old hardcoded look if the type has no table.
+    private static void GetRandomZombieClothing(byte type, out byte shirt, out byte pants, out byte hat, out byte gear)
+    {
+        if (LevelZombies.tables == null || type >= LevelZombies.tables.Count)
+        {
+            shirt = pants = hat = gear = 1;
+            return;
+        }
+
+        ZombieSlot[] slots = LevelZombies.tables[type].slots;
+        shirt = RandomClothingIndex(slots[0]);
+        pants = RandomClothingIndex(slots[1]);
+        hat = RandomClothingIndex(slots[2]);
+        gear = RandomClothingIndex(slots[3]);
+    }
+
+    private static byte RandomClothingIndex(ZombieSlot slot)
+    {
+        if (slot.table.Count > 0 && Random.value < slot.chance)
+            return (byte)Random.Range(0, slot.table.Count);
+        return 255;
     }
 
     private static EZombieSpeciality GetRandomZombieFromWave()
