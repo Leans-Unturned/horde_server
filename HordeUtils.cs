@@ -34,11 +34,39 @@ class HordeUtils
         return nodes;
     }
 
+    // A node named exactly "zombiespawn" always spawns zombies. A node named "zombiespawn" followed
+    // by a number (e.g. "zombiespawn1") is gated behind a Door sharing that same DoorIndex: it only
+    // spawns once at least one such door has been opened (DoorSystem.OpenedDoorIndexes), letting a
+    // map block zombies out of an area until players pay to open a path into it. DoorIndex is not
+    // unique, so opening any one of multiple doors sharing an index unlocks all of them at once.
     private static List<UnityEngineCoreModule.UnityEngine.Vector3> GetZombieSpawnNodePositions()
     {
-        return GetLocationNodesByName(ZombieSpawnNodeName)
-            .Select(node => node.transform.position)
-            .ToList();
+        List<UnityEngineCoreModule.UnityEngine.Vector3> positions = [];
+
+        foreach (LocationDevkitNode node in LocationDevkitNodeSystem.Get().GetAllNodes())
+        {
+            string name = node.locationName;
+            if (string.IsNullOrEmpty(name) || !name.StartsWith(ZombieSpawnNodeName, System.StringComparison.InvariantCultureIgnoreCase)) continue;
+
+            string suffix = name.Substring(ZombieSpawnNodeName.Length);
+            if (suffix.Length == 0)
+            {
+                positions.Add(node.transform.position);
+                continue;
+            }
+
+            if (!int.TryParse(suffix, out int doorIndex))
+            {
+                if (HordeServerPlugin.instance!.Configuration.Instance.DebugZombies)
+                    Logger.LogWarning($"Location node \"{name}\" starts with \"{ZombieSpawnNodeName}\" but its suffix (\"{suffix}\") is not a valid DoorIndex number, ignoring it");
+                continue;
+            }
+
+            if (DoorSystem.OpenedDoorIndexes.Contains(doorIndex))
+                positions.Add(node.transform.position);
+        }
+
+        return positions;
     }
 
     // Angle is the node's own Y rotation in the map editor, so the map author controls which way

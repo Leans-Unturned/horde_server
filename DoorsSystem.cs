@@ -1,5 +1,6 @@
 extern alias UnityEngineCoreModule;
 
+using System.Collections.Generic;
 using HordeServer;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
@@ -7,6 +8,11 @@ using Steamworks;
 
 class DoorSystem
 {
+    // DoorIndexes unlocked this round (a door's DoorIndex is added here once ANY door sharing that
+    // index has been opened), read by HordeUtils to decide which "zombiespawn<index>" location nodes
+    // are allowed to spawn zombies. Reset every round in RespawnDoors
+    static public readonly HashSet<int> OpenedDoorIndexes = [];
+
     // DebugDoors config: logs every player-placed salvageable barricade's position and rotation,
     // formatted so it can be pasted directly into an AvailableDoorsToPurchase entry
     static public void LogDebugDoorPlacement(BarricadeRegion region, BarricadeDrop drop)
@@ -77,6 +83,14 @@ class DoorSystem
         ItemSystem.SuppressNextCreditSpend(player);
         player.Experience -= (uint)door.cost;
 
+        // Unlocks every "zombiespawn<DoorIndex>" node sharing this door's index, DoorIndex 0 means
+        // this door does not gate any zombie spawn area
+        if (door.DoorIndex != 0 && OpenedDoorIndexes.Add(door.DoorIndex))
+        {
+            if (HordeServerPlugin.instance!.Configuration.Instance.DebugZombies)
+                Rocket.Core.Logging.Logger.Log($"[DoorIndex] Index {door.DoorIndex} opened, matching zombiespawn nodes are now active");
+        }
+
         foreach (UnturnedPlayer onlinePlayer in HordeServerPlugin.onlinePlayers)
         {
             if (onlinePlayer.CSteamID.m_SteamID == player.CSteamID.m_SteamID)
@@ -109,6 +123,7 @@ class DoorSystem
     static public void RespawnDoors()
     {
         BarricadeManager.askClearAllBarricades();
+        OpenedDoorIndexes.Clear();
 
         foreach (var door in HordeServerPlugin.instance!.Configuration.Instance.AvailableDoorsToPurchase)
         {
@@ -142,4 +157,8 @@ public class Door
     public UnityEngineCoreModule.UnityEngine.Quaternion rotation;
     public int cost;
     public ushort assetId = 30;
+    // Not unique: multiple doors can share the same DoorIndex. Opening ANY ONE of them unlocks every
+    // "zombiespawn<DoorIndex>" location node sharing that index (see HordeUtils.GetZombieSpawnNodePositions).
+    // 0 means this door does not gate any zombie spawn area
+    public int DoorIndex = 0;
 }
