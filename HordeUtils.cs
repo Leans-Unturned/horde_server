@@ -551,15 +551,29 @@ class HordeUtils
         return EZombieSpeciality.NONE;
     }
 
+    // ZombieRegion.isRadioactive is computed once when the level loads (from the map's Deadzone/Zone
+    // volumes) and never changes on its own, so this only needs to run once at plugin load, over every
+    // region, instead of every tick over whichever zombies happen to be alive
     public static void RemoveZombiesRadiation()
     {
-        foreach (Zombie zombie in zombiesAlive)
-            ZombieManager.regions[zombie.bound].isRadioactive = false;
+        if (ZombieManager.regions == null) return;
+
+        foreach (ZombieRegion region in ZombieManager.regions)
+            region.isRadioactive = false;
     }
 
-    public static void RemovePlayersRadiation()
+    // PlayerLife.virus only ever changes through askInfect/askRadiate/askDisinfect, and all three
+    // fire OnTellVirus_Global right after applying their change (SDG.Unturned.PlayerLife), so hooking
+    // it lets us correct back to full immunity exactly when needed instead of every tick. The
+    // life.virus >= 100 guard both skips players who are already fully immune and stops this handler
+    // from re-triggering itself forever, since askDisinfect below also fires OnTellVirus_Global
+    public static void ForcePlayerFullImmunity(PlayerLife life)
     {
-        foreach (UnturnedPlayer player in HordeServerPlugin.alivePlayers)
-            player.Infection = 0;
+        if (life.virus >= 100) return;
+
+        UnturnedPlayer? player = UnturnedPlayer.FromPlayer(life.player);
+        if (player == null || !HordeServerPlugin.alivePlayers.Contains(player)) return;
+
+        life.askDisinfect((byte)(100 - life.virus));
     }
 }
