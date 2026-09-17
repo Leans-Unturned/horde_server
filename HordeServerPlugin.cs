@@ -123,16 +123,22 @@ namespace HordeServer
             BarricadeDrop.OnSalvageRequested_Global += DoorSystem.TryOpenDoor;
             BarricadeManager.onBarricadeSpawned += DoorSystem.LogDebugDoorPlacement;
 
+            if (Configuration.Instance.KitCommandOnlyInArea)
+                UnturnedPlayerEvents.OnPlayerUpdatePosition += KitSystem.PositionUpdate;
+
             Logger.Log("HordeServer instanciated, by LeandroTheDev");
         }
 
         private void OnPlayerConnected(UnturnedPlayer player)
         {
             player.Events.OnDeath += OnPlayerDead;
+            player.Events.OnRevive += OnPlayerRevive;
             player.Events.OnInventoryAdded += ItemSystem.OnInventoryAdded;
             player.Events.OnInventoryRemoved += ItemSystem.OnInventoryRemoved;
             player.Inventory.onDropItemRequested += ItemSystem.OnItemDropped;
             player.Player.skills.onSkillsUpdated += OnSkillsUpdated;
+
+            KitSystem.GiveDefaultKit(player);
 
             if (onlinePlayers.Count == 0)
             {
@@ -165,7 +171,9 @@ namespace HordeServer
             PowerupSystem.Disconnect(player);
             SkillSystem.Disconnect(player);
             HealthRegenSystem.Disconnect(player);
+            KitSystem.Disconnect(player.Id);
             player.Events.OnDeath -= OnPlayerDead;
+            player.Events.OnRevive -= OnPlayerRevive;
             player.Events.OnInventoryAdded -= ItemSystem.OnInventoryAdded;
             player.Events.OnInventoryRemoved -= ItemSystem.OnInventoryRemoved;
             player.Inventory.onDropItemRequested -= ItemSystem.OnItemDropped;
@@ -188,6 +196,11 @@ namespace HordeServer
 
             string skills = Path.Combine(PlayersFolder, $"{player.Id}_0", Level.info.name, "Player", "Skills.dat");
             if (File.Exists(skills)) File.Delete(skills);
+        }
+
+        private void OnPlayerRevive(UnturnedPlayer player, UnityEngineCoreModule.UnityEngine.Vector3 position, byte angle)
+        {
+            KitSystem.GiveDefaultKit(player);
         }
 
         private void OnSkillsUpdated()
@@ -289,6 +302,10 @@ namespace HordeServer
             {"packapunch_unavailable", "Unavailable Pack a Punch"},
             {"packapunch_maxlevel", "Pack a Punch is on Max Level"},
             {"packapunch", "Pack a Punch Received"},
+            {"kit_received", "Kit received: {0}"},
+            {"kit_nopermission", "Kit not found or no permission: {0}"},
+            {"kit_available", "Available kits: {0}"},
+            {"kit_unavailable", "Kit selection is only available in the designated area"},
         };
     }
 

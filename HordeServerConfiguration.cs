@@ -30,6 +30,10 @@ namespace HordeServer
 
         public string ChatIconURL = "https://add-image-url.com";
 
+        public bool KitCommandOnlyInArea = false;
+        public List<KitAreas> KitCommandAreas = [];
+        public List<Kit> Items = [];
+
         public List<ConfigWave> Waves = [];
         public List<uint> RemainingZombiesAlert = [];
         public List<WeaponLoadout> AvailableWeaponsToPurchase = [];
@@ -44,6 +48,64 @@ namespace HordeServer
 
         public void LoadDefaults()
         {
+            KitCommandAreas = [
+                new() { X1 = 15.5, Y1 = 50, Z1 = -241.5, X2 = 33.1, Y2 = 60, Z2 = -250.05 }
+            ];
+
+            Items = [
+                new() {
+                    name = "Dmitri",
+                    items = [
+                        new() { Id = 1182, Amount = 1 },
+                        new() { Id = 254,  Amount = 1 },
+                        new() { Id = 254,  Amount = 1 },
+                        new() { Id = 1385, Amount = 1 },
+                        new() { Id = 1386, Amount = 1 },
+                        new() { Id = 1387, Amount = 1 },
+                        new() { Id = 97,   Amount = 1 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                    ]
+                },
+                new() {
+                    name = "Nikolai",
+                    items = [
+                        new() { Id = 1182, Amount = 1 },
+                        new() { Id = 254,  Amount = 1 },
+                        new() { Id = 254,  Amount = 1 },
+                        new() { Id = 305,  Amount = 1 },
+                        new() { Id = 306,  Amount = 1 },
+                        new() { Id = 313,  Amount = 1 },
+                        new() { Id = 97,   Amount = 1 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                    ]
+                },
+                new() {
+                    name = "Aleksandr",
+                    items = [
+                        new() { Id = 1182, Amount = 1 },
+                        new() { Id = 254,  Amount = 1 },
+                        new() { Id = 254,  Amount = 1 },
+                        new() { Id = 1048, Amount = 1 },
+                        new() { Id = 407,  Amount = 1 },
+                        new() { Id = 408,  Amount = 1 },
+                        new() { Id = 97,   Amount = 1 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                        new() { Id = 98,   Amount = 7 },
+                    ]
+                },
+            ];
+
             RemainingZombiesAlert = [1000, 500, 250, 100, 50, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
             Waves = [
@@ -759,6 +821,31 @@ namespace HordeServer
                 MaxAmmoChance = MaxAmmoChance,
             };
         }
+    }
+
+    public class Kit
+    {
+        public string name = "";
+        public string? permissionId = null;
+        public List<KitItem> items = [];
+        public Skill experience = new();
+    }
+
+    public class KitItem
+    {
+        public ushort Id = 1;
+        public byte Amount = 1;
+        public byte[]? Metadata = [];
+    }
+
+    public class KitAreas
+    {
+        public double X1;
+        public double Y1;
+        public double Z1;
+        public double X2;
+        public double Y2;
+        public double Z2;
     }
 
     public class Skill

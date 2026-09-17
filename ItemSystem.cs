@@ -28,6 +28,9 @@ namespace HordeServer
         // Players whose next credit spend should NOT be treated as a purchase (e.g. paying to open a door)
         private static readonly HashSet<UnturnedPlayer> suppressNextCreditSpendEvent = [];
 
+        // Players currently receiving a kit — OnInventoryAdded skips all checks for them
+        internal static readonly HashSet<UnturnedPlayer> kitGiveInProgress = [];
+
         static public List<PendingWeaponEquip> weaponEquipNextTick = [];
 
         public class PendingWeaponEquip
@@ -166,6 +169,9 @@ namespace HordeServer
 
         static public void OnInventoryAdded(UnturnedPlayer player, InventoryGroup inventoryGroup, byte inventoryIndex, ItemJar P)
         {
+            if (kitGiveInProgress.Contains(player))
+                return;
+
             if (IsDisabledInventoryItem(P))
             {
                 removeItemNextTick.Add(new(player, new(inventoryGroup, inventoryIndex, P)));
