@@ -1051,15 +1051,6 @@
       <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
     </WeaponLoadout>
     <WeaponLoadout>
-      <weapondId>3012</weapondId>
-      <ammoId>6</ammoId>
-      <ammoRefilQuantity>8</ammoRefilQuantity>
-      <refundValue>3000</refundValue>
-      <ammoRefundValue>2000</ammoRefundValue>
-      <baseDamage>1.0</baseDamage>
-      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
-    </WeaponLoadout>
-    <WeaponLoadout>
       <weapondId>116</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>8</ammoRefilQuantity>

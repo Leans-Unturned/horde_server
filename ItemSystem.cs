@@ -529,7 +529,7 @@ namespace HordeServer
                                         if (HordeServerPlugin.instance!.Configuration.Instance.DebugWeaponSlots)
                                             Logger.Log($"[WeaponSlots] {player.CSteamID}: equipping weapondId {entry.Loadout.weapondId} already in target slot {entry.TargetSlot}");
 
-                                        player.Inventory.player.equipment.tryEquip(page, item.x, item.y);
+                                        player.Inventory.player.equipment.ServerEquip(page, item.x, item.y);
 
                                         // Only give ammo if weaponInventory is not ignored
                                         if (!weaponInventoryIgnoreNextTick.Contains(player))
