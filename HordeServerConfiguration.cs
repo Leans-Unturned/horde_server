@@ -30,8 +30,6 @@ namespace HordeServer
 
         public string ChatIconURL = "https://add-image-url.com";
 
-        public List<ZombieNodePosition> ZombiesAvailableNodes = [];
-        public List<ConfigPosition> PlayerSpawnPositions = [];
         public List<ConfigWave> Waves = [];
         public List<uint> RemainingZombiesAlert = [];
         public List<WeaponLoadout> AvailableWeaponsToPurchase = [];
@@ -47,36 +45,6 @@ namespace HordeServer
 
         public void LoadDefaults()
         {
-            ZombiesAvailableNodes = [
-                new () {
-                    NodeName = "civilian",
-                    X = 10,
-                    Y = 10,
-                    Z = 10,
-                    Angle = 0,
-                },
-                new () {
-                    NodeName = "military",
-                    X = 20,
-                    Y = 10,
-                    Z = 20,
-                    Angle = 0,
-                }
-            ];
-
-            PlayerSpawnPositions = [
-                new() {
-                    X = 10,
-                    Y = 10,
-                    Z = 10
-                },
-                new() {
-                    X = 15,
-                    Y = 10,
-                    Z = 15
-                }
-            ];
-
             RemainingZombiesAlert = [1000, 500, 250, 100, 50, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
             Waves = [
@@ -741,15 +709,6 @@ namespace HordeServer
                 30
             ];
         }
-    }
-
-    public class ZombieNodePosition
-    {
-        public string NodeName = "default";
-        public float X = 0;
-        public float Y = 0;
-        public float Z = 0;
-        public float Angle = 0.0f;
     }
 
     public class ConfigPosition

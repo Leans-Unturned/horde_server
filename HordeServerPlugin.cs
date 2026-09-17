@@ -285,7 +285,7 @@ namespace HordeServer
         };
     }
 
-    class UnityTickrate : MonoBehaviour
+    class UnityTickrate : UnityEngineCoreModule.UnityEngine.MonoBehaviour
     {
         public RoundSystem? RoundSystemInstance;
         // Positions where a player died and their loot should be cleared next tick, instead of

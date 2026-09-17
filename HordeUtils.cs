@@ -6,16 +6,49 @@ using Rocket.Core.Logging;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using UnityEngine;
+using Random = UnityEngineCoreModule.UnityEngine.Random;
 
 namespace HordeServer;
 
 class HordeUtils
 {
+    // Zombie/player spawn positions come from LocationNode(s) placed in the map editor with these
+    // exact names (case-insensitive, any amount of them), instead of a manually-typed config list
+    private const string ZombieSpawnNodeName = "zombiespawn";
+    private const string PlayerSpawnNodeName = "playerspawn";
+
     public static List<uint> AlertsUsed = [];
     public static long zombiesToSpawn = 0;
     public static long zombiesAliveCountReference = 0;
     public static List<Zombie> zombiesAlive = [];
     public static ConfigWave? wave = null;
+
+    private static List<LocationDevkitNode> GetLocationNodesByName(string name)
+    {
+        List<LocationDevkitNode> nodes = [];
+        foreach (LocationDevkitNode node in LocationDevkitNodeSystem.Get().GetAllNodes())
+        {
+            if (string.Equals(node.locationName, name, System.StringComparison.InvariantCultureIgnoreCase))
+                nodes.Add(node);
+        }
+        return nodes;
+    }
+
+    private static List<UnityEngineCoreModule.UnityEngine.Vector3> GetZombieSpawnNodePositions()
+    {
+        return GetLocationNodesByName(ZombieSpawnNodeName)
+            .Select(node => node.transform.position)
+            .ToList();
+    }
+
+    // Angle is the node's own Y rotation in the map editor, so the map author controls which way
+    // players face on spawn/respawn
+    public static List<(UnityEngineCoreModule.UnityEngine.Vector3 position, float angle)> GetPlayerSpawnNodePositions()
+    {
+        return GetLocationNodesByName(PlayerSpawnNodeName)
+            .Select(node => (node.transform.position, node.transform.eulerAngles.y))
+            .ToList();
+    }
 
     public static void SpawnZombiesInNodes()
     {
@@ -39,17 +72,24 @@ class HordeUtils
             return;
         }
 
-        List<ZombieNodePosition> zombiesNodesToSpawn = new(
-            HordeServerPlugin.instance.Configuration.Instance.ZombiesAvailableNodes
-        );
-        foreach (ZombieNodePosition _ in HordeServerPlugin.instance.Configuration.Instance.ZombiesAvailableNodes)
+        List<UnityEngineCoreModule.UnityEngine.Vector3> zombieSpawnPositions = GetZombieSpawnNodePositions();
+
+        if (zombieSpawnPositions.Count == 0)
+        {
+            if (HordeServerPlugin.instance.Configuration.Instance.DebugZombies)
+                Logger.LogError($"Cannot find any location node named \"{ZombieSpawnNodeName}\" in the map, add some in the map editor");
+            return;
+        }
+
+        List<UnityEngineCoreModule.UnityEngine.Vector3> zombiesNodesToSpawn = new(zombieSpawnPositions);
+        foreach (UnityEngineCoreModule.UnityEngine.Vector3 _ in zombieSpawnPositions)
         {
             // Randomly get a zombie node to spawn
-            ZombieNodePosition zombieNodePosition;
+            UnityEngineCoreModule.UnityEngine.Vector3 point;
             if (zombiesNodesToSpawn.Count > 0)
             {
                 int index = Random.Range(0, zombiesNodesToSpawn.Count);
-                zombieNodePosition = zombiesNodesToSpawn[index];
+                point = zombiesNodesToSpawn[index];
                 zombiesNodesToSpawn.RemoveAt(index);
             }
             else return;
@@ -61,7 +101,6 @@ class HordeUtils
             byte pants = 1;
             byte hat = 1;
             byte gear = 1;
-            UnityEngineCoreModule.UnityEngine.Vector3 point = new(zombieNodePosition.X, zombieNodePosition.Y, zombieNodePosition.Z);
 
             bool zombieSpawned = false;
 

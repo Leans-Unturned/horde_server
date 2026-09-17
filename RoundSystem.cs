@@ -5,6 +5,7 @@ using Rocket.Core.Logging;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using UnityEngine;
+using Random = UnityEngineCoreModule.UnityEngine.Random;
 
 namespace HordeServer;
 class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
@@ -76,11 +77,15 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
 
                     if (!player.Dead)
                     {
-                        ConfigPosition position = HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions[
-                            Random.Range(0, HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
-
-                        player.Teleport(new(position.X, position.Y, position.Z), position.Angle);
-                        HordeServerPlugin.alivePlayers.Add(player);
+                        var playerSpawnPositions = HordeUtils.GetPlayerSpawnNodePositions();
+                        if (playerSpawnPositions.Count > 0)
+                        {
+                            var spawn = playerSpawnPositions[Random.Range(0, playerSpawnPositions.Count)];
+                            player.Teleport(spawn.position, spawn.angle);
+                            HordeServerPlugin.alivePlayers.Add(player);
+                        }
+                        else
+                            Logger.LogError("Cannot find any location node named \"playerspawn\" in the map, add some in the map editor");
                     }
                 }
             }
@@ -164,11 +169,15 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                         ItemSystem.RefreshPrimaryLoadout(player);
                         ItemSystem.RefreshSecondaryLoadout(player);
 
-                        ConfigPosition position = HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions[
-                                Random.Range(0, HordeServerPlugin.instance.Configuration.Instance.PlayerSpawnPositions.Count)];
-
-                        player.Teleport(new(position.X, position.Y, position.Z), position.Angle);
-                        HordeServerPlugin.alivePlayers.Add(player);
+                        var playerSpawnPositions = HordeUtils.GetPlayerSpawnNodePositions();
+                        if (playerSpawnPositions.Count > 0)
+                        {
+                            var spawn = playerSpawnPositions[Random.Range(0, playerSpawnPositions.Count)];
+                            player.Teleport(spawn.position, spawn.angle);
+                            HordeServerPlugin.alivePlayers.Add(player);
+                        }
+                        else
+                            Logger.LogError("Cannot find any location node named \"playerspawn\" in the map, add some in the map editor");
                     }
 
                     PowerupSystem.GiveRoundGrenadeForPlayer(player);

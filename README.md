@@ -22,19 +22,10 @@ Update the configurations from the template or create one, the template must be 
 - The player spawn should be the map lobby. (The real spawn will be set in plugin configuration)
 - The zombies is recommended to be all stored in one place, (In the game code the zombies cannot be spawned just respawned in a different location, is totally necessary that all available zombies has spawned for the plugin to handle the zombies spawn), recommended to be near the player spawn lobby
 - Add only a unique navigation with infinite agro option, so the zombies will automatically hunt the players (The spawned zombies in maps needs to be inside this navigation)
-
-Open the server, join it, and check the console, you will probably view your position coordinates (if you enabled ``DebugPlayerPosition``), go to a location that you want for the players to spawn when a round start, check the console and get the coordinates, edit the plugin configurations and add it to ``PlayerSpawnPositions``
-
-Now you need to implement the ``ZombiesAvailableNodes`` is basically the same as zombie nodes in map editor, enable ``DebugPlayerPosition`` go to specific locations that you want the zombies to spawn, get the coordinates in console and start adding ``ZombiesAvailableNodes``
+- Setting the real zombie spawn position: to correctly added the zombies spawn you must add a ``Location Node`` with the name ``zombiespawn``, now choose the position you want and place it and the zombies will spawn correctly in that position.
+- To set where the player will spawn is the same thing as the zombie spawn but with the name: ``playerspawn``
 
 If everything was done correctly when starting the server, everything should now be working as expected. any questions about the procedures, you can ask in the discussion tab.
-
-### Considerations
-- I strongly recommend that you use ``DebugZombies`` config before asking for help in map configuration
-
-### To Do
-- Special grenades
-- Aim powerup
 
 # Building
 
