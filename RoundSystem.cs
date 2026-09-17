@@ -124,6 +124,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                 if (HordeServerPlugin.instance!.Configuration.Instance.Waves.Count <= wave)
                 {
                     HordeUtils.wave = HordeServerPlugin.instance!.Configuration.Instance.Waves[wave].Clone();
+                    HordeUtils.ScaleWaveForPlayerCount(HordeUtils.wave, HordeServerPlugin.onlinePlayers.Count);
                     foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)
                     {
                         ChatManager.serverSendMessage(
@@ -142,6 +143,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                 }
 
                 HordeUtils.wave = HordeServerPlugin.instance!.Configuration.Instance.Waves[wave].Clone();
+                HordeUtils.ScaleWaveForPlayerCount(HordeUtils.wave, HordeServerPlugin.onlinePlayers.Count);
                 HordeUtils.CalculateZombiesToSpawn();
 
                 foreach (UnturnedPlayer player in HordeServerPlugin.onlinePlayers)

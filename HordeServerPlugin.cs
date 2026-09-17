@@ -45,7 +45,13 @@ namespace HordeServer
             foreach (WeaponLoadout weaponLoadout in Configuration.Instance.AvailableWeaponsToPurchase)
             {
                 if (Assets.find(EAssetType.ITEM, weaponLoadout.weapondId) is ItemAsset asset)
+                {
                     asset.slot = ESlotType.SECONDARY;
+                    if (Configuration.Instance.DebugWeaponSlots)
+                        Logger.Log($"[WeaponSlots] Overrode asset.slot for weapondId {weaponLoadout.weapondId} ({asset.name}) to SECONDARY (accepts slot 0 or 1)");
+                }
+                else
+                    Logger.LogWarning($"[WeaponSlots] Could not find ItemAsset for weapondId {weaponLoadout.weapondId}, slot override skipped, this weapon may still be restricted to its baked-in primary/secondary slot");
             }
 
             Rocket.Unturned.U.Events.OnPlayerConnected += OnPlayerConnected;

@@ -123,6 +123,42 @@ class HordeUtils
         }
     }
 
+    // Scales a freshly cloned wave up based on how many players are in the match, so the server
+    // doesn't spawn the same amount/toughness of zombies for 1 player as for a full squad. Must be
+    // called on the clone (HordeUtils.wave), never on the original HordeServerConfiguration.Waves entry
+    public static void ScaleWaveForPlayerCount(ConfigWave wave, int playerCount)
+    {
+        int extraPlayers = System.Math.Max(0, playerCount - 1);
+        if (extraPlayers <= 0) return;
+
+        float countScale = 1f + extraPlayers * HordeServerPlugin.instance!.Configuration.Instance.ZombieCountIncreasePerPlayer;
+        float healthScale = 1f + extraPlayers * HordeServerPlugin.instance!.Configuration.Instance.ZombieHealthIncreasePerPlayer;
+
+        wave.Acid = (long)System.Math.Ceiling(wave.Acid * countScale);
+        wave.BossEletric = (long)System.Math.Ceiling(wave.BossEletric * countScale);
+        wave.BossElverStomper = (long)System.Math.Ceiling(wave.BossElverStomper * countScale);
+        wave.BossFire = (long)System.Math.Ceiling(wave.BossFire * countScale);
+        wave.BossMagma = (long)System.Math.Ceiling(wave.BossMagma * countScale);
+        wave.BossNuclear = (long)System.Math.Ceiling(wave.BossNuclear * countScale);
+        wave.BossSprit = (long)System.Math.Ceiling(wave.BossSprit * countScale);
+        wave.BossWind = (long)System.Math.Ceiling(wave.BossWind * countScale);
+        wave.Burner = (long)System.Math.Ceiling(wave.Burner * countScale);
+        wave.Crawler = (long)System.Math.Ceiling(wave.Crawler * countScale);
+        wave.DLBlueVolatile = (long)System.Math.Ceiling(wave.DLBlueVolatile * countScale);
+        wave.DLRedVolatile = (long)System.Math.Ceiling(wave.DLRedVolatile * countScale);
+        wave.FlankerFriendly = (long)System.Math.Ceiling(wave.FlankerFriendly * countScale);
+        wave.FlankerStalk = (long)System.Math.Ceiling(wave.FlankerStalk * countScale);
+        wave.Mega = (long)System.Math.Ceiling(wave.Mega * countScale);
+        wave.Normal = (long)System.Math.Ceiling(wave.Normal * countScale);
+        wave.Spirit = (long)System.Math.Ceiling(wave.Spirit * countScale);
+        wave.Sprinter = (long)System.Math.Ceiling(wave.Sprinter * countScale);
+
+        wave.HealthMultiplier *= healthScale;
+
+        if (HordeServerPlugin.instance!.Configuration.Instance.DebugZombies)
+            Logger.Log($"[Difficulty] Scaled wave for {playerCount} players (+{extraPlayers} extra): countScale={countScale}, healthScale={healthScale}, HealthMultiplier={wave.HealthMultiplier}");
+    }
+
     public static void CalculateZombiesToSpawn()
     {
         if (wave == null)

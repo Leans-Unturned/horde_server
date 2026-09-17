@@ -14,9 +14,12 @@
   </MapCenterPosition>
   <MapCenterRadius>100000</MapCenterRadius>
   <MaximumZombieNodeDistanceToSpawn>150</MaximumZombieNodeDistanceToSpawn>
+  <ZombieCountIncreasePerPlayer>0.5</ZombieCountIncreasePerPlayer>
+  <ZombieHealthIncreasePerPlayer>0.0</ZombieHealthIncreasePerPlayer>
   <DebugPlayerPosition>false</DebugPlayerPosition>
   <DebugBarricadesPosition>false</DebugBarricadesPosition>
   <DebugZombies>false</DebugZombies>
+  <DebugWeaponSlots>false</DebugWeaponSlots>
   <PlayersFolder>.../SteamLibrary/steamapps/common/U3DS/Servers/test/Players/</PlayersFolder>
   <LevelName>Nuketown HS</LevelName>
   <ChatIconURL>https://add-image-url.com</ChatIconURL>

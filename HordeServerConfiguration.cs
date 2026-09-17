@@ -19,9 +19,14 @@ namespace HordeServer
         public uint HitsToKillPlayerWithJuggernog = 4;
         public float HealthRegenDelay = 2f;
         public float HealthRegenDuration = 1f;
+        // Scales each wave's zombie counts/health up per player beyond the first, so a full server
+        // is not the same difficulty as someone playing solo. 0 disables the respective scaling
+        public float ZombieCountIncreasePerPlayer = 0.5f;
+        public float ZombieHealthIncreasePerPlayer = 0.25f;
         public bool DebugPlayerPosition = false;
         public bool DebugBarricadesPosition = false;
         public bool DebugZombies = false;
+        public bool DebugWeaponSlots = false;
         public string PlayersFolder = "SteamLibrary/steamapps/common/U3DS/Servers/myserver/Players/";
         public string LevelName = "PEI";
 
