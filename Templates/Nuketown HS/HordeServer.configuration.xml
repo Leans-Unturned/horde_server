@@ -10,7 +10,6 @@
   <ZombieCountIncreasePerPlayer>0.5</ZombieCountIncreasePerPlayer>
   <ZombieHealthIncreasePerPlayer>0.0</ZombieHealthIncreasePerPlayer>
   <DebugPlayerPosition>false</DebugPlayerPosition>
-  <DebugBarricadesPosition>false</DebugBarricadesPosition>
   <DebugZombies>false</DebugZombies>
   <DebugWeaponSlots>false</DebugWeaponSlots>
   <ChatIconURL>https://add-image-url.com</ChatIconURL>

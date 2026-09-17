@@ -22,7 +22,6 @@ namespace HordeServer
         public float ZombieCountIncreasePerPlayer = 0.5f;
         public float ZombieHealthIncreasePerPlayer = 0.25f;
         public bool DebugPlayerPosition = false;
-        public bool DebugBarricadesPosition = false;
         public bool DebugZombies = false;
         public bool DebugWeaponSlots = false;
 

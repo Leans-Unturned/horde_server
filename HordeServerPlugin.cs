@@ -115,11 +115,6 @@ namespace HordeServer
             }
 
             BarricadeDrop.OnSalvageRequested_Global += DoorSystem.TryOpenDoor;
-            System.Timers.Timer doorRefreshTimer = new();
-            doorRefreshTimer.AutoReset = true;
-            doorRefreshTimer.Interval = 1000;
-            doorRefreshTimer.Elapsed += (_, __) => DoorSystem.RefreshOwnerships();
-            doorRefreshTimer.Enabled = true;
 
             Logger.Log("HordeServer instanciated, by LeandroTheDev");
         }

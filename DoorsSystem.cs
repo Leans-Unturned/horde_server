@@ -1,67 +1,11 @@
 extern alias UnityEngineCoreModule;
 
 using HordeServer;
-using Rocket.Core.Logging;
-using Rocket.Core.Utils;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 
 class DoorSystem
 {
-    /// <summary>
-    /// All doors will change ownership to the most proximity player
-    /// THIS IS NECESSARY BECAUSE ONLY THE GOD DAMN OWNER CAN SALVAGE THE F**** BARRICADE
-    /// </summary>
-    static public void RefreshOwnerships()
-    {
-        BarricadeRegion[,] regions = BarricadeManager.regions;
-
-        int sizeX = regions.GetLength(0);
-        int sizeY = regions.GetLength(1);
-
-        for (int x = 0; x < sizeX; x++)
-        {
-            for (int y = 0; y < sizeY; y++)
-            {
-                BarricadeRegion region = regions[x, y];
-
-                foreach (var drop in region.drops)
-                {
-                    var barricade = drop.asset;
-                    var transform = drop.model?.transform;
-
-                    if (transform == null)
-                        continue;
-
-                    UnturnedPlayer? nearestPlayer = null;
-                    float nearestDistance = float.MaxValue;
-
-                    if (HordeServerPlugin.instance!.Configuration.Instance.DebugBarricadesPosition)
-                        Logger.Log($"{transform.position} / {transform.rotation}");
-
-                    foreach (UnturnedPlayer player in HordeServerPlugin.alivePlayers)
-                    {
-                        float actualDistance = UnityEngineCoreModule.UnityEngine.Vector3.Distance(transform.position, player.Position);
-
-                        if (actualDistance < nearestDistance)
-                        {
-                            nearestPlayer = player;
-                            nearestDistance = actualDistance;
-                        }
-                    }
-
-                    if (nearestPlayer != null)
-                    {
-                        TaskDispatcher.QueueOnMainThread(() =>
-                        {
-                            BarricadeManager.changeOwnerAndGroup(transform, nearestPlayer.CSteamID.m_SteamID, 0);
-                        });
-                    }
-                }
-            }
-        }
-    }
-
     static public void TryOpenDoor(BarricadeDrop barricade, SteamPlayer instigatorClient, ref bool shouldAllow)
     {
         UnityEngineCoreModule.UnityEngine.Vector3? position = barricade.model?.transform?.position;
@@ -139,6 +83,9 @@ class DoorSystem
                 Rocket.Core.Logging.Logger.LogError($"Asset {door.assetId} not found.");
                 continue;
             }
+
+            // Doors have no player owner, anyone must be able to salvage them to pay and open the path
+            asset.shouldBypassPickupOwnership = true;
 
             Barricade barricade = new(asset)
             {
