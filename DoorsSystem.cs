@@ -95,6 +95,8 @@ class DoorSystem
             return;
         }
 
+        // Paying to open a door is not a vendor purchase, do not let it be mistaken for one
+        ItemSystem.SuppressNextCreditSpend(player);
         player.Experience -= (uint)door.cost;
 
         foreach (UnturnedPlayer onlinePlayer in HordeServerPlugin.onlinePlayers)

@@ -20,9 +20,29 @@ namespace HordeServer
         // Player / tickrate
         public static readonly Dictionary<UnturnedPlayer, uint> ignoredRefunds = [];
         static bool SwapTickReset = false;
-        static bool ClearItemsNextTick = false;
 
-        static public List<KeyValuePair<UnturnedPlayer, WeaponLoadout>> weaponEquipNextTick = [];
+        // Marks a player who just legitimately spent credits (e.g. buying from a vendor), Player / tickrate
+        // Ammo refunds are only granted while this is set, so obtaining ammo through loot/crafting/trading
+        // cannot be used to farm credits
+        private static readonly Dictionary<UnturnedPlayer, uint> pendingCreditSpend = [];
+        // Players whose next credit spend should NOT be treated as a purchase (e.g. paying to open a door)
+        private static readonly HashSet<UnturnedPlayer> suppressNextCreditSpendEvent = [];
+
+        static public List<PendingWeaponEquip> weaponEquipNextTick = [];
+
+        public class PendingWeaponEquip
+        {
+            public UnturnedPlayer Player;
+            public WeaponLoadout Loadout;
+            // How many consecutive ticks the weapon has not been found anywhere in the inventory
+            public uint MissedTicks;
+
+            public PendingWeaponEquip(UnturnedPlayer player, WeaponLoadout loadout)
+            {
+                Player = player;
+                Loadout = loadout;
+            }
+        }
         static private List<KeyValuePair<UnturnedPlayer, Item>> weaponReplaceNextTick = [];
         // Variable to ignore next player receive item handling
         private static readonly List<UnturnedPlayer> weaponInventoryIgnoreNextTick = [];
@@ -31,6 +51,47 @@ namespace HordeServer
         private static List<UnturnedPlayer> refreshPrimaryWeaponNextTick = [];
         private static List<UnturnedPlayer> refreshSecondaryWeaponNextTick = [];
         private static List<KeyValuePair<UnturnedPlayer, Item>> removeItemNextTick = [];
+
+        // Call this right before manually deducting credits from a player for something that is NOT
+        // a vendor purchase (e.g. paying to open a door), so that spend is not mistaken for a purchase
+        static public void SuppressNextCreditSpend(UnturnedPlayer player)
+        {
+            suppressNextCreditSpendEvent.Remove(player);
+            suppressNextCreditSpendEvent.Add(player);
+        }
+
+        static public void OnPlayerExperienceChanged(PlayerSkills skills, uint oldExperience)
+        {
+            // Not a spend (award/refund), ignore
+            if (skills.experience >= oldExperience) return;
+
+            UnturnedPlayer? player = UnturnedPlayer.FromPlayer(skills.player);
+            if (player == null) return;
+
+            if (suppressNextCreditSpendEvent.Remove(player)) return;
+
+            pendingCreditSpend.Remove(player);
+            pendingCreditSpend.Add(player, 2);
+        }
+
+        // Cleans up whatever weapon+ammo currently occupies (page, 0) so a misplaced weapon can be
+        // relocated there safely, instead of just deleting whatever the player already has equipped
+        static private void EvictSlotForRelocation(UnturnedPlayer player, byte page)
+        {
+            ItemJar? occupant = player.Inventory.getItem(page, 0);
+            if (occupant?.item == null) return;
+
+            foreach (WeaponLoadout occupantLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
+            {
+                if (occupantLoadout.weapondId == occupant.item.id)
+                {
+                    RemovePreviouslyAmmo(player, occupantLoadout.ammoId);
+                    break;
+                }
+            }
+
+            player.Inventory.removeItem(page, 0);
+        }
 
         static private void RemovePreviouslyAmmo(UnturnedPlayer player, int ammoId)
         {
@@ -57,6 +118,21 @@ namespace HordeServer
             if (IsDisabledInventoryItem(P))
             {
                 removeItemNextTick.Add(new(player, new(inventoryGroup, inventoryIndex, P)));
+                return;
+            }
+
+            if (IsUnauthorizedWeapon(P))
+            {
+                removeItemNextTick.Add(new(player, new(inventoryGroup, inventoryIndex, P)));
+                ChatManager.serverSendMessage(
+                    HordeServerPlugin.instance!.Translate("unauthorized_weapon"),
+                    new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                    null,
+                    player.SteamPlayer(),
+                    EChatMode.SAY,
+                    HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                    true
+                );
                 return;
             }
 
@@ -174,7 +250,11 @@ namespace HordeServer
                 // If the player receives ammo, is because he already have the weapon lets refresh the inventory
                 if (P.item.id == weaponLoadout.ammoId)
                 {
-                    if (weaponLoadout.ammoRefundValue > 0 && !ignoredRefunds.ContainsKey(player))
+                    // Only refund credits if this ammo actually came from a real credit spend
+                    // (vendor purchase), never for ammo obtained via loot, crafting or trading
+                    bool purchasedNow = pendingCreditSpend.Remove(player);
+
+                    if (weaponLoadout.ammoRefundValue > 0 && purchasedNow && !ignoredRefunds.ContainsKey(player))
                     {
                         player.Experience += weaponLoadout.ammoRefundValue;
 
@@ -207,9 +287,36 @@ namespace HordeServer
             }
         }
 
-        static public void OnItemDropped(PlayerInventory _, SDG.Unturned.Item __, ref bool ___)
+        // Deny dropping weapons/ammo that belong to the horde economy, instead of allowing the drop
+        // and then wiping every item on the ground for every player to prevent them being stashed
+        static public void OnItemDropped(PlayerInventory inventory, SDG.Unturned.Item item, ref bool shouldAllow)
         {
-            ClearItemsNextTick = true;
+            bool isTrackedEconomyItem = false;
+            foreach (WeaponLoadout weaponLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
+            {
+                if (weaponLoadout.weapondId == item.id || weaponLoadout.ammoId == item.id)
+                {
+                    isTrackedEconomyItem = true;
+                    break;
+                }
+            }
+
+            if (!isTrackedEconomyItem) return;
+
+            shouldAllow = false;
+
+            UnturnedPlayer? player = UnturnedPlayer.FromPlayer(inventory.player);
+            if (player == null) return;
+
+            ChatManager.serverSendMessage(
+                HordeServerPlugin.instance!.Translate("weapon_drop_denied"),
+                new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                null,
+                player.SteamPlayer(),
+                EChatMode.SAY,
+                HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                true
+            );
         }
 
         static public void RefreshPrimaryLoadout(UnturnedPlayer player)
@@ -257,6 +364,24 @@ namespace HordeServer
                 return false;
         }
 
+        // Any gun that is not part of the configured loadout is not allowed, no matter how it was
+        // obtained (map loot, zombie drop, trading, admin give...). Detecting by asset type instead
+        // of a second ID blacklist means it stays correct without the admin having to maintain a list
+        // of every other gun on the map
+        static public bool IsUnauthorizedWeapon(ItemJar P)
+        {
+            if (Assets.find(EAssetType.ITEM, P.item.id) is not ItemGunAsset)
+                return false;
+
+            foreach (WeaponLoadout weaponLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
+            {
+                if (weaponLoadout.weapondId == P.item.id)
+                    return false;
+            }
+
+            return true;
+        }
+
         static public void Update()
         {
             { // weaponInventoryResetIgnoreNextTickOnNextTick handler
@@ -285,11 +410,21 @@ namespace HordeServer
                 }
             }
 
+            if (pendingCreditSpend.Count > 0)
+            {
+                foreach (var key in pendingCreditSpend.Keys.ToList())
+                {
+                    pendingCreditSpend[key]--;
+
+                    if (pendingCreditSpend[key] <= 0)
+                    {
+                        pendingCreditSpend.Remove(key);
+                    }
+                }
+            }
+
             if (SwapTickReset)
                 itemSwapped = [];
-
-            if (ClearItemsNextTick)
-                ItemManager.askClearAllItems();
 
             if (weaponEquipNextTick.Count > 0)
             {
@@ -297,9 +432,10 @@ namespace HordeServer
                 for (int i = weaponEquipNextTick.Count - 1; i >= 0; i--)
                 {
                     var entry = weaponEquipNextTick[i];
-                    UnturnedPlayer player = entry.Key;
+                    UnturnedPlayer player = entry.Player;
 
                     bool equipSuccess = false;
+                    bool foundItem = false;
                     for (byte page = 0; page < PlayerInventory.PAGES; page++)
                     {
                         try
@@ -311,13 +447,15 @@ namespace HordeServer
                                 ItemJar? item = player.Inventory.getItem(page, itemIndex);
                                 if (item == null) continue;
 
-                                if (item.item.id == entry.Value.weapondId)
+                                if (item.item.id == entry.Loadout.weapondId)
                                 {
+                                    foundItem = true;
+
                                     // If the weapon is not on primary or secondary slot, add to it
                                     if (page != 0 && page != 1)
                                     {
                                         player.Inventory.removeItem(page, itemIndex);
-                                        if (entry.Value.primary) player.Inventory.tryAddItem(item.item, 0, 0, 0, 0);
+                                        if (entry.Loadout.primary) player.Inventory.tryAddItem(item.item, 0, 0, 0, 0);
                                         else player.Inventory.tryAddItem(item.item, 0, 0, 1, 0);
                                         equipSuccess = true;
                                     }
@@ -325,12 +463,23 @@ namespace HordeServer
                                     else
                                     {
                                         // If is not a primary weapon and it is equipped on primary, we need to remove it
-                                        // and place on secondary
-                                        if (!entry.Value.primary && page == 0)
+                                        // and place on secondary. This can happen when the weapon's real
+                                        // in-game equip slot disagrees with its "primary" config flag
+                                        if (!entry.Loadout.primary && page == 0)
                                         {
+                                            EvictSlotForRelocation(player, 1);
                                             player.Inventory.removeItem(0, 0);
+                                            if (!player.Inventory.tryAddItem(item.item, 0, 0, 1, 0))
+                                                Logger.LogWarning($"Failed to relocate secondary weapon {entry.Loadout.weapondId} into slot 1 for {player.CSteamID}, check if it is configured with the correct primary/secondary slot");
+                                            break;
+                                        }
+                                        // Symmetric case: a primary weapon ended up in the secondary slot
+                                        if (entry.Loadout.primary && page == 1)
+                                        {
+                                            EvictSlotForRelocation(player, 0);
                                             player.Inventory.removeItem(1, 0);
-                                            player.Inventory.tryAddItem(item.item, 0, 0, 1, 0);
+                                            if (!player.Inventory.tryAddItem(item.item, 0, 0, 0, 0))
+                                                Logger.LogWarning($"Failed to relocate primary weapon {entry.Loadout.weapondId} into slot 0 for {player.CSteamID}, check if it is configured with the correct primary/secondary slot");
                                             break;
                                         }
                                         player.Inventory.player.equipment.tryEquip(page, item.x, item.y);
@@ -338,16 +487,16 @@ namespace HordeServer
                                         // Only give ammo if weaponInventory is not ignored
                                         if (!weaponInventoryIgnoreNextTick.Contains(player))
                                         {
-                                            RemovePreviouslyAmmo(player, entry.Value.ammoId);
-                                            player.GiveItem(entry.Value.ammoId, entry.Value.ammoRefilQuantity);
+                                            RemovePreviouslyAmmo(player, entry.Loadout.ammoId);
+                                            player.GiveItem(entry.Loadout.ammoId, entry.Loadout.ammoRefilQuantity);
 
                                             weaponEquipNextTick.RemoveAt(i);
 
                                             // Why you give ammo 2 times in a row?
                                             // Simple the game code is bugged, the first time you give ammo it will multiply by a strange amount
                                             // The second time is normal
-                                            RemovePreviouslyAmmo(player, entry.Value.ammoId);
-                                            player.GiveItem(entry.Value.ammoId, entry.Value.ammoRefilQuantity);
+                                            RemovePreviouslyAmmo(player, entry.Loadout.ammoId);
+                                            player.GiveItem(entry.Loadout.ammoId, entry.Loadout.ammoRefilQuantity);
                                         }
                                         else
                                         {
@@ -363,10 +512,27 @@ namespace HordeServer
                         if (equipSuccess) break;
                     }
 
+                    // The weapon this entry is waiting for is nowhere in the player's inventory
+                    // anymore (e.g. dropped, traded or destroyed before this tick). Give up on just
+                    // this single entry after a few tries instead of letting it sit forever and
+                    // eventually tripping the global safety net below, which would affect every
+                    // other player's pending purchases too
+                    if (!foundItem)
+                    {
+                        entry.MissedTicks++;
+                        if (entry.MissedTicks > 3)
+                        {
+                            Logger.LogWarning($"Giving up on equipping weapon {entry.Loadout.weapondId} for {player.CSteamID}, item no longer found in inventory");
+                            weaponEquipNextTick.RemoveAt(i);
+                        }
+                    }
                 }
 
-                // Insane bug or exploit treatment
-                if (weaponEquipNextTick.Count > 2)
+                // Safety net for a scenario the per-entry expiry above does not cover. This is
+                // deliberately a high threshold and only clears runaway growth, since a handful of
+                // players buying weapons at the same time can legitimately have multiple pending
+                // entries at once
+                if (weaponEquipNextTick.Count > 20)
                 {
                     Logger.LogWarning($"Something is strange in weapon equip system, {weaponEquipNextTick.Count}");
                     weaponEquipNextTick = [];
@@ -380,6 +546,10 @@ namespace HordeServer
                     var entry = weaponReplaceNextTick[i];
                     weaponInventoryIgnoreNextTick.Remove(entry.Key);
                     weaponInventoryIgnoreNextTick.Add(entry.Key);
+                    // Remove before adding: this player may already have a pending entry if both
+                    // weapons were moved out of their slots in the same tick (e.g. swapping primary
+                    // and secondary), and Dictionary.Add throws on a duplicate key
+                    weaponInventoryResetIgnoreNextTickOnNextTick.Remove(entry.Key);
                     weaponInventoryResetIgnoreNextTickOnNextTick.Add(entry.Key, 2); // Ignore for 2 ticks
                     foreach (WeaponLoadout weaponLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
                     {
@@ -398,6 +568,16 @@ namespace HordeServer
                             else entry.Key.Inventory.tryAddItem(itemToRespawn, 0, 0, 1, 0);
 
                             weaponEquipNextTick.Add(new(entry.Key, weaponLoadout));
+
+                            ChatManager.serverSendMessage(
+                                HordeServerPlugin.instance!.Translate("main_weapon_moved"),
+                                new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                                null,
+                                entry.Key.SteamPlayer(),
+                                EChatMode.SAY,
+                                HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                                true
+                            );
 
                             continue;
                         }
@@ -433,7 +613,6 @@ namespace HordeServer
 
 
             SwapTickReset = false;
-            ClearItemsNextTick = false;
         }
     }
 }

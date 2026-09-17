@@ -36,6 +36,7 @@ namespace HordeServer
             DamageTool.damageZombieRequested += HordeUtils.CalculateZombieArmor;
             DamageTool.damageZombieRequested += HordeUtils.HitPoints;
             UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
+            PlayerSkills.OnExperienceChanged_Global += ItemSystem.OnPlayerExperienceChanged;
 
             try
             {
@@ -156,7 +157,7 @@ namespace HordeServer
 
         private void OnPlayerDead(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
         {
-            UnityTickrate.ClearAllItemsInNextTick = true;
+            UnityTickrate.PendingDeathItemClears.Add(player.Position);
 
             PowerupSystem.ResetPlayerPowerups(player);
             SkillSystem.ResetPlayerSkills(player);
@@ -226,6 +227,8 @@ namespace HordeServer
             {"estaminaup", "Estamina UP"},
             {"speedcola", "Speed Cola"},
             {"main_weapon_moved", "Your weapon has been removed because you moved out of your equipment!" },
+            {"unauthorized_weapon", "This weapon is not authorized on this server, it has been removed" },
+            {"weapon_drop_denied", "You cannot drop this weapon or ammo" },
             {"not_enough_money", "Not enough money, necessary: {0}"},
             {"door_open", "Door opened, you lose: {0} money"},
             {"door_opened", "Door opened by {0}, with: {1} money"},
@@ -238,7 +241,9 @@ namespace HordeServer
     class UnityTickrate : MonoBehaviour
     {
         public RoundSystem? RoundSystemInstance;
-        public static bool ClearAllItemsInNextTick = false;
+        // Positions where a player died and their loot should be cleared next tick, instead of
+        // wiping every item on the map
+        public static readonly List<UnityEngineCoreModule.UnityEngine.Vector3> PendingDeathItemClears = [];
 
         public void Start()
         {
@@ -256,10 +261,13 @@ namespace HordeServer
             if (HordeServerPlugin.instance!.Configuration.Instance.ForceRemovePlayerRadiation)
                 HordeUtils.RemovePlayersRadiation();
 
-            if (ClearAllItemsInNextTick)
+            if (PendingDeathItemClears.Count > 0)
             {
-                ClearAllItemsInNextTick = false;
-                ItemManager.askClearAllItems();
+                float radius = HordeServerPlugin.instance!.Configuration.Instance.DeathItemsClearRadius;
+                foreach (var position in PendingDeathItemClears)
+                    ItemManager.ServerClearItemsInSphere(position, radius);
+
+                PendingDeathItemClears.Clear();
             }
         }
     }

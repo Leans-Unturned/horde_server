@@ -14,6 +14,7 @@ namespace HordeServer
         public ConfigPosition MapCenterPosition = new();
         public int MapCenterRadius = 10000;
         public int MaximumZombieNodeDistanceToSpawn = 150;
+        public float DeathItemsClearRadius = 10f;
         public bool DebugPlayerPosition = false;
         public bool DebugBarricadesPosition = false;
         public bool DebugZombies = false;
