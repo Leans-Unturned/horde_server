@@ -10,7 +10,7 @@ namespace HordeServer
 
         // The item must already be removed from the player's inventory by the caller
         // (ItemSystem.OnInventoryAdded), same as the PowerupLoadout detection it sits next to
-        static public void Open(UnturnedPlayer player, MysteryBoxLoadout mysteryBox)
+        static public void Open(UnturnedPlayer player)
         {
             List<ushort> pool = [];
             foreach (WeaponLoadout weaponLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
@@ -21,7 +21,7 @@ namespace HordeServer
 
             if (pool.Count == 0)
             {
-                Logger.LogWarning($"MysteryBox {mysteryBox.itemId} has no AvailableWeaponsToPurchase entry with canReceiveOnMysteryBox = true, nothing to give");
+                Logger.LogWarning("MysteryBox has no AvailableWeaponsToPurchase entry with canReceiveOnMysteryBox = true, nothing to give");
                 return;
             }
 

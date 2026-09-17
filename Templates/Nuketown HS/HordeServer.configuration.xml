@@ -1017,6 +1017,11 @@
       <powerupType>sharpshooter</powerupType>
       <refundValue>2500</refundValue>
     </PowerupLoadout>
+    <PowerupLoadout>
+      <itemId>!!!!!!! TO DO PLEASE BOBODEV DON'T FORGET TO UPDATE THIS</itemId>
+      <powerupType>mysterybox</powerupType>
+      <refundValue>0</refundValue>
+    </PowerupLoadout>
   </AvailablePowerupsToPurchase>
   <AvailableDoorsToPurchase>
     <Door>
@@ -1385,11 +1390,6 @@
       </AvailableLevelsDamage>
     </PackAPunchWeapon>
   </AvailablePackAPunch>
-  <AvailableMysteryBoxes>
-    <MysteryBoxLoadout>
-      <itemId>????? TO DO PLEASE BOBODEV DON'T FORGET TO UPDATE THIS</itemId>
-    </MysteryBoxLoadout>
-  </AvailableMysteryBoxes>
   <DisabledInventoryIds>
     <unsignedShort>21</unsignedShort>
     <unsignedShort>22</unsignedShort>

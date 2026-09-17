@@ -18,12 +18,17 @@ The easy way is to get the basic [template](https://github.com/Leans-Unturned/ho
 
 Update the configurations from the template or create one, the template must be the same as the map if not the same the plugin will just break.
 
-### Creating a Map compatible
+## Creating a Map compatible
+
+### The Basics
 - The player spawn should be the map lobby. (The real spawn will be set in plugin configuration)
 - The zombies is recommended to be all stored in one place, (In the game code the zombies cannot be spawned just respawned in a different location, is totally necessary that all available zombies has spawned for the plugin to handle the zombies spawn), recommended to be near the player spawn lobby
 - Add only a unique navigation with infinite agro option, so the zombies will automatically hunt the players (The spawned zombies in maps needs to be inside this navigation)
 - Setting the real zombie spawn position: to correctly added the zombies spawn you must add a ``Location Node`` with the name ``zombiespawn``, now choose the position you want and place it and the zombies will spawn correctly in that position.
 - To set where the player will spawn is the same thing as the zombie spawn but with the name: ``playerspawn``
+- Wall buys, to create a wall buy you must use the horde purchase and put the weapon id you want for the player to buy you also need to edit the configuration and add a new entry to the ``AvailableWeaponsToPurchase`` with the weapon id and ammo id, if you forget to add the configuration the buy system will not work.
+- Powerups: to add powerups you must added a configure the item id the player will buy on the horde purchase on the map editor and then use the same id in the ``AvailablePowerupsToPurchase`` entry  so the plugin will handle it correctly.
+- Pack-A-Punch, to a pack a punch work propertly you must create a new entry for every weapon the player can have in the map. The configuration is: ``AvailablePackAPunch``, you can obtain the ``base64Binary`` by using the command: ``/exportweaponmetadata`` on the currently equipped weapon and the attachments set.
 
 If everything was done correctly when starting the server, everything should now be working as expected. any questions about the procedures, you can ask in the discussion tab.
 

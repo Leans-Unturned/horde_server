@@ -26,6 +26,7 @@ namespace HordeServer
                 case "packapunch": GivePackAPunch(player); return;
                 case "grenades": GiveMaxGrenadesForPlayer(player, true); return;
                 case "sharpshooter": GivePlayerSharpshooter(player); return;
+                case "mysterybox": MysteryBoxSystem.Open(player); return;
             }
         }
 
