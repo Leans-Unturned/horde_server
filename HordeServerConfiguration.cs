@@ -24,6 +24,9 @@ namespace HordeServer
         public bool DebugPlayerPosition = false;
         public bool DebugZombies = false;
         public bool DebugWeaponSlots = false;
+        // Logs (chat + server log) the position and rotation of every player-placed salvageable
+        // barricade, so door coordinates for AvailableDoorsToPurchase can be copied straight from it
+        public bool DebugDoors = false;
 
         public string ChatIconURL = "https://add-image-url.com";
 

@@ -12,6 +12,7 @@
   <DebugPlayerPosition>false</DebugPlayerPosition>
   <DebugZombies>false</DebugZombies>
   <DebugWeaponSlots>false</DebugWeaponSlots>
+  <DebugDoors>false</DebugDoors>
   <ChatIconURL>https://add-image-url.com</ChatIconURL>
   <Waves>
     <ConfigWave>

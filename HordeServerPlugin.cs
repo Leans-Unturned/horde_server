@@ -115,6 +115,7 @@ namespace HordeServer
             }
 
             BarricadeDrop.OnSalvageRequested_Global += DoorSystem.TryOpenDoor;
+            BarricadeManager.onBarricadeSpawned += DoorSystem.LogDebugDoorPlacement;
 
             Logger.Log("HordeServer instanciated, by LeandroTheDev");
         }

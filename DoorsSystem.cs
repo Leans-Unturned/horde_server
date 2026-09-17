@@ -3,9 +3,43 @@ extern alias UnityEngineCoreModule;
 using HordeServer;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
+using Steamworks;
 
 class DoorSystem
 {
+    // DebugDoors config: logs every player-placed salvageable barricade's position and rotation,
+    // formatted so it can be pasted directly into an AvailableDoorsToPurchase entry
+    static public void LogDebugDoorPlacement(BarricadeRegion region, BarricadeDrop drop)
+    {
+        if (!HordeServerPlugin.instance!.Configuration.Instance.DebugDoors) return;
+        if (drop.asset is not ItemBarricadeAsset asset || !asset.isSalvageable) return;
+
+        BarricadeData data = drop.GetServersideData();
+        // Barricades spawned by RespawnDoors have no owner, ignore them to avoid log spam every round
+        if (data.owner == 0) return;
+
+        UnityEngineCoreModule.UnityEngine.Vector3 pos = data.point;
+        UnityEngineCoreModule.UnityEngine.Quaternion rot = data.rotation;
+
+        string message = $"[DebugDoors] assetId {asset.id} ({asset.name}) placed at pos = new({pos.x:F2}f, {pos.y:F2}f, {pos.z:F2}f), rotation = new({rot.x:F5}f, {rot.y:F5}f, {rot.z:F5}f, {rot.w:F5}f)";
+
+        Rocket.Core.Logging.Logger.Log(message);
+
+        UnturnedPlayer? player = UnturnedPlayer.FromCSteamID(new CSteamID(data.owner));
+        if (player != null)
+        {
+            ChatManager.serverSendMessage(
+                message,
+                new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                null,
+                player.SteamPlayer(),
+                EChatMode.SAY,
+                HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                true
+            );
+        }
+    }
+
     static public void TryOpenDoor(BarricadeDrop barricade, SteamPlayer instigatorClient, ref bool shouldAllow)
     {
         UnityEngineCoreModule.UnityEngine.Vector3? position = barricade.model?.transform?.position;
