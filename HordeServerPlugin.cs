@@ -35,6 +35,7 @@ namespace HordeServer
             Rocket.Unturned.U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
             DamageTool.damageZombieRequested += HordeUtils.CalculateZombieArmor;
             DamageTool.damageZombieRequested += HordeUtils.HitPoints;
+            DamageTool.damagePlayerRequested += HordeUtils.CalculatePlayerLifeFromZombieHit;
             UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
             PlayerSkills.OnExperienceChanged_Global += ItemSystem.OnPlayerExperienceChanged;
 

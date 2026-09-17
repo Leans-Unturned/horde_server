@@ -267,6 +267,9 @@ namespace HordeServer
             ResetPlayerSecondaryPackAPunch(player);
         }
 
+        public static bool PlayerHasPowerup(UnturnedPlayer player, string powerupType) =>
+            playersPowerups.TryGetValue(player, out List<string> powerups) && powerups.Contains(powerupType);
+
         public static void ResetPlayerPrimaryPackAPunch(UnturnedPlayer player) => packAPunchPrimary.Remove(player);
         public static void ResetPlayerSecondaryPackAPunch(UnturnedPlayer player) => packAPunchSecondary.Remove(player);
 

@@ -268,6 +268,31 @@ class HordeUtils
         }
     }
 
+    /// <summary>
+    /// Forces zombie hits to always take a fixed number of hits to kill, regardless of
+    /// zombie damage, clothing armor or the game mode's armor multiplier, by overriding the
+    /// final damage/times used in DamageTool.damagePlayer. Only affects EDeathCause.ZOMBIE,
+    /// every other death cause (fall, drowning, suicide, etc.) is left untouched.
+    /// </summary>
+    public static void CalculatePlayerLifeFromZombieHit(ref DamagePlayerParameters parameters, ref bool _)
+    {
+        if (parameters.cause != EDeathCause.ZOMBIE) return;
+
+        UnturnedPlayer player = UnturnedPlayer.FromPlayer(parameters.player);
+
+        uint hitsToKill = PowerupSystem.PlayerHasPowerup(player, "juggernog")
+            ? HordeServerPlugin.instance!.Configuration.Instance.HitsToKillPlayerWithJuggernog
+            : HordeServerPlugin.instance!.Configuration.Instance.HitsToKillPlayer;
+
+        if (hitsToKill <= 0) return;
+
+        parameters.damage = (float)System.Math.Min(byte.MaxValue, System.Math.Ceiling(100f / hitsToKill));
+        parameters.times = 1f;
+        // Prevent clothing armor and Players.Armor_Multiplier from changing the fixed hit count
+        parameters.respectArmor = false;
+        parameters.applyGlobalArmorMultiplier = false;
+    }
+
     public static void GiveMaxAmmo(UnturnedPlayer? uniquePlayer = null)
     {
         void GiveAmmo(UnturnedPlayer player)
