@@ -27,8 +27,6 @@ namespace HordeServer
         public bool DebugBarricadesPosition = false;
         public bool DebugZombies = false;
         public bool DebugWeaponSlots = false;
-        public string PlayersFolder = "SteamLibrary/steamapps/common/U3DS/Servers/myserver/Players/";
-        public string LevelName = "PEI";
 
         public string ChatIconURL = "https://add-image-url.com";
 

@@ -20,8 +20,6 @@
   <DebugBarricadesPosition>false</DebugBarricadesPosition>
   <DebugZombies>false</DebugZombies>
   <DebugWeaponSlots>false</DebugWeaponSlots>
-  <PlayersFolder>.../SteamLibrary/steamapps/common/U3DS/Servers/test/Players/</PlayersFolder>
-  <LevelName>Nuketown HS</LevelName>
   <ChatIconURL>https://add-image-url.com</ChatIconURL>
   <ZombiesAvailableNodes>
     <ZombieNodePosition>

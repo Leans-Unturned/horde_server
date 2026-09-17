@@ -23,6 +23,11 @@ namespace HordeServer
 
         public static HordeServerPlugin? instance;
 
+        // Matches the exact path the engine itself saves player data to (ServerSavedata.cs /
+        // PlayerSavedata.cs), derived from the running server's own identity instead of requiring
+        // the admin to duplicate/retype it in our config
+        public static string PlayersFolder => Path.Combine(ReadWrite.PATH, "Servers", Provider.serverID, "Players");
+
         private UnityTickrate? unityTickrate;
         public override void LoadPlugin()
         {
@@ -69,28 +74,28 @@ namespace HordeServer
 
             try
             {
-                string[] playersDirectory = System.IO.Directory.GetDirectories(Configuration.Instance.PlayersFolder);
+                string[] playersDirectory = System.IO.Directory.GetDirectories(PlayersFolder);
                 foreach (string playerFolder in playersDirectory)
                 {
-                    string clothingPath = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Clothing.dat");
+                    string clothingPath = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Clothing.dat");
                     if (File.Exists(clothingPath)) File.Delete(clothingPath);
 
-                    string inventoryPath = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Inventory.dat");
+                    string inventoryPath = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Inventory.dat");
                     if (File.Exists(inventoryPath)) File.Delete(inventoryPath);
 
-                    string position = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Player.dat");
+                    string position = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Player.dat");
                     if (File.Exists(position)) File.Delete(position);
 
-                    string life = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Life.dat");
+                    string life = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Life.dat");
                     if (File.Exists(life)) File.Delete(life);
 
-                    string skills = Path.Combine(Configuration.Instance.PlayersFolder, playerFolder, Configuration.Instance.LevelName, "Player", "Skills.dat");
+                    string skills = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Skills.dat");
                     if (File.Exists(skills)) File.Delete(skills);
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Invalid directory for players, please check the PlayerFolder configuration for HordeServer, exception: {ex.Message}");
+                Logger.LogWarning($"Invalid players directory ({PlayersFolder}), exception: {ex.Message}");
             }
 
             BarricadeDrop.OnSalvageRequested_Global += DoorSystem.TryOpenDoor;
@@ -151,19 +156,19 @@ namespace HordeServer
             onlinePlayers.Remove(player);
             alivePlayers.Remove(player);
 
-            string clothingPath = Path.Combine(Configuration.Instance.PlayersFolder, $"{player.Id}_0", Configuration.Instance.LevelName, "Player", "Clothing.dat");
+            string clothingPath = Path.Combine(PlayersFolder, $"{player.Id}_0", Level.info.name, "Player", "Clothing.dat");
             if (File.Exists(clothingPath)) File.Delete(clothingPath);
 
-            string inventoryPath = Path.Combine(Configuration.Instance.PlayersFolder, $"{player.Id}_0", Configuration.Instance.LevelName, "Player", "Inventory.dat");
+            string inventoryPath = Path.Combine(PlayersFolder, $"{player.Id}_0", Level.info.name, "Player", "Inventory.dat");
             if (File.Exists(inventoryPath)) File.Delete(inventoryPath);
 
-            string position = Path.Combine(Configuration.Instance.PlayersFolder, $"{player.Id}_0", Configuration.Instance.LevelName, "Player", "Player.dat");
+            string position = Path.Combine(PlayersFolder, $"{player.Id}_0", Level.info.name, "Player", "Player.dat");
             if (File.Exists(position)) File.Delete(position);
 
-            string life = Path.Combine(Configuration.Instance.PlayersFolder, $"{player.Id}_0", Configuration.Instance.LevelName, "Player", "Life.dat");
+            string life = Path.Combine(PlayersFolder, $"{player.Id}_0", Level.info.name, "Player", "Life.dat");
             if (File.Exists(life)) File.Delete(life);
 
-            string skills = Path.Combine(Configuration.Instance.PlayersFolder, $"{player.Id}_0", Configuration.Instance.LevelName, "Player", "Skills.dat");
+            string skills = Path.Combine(PlayersFolder, $"{player.Id}_0", Level.info.name, "Player", "Skills.dat");
             if (File.Exists(skills)) File.Delete(skills);
         }
 
