@@ -978,6 +978,105 @@
       <baseDamage>0.3</baseDamage>
       <canReceiveOnMysteryBox>false</canReceiveOnMysteryBox>
     </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>112</weapondId>
+      <ammoId>123</ammoId>
+      <ammoRefilQuantity>8</ammoRefilQuantity>
+      <refundValue>3000</refundValue>
+      <ammoRefundValue>2000</ammoRefundValue>
+      <baseDamage>1.0</baseDamage>
+      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>1037</weapondId>
+      <ammoId>6</ammoId>
+      <ammoRefilQuantity>8</ammoRefilQuantity>
+      <refundValue>3000</refundValue>
+      <ammoRefundValue>2000</ammoRefundValue>
+      <baseDamage>1.0</baseDamage>
+      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>1037</weapondId>
+      <ammoId>6</ammoId>
+      <ammoRefilQuantity>8</ammoRefilQuantity>
+      <refundValue>3000</refundValue>
+      <ammoRefundValue>2000</ammoRefundValue>
+      <baseDamage>1.0</baseDamage>
+      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>4</weapondId>
+      <ammoId>6</ammoId>
+      <ammoRefilQuantity>8</ammoRefilQuantity>
+      <refundValue>3000</refundValue>
+      <ammoRefundValue>2000</ammoRefundValue>
+      <baseDamage>1.0</baseDamage>
+      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>4</weapondId>
+      <ammoId>6</ammoId>
+      <ammoRefilQuantity>8</ammoRefilQuantity>
+      <refundValue>3000</refundValue>
+      <ammoRefundValue>2000</ammoRefundValue>
+      <baseDamage>1.0</baseDamage>
+      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>1362</weapondId>
+      <ammoId>6</ammoId>
+      <ammoRefilQuantity>8</ammoRefilQuantity>
+      <refundValue>3000</refundValue>
+      <ammoRefundValue>2000</ammoRefundValue>
+      <baseDamage>1.0</baseDamage>
+      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>1375</weapondId>
+      <ammoId>6</ammoId>
+      <ammoRefilQuantity>8</ammoRefilQuantity>
+      <refundValue>3000</refundValue>
+      <ammoRefundValue>2000</ammoRefundValue>
+      <baseDamage>1.0</baseDamage>
+      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>1377</weapondId>
+      <ammoId>6</ammoId>
+      <ammoRefilQuantity>8</ammoRefilQuantity>
+      <refundValue>3000</refundValue>
+      <ammoRefundValue>2000</ammoRefundValue>
+      <baseDamage>1.0</baseDamage>
+      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>3012</weapondId>
+      <ammoId>6</ammoId>
+      <ammoRefilQuantity>8</ammoRefilQuantity>
+      <refundValue>3000</refundValue>
+      <ammoRefundValue>2000</ammoRefundValue>
+      <baseDamage>1.0</baseDamage>
+      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>116</weapondId>
+      <ammoId>6</ammoId>
+      <ammoRefilQuantity>8</ammoRefilQuantity>
+      <refundValue>3000</refundValue>
+      <ammoRefundValue>2000</ammoRefundValue>
+      <baseDamage>1.0</baseDamage>
+      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
+    </WeaponLoadout>
+    <WeaponLoadout>
+      <weapondId>1024</weapondId>
+      <ammoId>1026</ammoId>
+      <ammoRefilQuantity>5</ammoRefilQuantity>
+      <refundValue>3000</refundValue>
+      <ammoRefundValue>2000</ammoRefundValue>
+      <baseDamage>1.0</baseDamage>
+      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
+    </WeaponLoadout>
   </AvailableWeaponsToPurchase>
   <AvailablePowerupsToPurchase>
     <PowerupLoadout>
@@ -1006,12 +1105,12 @@
       <refundValue>750</refundValue>
     </PowerupLoadout>    
     <PowerupLoadout>
-      <itemId>BOBODEV ADD THE CORRECT ITEM HERE!!!!!!!!!!</itemId>
+      <itemId>1056</itemId>
       <powerupType>sharpshooter</powerupType>
       <refundValue>2500</refundValue>
     </PowerupLoadout>
     <PowerupLoadout>
-      <itemId>!!!!!!! TO DO PLEASE BOBODEV DON'T FORGET TO UPDATE THIS</itemId>
+      <itemId>1057</itemId>
       <powerupType>mysterybox</powerupType>
       <refundValue>0</refundValue>
     </PowerupLoadout>
@@ -1036,6 +1135,7 @@
       </rotation>
       <cost>750</cost>
       <assetId>30</assetId>
+      <DoorIndex>0</DoorIndex>
     </Door>
     <Door>
       <pos>
@@ -1056,6 +1156,7 @@
       </rotation>
       <cost>800</cost>
       <assetId>30</assetId>
+      <DoorIndex>0</DoorIndex>
     </Door>
     <Door>
       <pos>
@@ -1076,6 +1177,7 @@
       </rotation>
       <cost>1000</cost>
       <assetId>30</assetId>
+      <DoorIndex>0</DoorIndex>
     </Door>
     <Door>
       <pos>
@@ -1096,6 +1198,7 @@
       </rotation>
       <cost>1500</cost>
       <assetId>30</assetId>
+      <DoorIndex>0</DoorIndex>
     </Door>
     <Door>
       <pos>
@@ -1116,6 +1219,7 @@
       </rotation>
       <cost>1000</cost>
       <assetId>30</assetId>
+      <DoorIndex>0</DoorIndex>
     </Door>
     <Door>
       <pos>
@@ -1136,6 +1240,7 @@
       </rotation>
       <cost>1650</cost>
       <assetId>30</assetId>
+      <DoorIndex>0</DoorIndex>
     </Door>
     <Door>
       <pos>
@@ -1156,6 +1261,7 @@
       </rotation>
       <cost>750</cost>
       <assetId>30</assetId>
+      <DoorIndex>0</DoorIndex>
     </Door>
     <Door>
       <pos>
@@ -1176,6 +1282,7 @@
       </rotation>
       <cost>800</cost>
       <assetId>30</assetId>
+      <DoorIndex>0</DoorIndex>
     </Door>
     <Door>
       <pos>
@@ -1196,6 +1303,7 @@
       </rotation>
       <cost>1000</cost>
       <assetId>30</assetId>
+      <DoorIndex>0</DoorIndex>
     </Door>
     <Door>
       <pos>
@@ -1216,6 +1324,7 @@
       </rotation>
       <cost>1000</cost>
       <assetId>30</assetId>
+      <DoorIndex>0</DoorIndex>
     </Door>
     <Door>
       <pos>
@@ -1236,6 +1345,7 @@
       </rotation>
       <cost>1000</cost>
       <assetId>30</assetId>
+      <DoorIndex>0</DoorIndex>
     </Door>
   </AvailableDoorsToPurchase>
   <AvailablePackAPunch>
