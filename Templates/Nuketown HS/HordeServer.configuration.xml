@@ -20,9 +20,11 @@
   <ZombieSpeedMultiplier>0.6</ZombieSpeedMultiplier>
   <ZombieSpeedVariance>0.3</ZombieSpeedVariance>
   <DebugPlayerPosition>false</DebugPlayerPosition>
+  <DebugBarricadesPosition>false</DebugBarricadesPosition>
   <DebugZombies>false</DebugZombies>
   <DebugDoors>false</DebugDoors>
   <DebugEletric>false</DebugEletric>
+  <DebugItems>false</DebugItems>
   <ChatIconURL>https://add-image-url.com</ChatIconURL>
   <KitCommandOnlyInArea>true</KitCommandOnlyInArea>
   <KitCommandAreas>
@@ -1781,7 +1783,7 @@
         </EletricPlacement>
       </placements>
       <assetId>386</assetId>
-      <zombieDamage>2147483647</zombieDamage>
+      <zombieDamage>65535</zombieDamage>
       <playerDamage>50</playerDamage>
       <refundValue>500</refundValue>
       <cooldown>60</cooldown>
@@ -1809,7 +1811,7 @@
         </EletricPlacement>
       </placements>
       <assetId>386</assetId>
-      <zombieDamage>2147483647</zombieDamage>
+      <zombieDamage>65535</zombieDamage>
       <playerDamage>50</playerDamage>
       <refundValue>500</refundValue>
       <cooldown>60</cooldown>
@@ -1855,7 +1857,7 @@
         </EletricPlacement>
       </placements>
       <assetId>386</assetId>
-      <zombieDamage>2147483647</zombieDamage>
+      <zombieDamage>65535</zombieDamage>
       <playerDamage>50</playerDamage>
       <refundValue>500</refundValue>
       <cooldown>60</cooldown>
@@ -1883,7 +1885,7 @@
         </EletricPlacement>
       </placements>
       <assetId>386</assetId>
-      <zombieDamage>2147483647</zombieDamage>
+      <zombieDamage>65535</zombieDamage>
       <playerDamage>50</playerDamage>
       <refundValue>500</refundValue>
       <cooldown>60</cooldown>

@@ -12,6 +12,7 @@ class DoorSystem
 {
     static public void RefreshOwnerships()
     {
+        List<Door> doors = HordeServerPlugin.instance!.Configuration.Instance.AvailableDoorsToPurchase;
         BarricadeRegion[,] regions = BarricadeManager.regions;
 
         int sizeX = regions.GetLength(0);
@@ -28,6 +29,21 @@ class DoorSystem
                     var transform = drop.model?.transform;
 
                     if (transform == null)
+                        continue;
+
+                    // Only actual configured doors should ever have their ownership refreshed —
+                    // without this check every barricade in the world (e.g. EletricSystem's Barbed
+                    // Wire fences) gets an owner assigned to whoever is nearest, letting anyone salvage them
+                    bool isDoor = false;
+                    foreach (Door mapDoor in doors)
+                    {
+                        if (mapDoor.pos == transform.position && mapDoor.assetId == drop.asset.id)
+                        {
+                            isDoor = true;
+                            break;
+                        }
+                    }
+                    if (!isDoor)
                         continue;
 
                     UnturnedPlayer? nearestPlayer = null;
