@@ -39,6 +39,9 @@
 		<Reference Include="Rocket.Unturned">
 			<HintPath>Libs\Rocket.Unturned.dll</HintPath>
 		</Reference>
+		<Reference Include="SDG.NetTransport">
+			<HintPath>Libs\SDG.NetTransport.dll</HintPath>
+		</Reference>
 		<Reference Include="UnityEngine">
 			<HintPath>Libs\UnityEngine.dll</HintPath>
 		</Reference>

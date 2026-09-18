@@ -1461,19 +1461,22 @@
   </AvailableWeaponsToPurchase>
   <AvailablePowerupsToPurchase>
     <PowerupLoadout>
-      <itemId>1051</itemId>
+      <itemId>472</itemId>
       <powerupType>juggernog</powerupType>
       <refundValue>2500</refundValue>
+      <forceDrink>true</forceDrink>
     </PowerupLoadout>
     <PowerupLoadout>
-      <itemId>1052</itemId>
+      <itemId>94</itemId>
       <powerupType>speedcola</powerupType>
       <refundValue>3000</refundValue>
+      <forceDrink>true</forceDrink>
     </PowerupLoadout>
     <PowerupLoadout>
-      <itemId>1053</itemId>
+      <itemId>93</itemId>
       <powerupType>estaminaup</powerupType>
       <refundValue>2000</refundValue>
+      <forceDrink>true</forceDrink>
     </PowerupLoadout>
     <PowerupLoadout>
       <itemId>1054</itemId>
@@ -1486,9 +1489,10 @@
       <refundValue>750</refundValue>
     </PowerupLoadout>
     <PowerupLoadout>
-      <itemId>1056</itemId>
+      <itemId>473</itemId>
       <powerupType>sharpshooter</powerupType>
       <refundValue>2500</refundValue>
+      <forceDrink>true</forceDrink>
     </PowerupLoadout>
     <PowerupLoadout>
       <itemId>1057</itemId>
@@ -1496,9 +1500,10 @@
       <refundValue>0</refundValue>
     </PowerupLoadout>
     <PowerupLoadout>
-      <itemId>1058</itemId>
+      <itemId>92</itemId>
       <powerupType>grenadier</powerupType>
       <refundValue>4000</refundValue>
+      <forceDrink>true</forceDrink>
     </PowerupLoadout>
   </AvailablePowerupsToPurchase>
   <AvailableDoorsToPurchase>

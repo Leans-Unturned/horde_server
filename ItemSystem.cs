@@ -6,6 +6,7 @@ using System.Linq;
 using Rocket.Core.Logging;
 using Rocket.Unturned.Enumerations;
 using Rocket.Unturned.Player;
+using SDG.NetTransport;
 using SDG.Unturned;
 
 namespace HordeServer
@@ -140,6 +141,37 @@ namespace HordeServer
             }
         }
 
+        // Forces the item sitting at (page,x,y) to be consumed as if the player used it themselves,
+        // instead of silently deleting it — the real engine consume flow (UseableConsumeable.
+        // startPrimary -> performUseOnSelf) applies the item's own stat effects and removes it
+        // automatically once done (see ItemConsumeableAsset.shouldDeleteAfterUse). Returns false if
+        // the engine refused to equip it (e.g. player mid-animation of something else, dead, etc.),
+        // so the caller can fall back to a plain removeItem.
+        static private bool ForcePlayerDrinkItem(UnturnedPlayer player, byte page, byte x, byte y)
+        {
+            PlayerEquipment equipment = player.Player!.equipment;
+            equipment.ServerEquip(page, x, y);
+
+            if (equipment.useable is not UseableConsumeable consumeable
+                || equipment.equippedPage != page || equipment.equipped_x != x || equipment.equipped_y != y)
+                return false;
+
+            consumeable.startPrimary();
+
+            // startPrimary() broadcasts the use animation/sound to every OTHER nearby client, but
+            // deliberately excludes the owner's own connection — it assumes the owner already played
+            // it locally from their own input. Since this was forced with no client input, replay
+            // the same RPC to the owner alone so they also see/hear themselves drink it.
+            ITransportConnection ownerConnection = consumeable.channel.GetOwnerTransportConnection();
+            if (ownerConnection != null)
+            {
+                var replayToOwner = ClientInstanceMethod<EConsumeMode>.Get(typeof(UseableConsumeable), "ReceivePlayConsume");
+                replayToOwner.Invoke(consumeable.GetNetId(), ENetReliability.Unreliable, ownerConnection, EConsumeMode.USE);
+            }
+
+            return true;
+        }
+
         static public void OnInventoryAdded(UnturnedPlayer player, InventoryGroup inventoryGroup, byte inventoryIndex, ItemJar P)
         {
             if (kitGiveInProgress.Contains(player))
@@ -200,7 +232,16 @@ namespace HordeServer
                                 if (player.Inventory.getItem(page, j).item.id == P.item.id)
                                 {
                                     PowerupSystem.GivePlayerPowerupByType(player, powerUpLoadout.powerupType);
-                                    player.Inventory.removeItem(page, j);
+
+                                    if (powerUpLoadout.forceDrink)
+                                    {
+                                        ItemJar drinkItem = player.Inventory.getItem(page, j);
+                                        if (!ForcePlayerDrinkItem(player, page, drinkItem.x, drinkItem.y))
+                                            player.Inventory.removeItem(page, j);
+                                    }
+                                    else
+                                        player.Inventory.removeItem(page, j);
+
                                     return;
                                 }
                             }

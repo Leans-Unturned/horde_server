@@ -960,6 +960,10 @@ namespace HordeServer
         public ushort itemId = 0;
         public string powerupType = "juggernog";
         public uint refundValue = 0;
+        // Opt-in flag for powerups whose trigger item is itself a real consumable (e.g. a soda
+        // bottle) — instead of silently deleting the item, the player is forced to "drink" it
+        // through the real engine consume flow, which removes the item on its own once done
+        public bool forceDrink = false;
     }
 
     public class PackAPunchWeapon
