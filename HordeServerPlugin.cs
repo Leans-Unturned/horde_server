@@ -105,6 +105,13 @@ namespace HordeServer
 
             BarricadeDrop.OnSalvageRequested_Global += DoorSystem.TryOpenDoor;
             BarricadeManager.onBarricadeSpawned += DoorSystem.LogDebugDoorPlacement;
+            ObjectManager.onDamageObjectRequested += OnDamageObjectRequested;
+            BarricadeManager.onDamageBarricadeRequested += OnDamageBarricadeRequested;
+            System.Timers.Timer doorRefreshTimer = new();
+            doorRefreshTimer.AutoReset = true;
+            doorRefreshTimer.Interval = 1000;
+            doorRefreshTimer.Elapsed += (_, __) => DoorSystem.RefreshOwnerships();
+            doorRefreshTimer.Enabled = true;
 
             if (Configuration.Instance.KitCommandOnlyInArea)
                 UnturnedPlayerEvents.OnPlayerUpdatePosition += KitSystem.PositionUpdate;
@@ -120,6 +127,7 @@ namespace HordeServer
             player.Events.OnInventoryRemoved += ItemSystem.OnInventoryRemoved;
             player.Inventory.onDropItemRequested += ItemSystem.OnItemDropped;
             player.Player.skills.onSkillsUpdated += OnSkillsUpdated;
+            player.Player.interact.sendSalvageTimeOverride(Configuration.Instance.SalvageDuration);
 
             KitSystem.GiveDefaultKit(player);
 
@@ -290,6 +298,17 @@ namespace HordeServer
             {"kit_available", "Available kits: {0}"},
             {"kit_unavailable", "Kit selection is only available in the designated area"},
         };
+
+        private static void OnDamageObjectRequested(CSteamID instigatorSteamID, UnityEngineCoreModule.UnityEngine.Transform objectTransform, byte section, ref ushort pendingTotalDamage, ref bool shouldAllow, EDamageOrigin damageOrigin)
+        {
+            if (instance!.Configuration.Instance.InvulnerableLevelObjects)
+                shouldAllow = false;
+        }
+
+        private static void OnDamageBarricadeRequested(CSteamID instigatorSteamID, UnityEngineCoreModule.UnityEngine.Transform barricadeTransform, ref ushort pendingTotalDamage, ref bool shouldAllow, EDamageOrigin damageOrigin)
+        {
+            shouldAllow = false;
+        }
     }
 
     class UnityTickrate : UnityEngineCoreModule.UnityEngine.MonoBehaviour

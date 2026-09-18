@@ -21,7 +21,9 @@ namespace HordeServer
         // is not the same difficulty as someone playing solo. 0 disables the respective scaling
         public float ZombieCountIncreasePerPlayer = 0.5f;
         public float ZombieHealthIncreasePerPlayer = 0.25f;
+        public float SalvageDuration = 2f;
         public bool DebugPlayerPosition = false;
+        public bool DebugBarricadesPosition = false;
         public bool DebugZombies = false;
         // Logs (chat + server log) the position and rotation of every player-placed salvageable
         // barricade, so door coordinates for AvailableDoorsToPurchase can be copied straight from it
@@ -42,6 +44,7 @@ namespace HordeServer
         public List<Door> AvailableDoorsToPurchase = [];
         public List<PackAPunchWeapon> AvailablePackAPunch = [];
         public List<ushort> DisabledInventoryIds = [];
+        public bool InvulnerableLevelObjects = true;
 
         public uint StartingCredits = 500;
         public uint HitCredits = 10;
