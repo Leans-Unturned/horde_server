@@ -24,6 +24,8 @@ namespace HordeServer
         public uint HitsToKillPlayerWithJuggernog = 4;
         public float HealthRegenDelay = 2f;
         public float HealthRegenDuration = 1f;
+        public float StaminaRegenDelay = 2f;
+        public float StaminaRegenDuration = 3f;
         // Scales each wave's zombie counts/health up per player beyond the first, so a full server
         // is not the same difficulty as someone playing solo. 0 disables the respective scaling
         public float ZombieCountIncreasePerPlayer = 0.5f;

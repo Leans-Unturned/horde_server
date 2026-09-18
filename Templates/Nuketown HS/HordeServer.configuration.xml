@@ -14,6 +14,8 @@
   <HitsToKillPlayerWithJuggernog>4</HitsToKillPlayerWithJuggernog>
   <HealthRegenDelay>4</HealthRegenDelay>
   <HealthRegenDuration>1</HealthRegenDuration>
+  <StaminaRegenDelay>2</StaminaRegenDelay>
+  <StaminaRegenDuration>3</StaminaRegenDuration>
   <SalvageDuration>1</SalvageDuration>
   <ZombieCountIncreasePerPlayer>0.5</ZombieCountIncreasePerPlayer>
   <ZombieHealthIncreasePerPlayer>0.0</ZombieHealthIncreasePerPlayer>
@@ -1344,7 +1346,7 @@
       <weapondId>1021</weapondId>
       <ammoId>1022</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
-      <primary>true</primary>
+      <primary>false</primary>
       <refundValue>1000</refundValue>
       <ammoRefundValue>400</ammoRefundValue>
       <baseDamage>0.5</baseDamage>
@@ -1361,37 +1363,7 @@
       <canReceiveOnMysteryBox>false</canReceiveOnMysteryBox>
     </WeaponLoadout>
     <WeaponLoadout>
-      <weapondId>112</weapondId>
-      <ammoId>123</ammoId>
-      <ammoRefilQuantity>8</ammoRefilQuantity>
-      <primary>true</primary>
-      <refundValue>3000</refundValue>
-      <ammoRefundValue>2000</ammoRefundValue>
-      <baseDamage>1.0</baseDamage>
-      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
-    </WeaponLoadout>
-    <WeaponLoadout>
       <weapondId>1037</weapondId>
-      <ammoId>6</ammoId>
-      <ammoRefilQuantity>8</ammoRefilQuantity>
-      <primary>true</primary>
-      <refundValue>3000</refundValue>
-      <ammoRefundValue>2000</ammoRefundValue>
-      <baseDamage>1.0</baseDamage>
-      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
-    </WeaponLoadout>
-    <WeaponLoadout>
-      <weapondId>1037</weapondId>
-      <ammoId>6</ammoId>
-      <ammoRefilQuantity>8</ammoRefilQuantity>
-      <primary>true</primary>
-      <refundValue>3000</refundValue>
-      <ammoRefundValue>2000</ammoRefundValue>
-      <baseDamage>1.0</baseDamage>
-      <canReceiveOnMysteryBox>true</canReceiveOnMysteryBox>
-    </WeaponLoadout>
-    <WeaponLoadout>
-      <weapondId>4</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>8</ammoRefilQuantity>
       <primary>true</primary>

@@ -185,6 +185,7 @@ namespace HordeServer
             PowerupSystem.Disconnect(player);
             SkillSystem.Disconnect(player);
             HealthRegenSystem.Disconnect(player);
+            StaminaRegenSystem.Disconnect(player);
             KitSystem.Disconnect(player.Id);
             player.Events.OnDeath -= OnPlayerDead;
             player.Events.OnRevive -= OnPlayerRevive;
@@ -398,6 +399,7 @@ namespace HordeServer
             RoundSystemInstance?.Update();
             ItemSystem.Update();
             HealthRegenSystem.Update();
+            StaminaRegenSystem.Update();
 
             if (PendingDeathItemClears.Count > 0)
             {
