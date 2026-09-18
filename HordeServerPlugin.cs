@@ -99,6 +99,7 @@ namespace HordeServer
             DamageTool.damageZombieRequested += HordeUtils.CalculateZombieArmor;
             DamageTool.damageZombieRequested += HordeUtils.HitPoints;
             DamageTool.damagePlayerRequested += HordeUtils.CalculatePlayerLifeFromZombieHit;
+            UseableThrowable.onThrowableSpawned += HordeUtils.ApplyGrenadeDamageMultiplier;
             UseableGun.onChangeSightRequested += HordeUtils.BlockPackAPunchAttachmentChange;
             UseableGun.onChangeTacticalRequested += HordeUtils.BlockPackAPunchAttachmentChange;
             UseableGun.onChangeGripRequested += HordeUtils.BlockPackAPunchAttachmentChange;
@@ -304,6 +305,7 @@ namespace HordeServer
             {"estaminaup", "Estamina UP"},
             {"speedcola", "Speed Cola"},
             {"sharpshooter", "Sharpshooter"},
+            {"grenadier", "Grenadier"},
             {"main_weapon_moved", "Your weapon has been removed because you moved out of your equipment!" },
             {"unauthorized_weapon", "This weapon is not authorized on this server, it has been removed" },
             {"weapon_drop_denied", "You cannot drop this weapon or ammo" },

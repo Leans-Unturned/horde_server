@@ -63,6 +63,7 @@ namespace HordeServer
         public uint HitCredits = 10;
         public uint KillCredits = 50;
         public uint MaxGrenades = 4;
+        public float GrenadeDamageMultiplier = 1.0f;
 
         public void LoadDefaults()
         {
@@ -465,6 +466,21 @@ namespace HordeServer
                     itemId = 1055,
                     powerupType = "grenades",
                     refundValue = 750
+                },
+                new() {
+                    itemId = 1056,
+                    powerupType = "sharpshooter",
+                    refundValue = 2500
+                },
+                new() {
+                    itemId = 1057,
+                    powerupType = "mysterybox",
+                    refundValue = 0
+                },
+                new() {
+                    itemId = 1058,
+                    powerupType = "grenadier",
+                    refundValue = 4000
                 },
             ];
 

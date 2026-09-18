@@ -399,6 +399,27 @@ class HordeUtils
         }
     }
 
+    // Applied on top of the config/"grenadier" multipliers, matching the flat 5x the powerup grants
+    private const float GrenadierDamageMultiplier = 5f;
+
+    /// <summary>
+    /// Explosive throwables carry their own damage fields (Grenade.zombieDamage) set at spawn time,
+    /// and their explosion damage never reaches DamageTool.damageZombieRequested with a Player
+    /// instigator, so CalculateZombieArmor never sees them. Scale the grenade's own field instead.
+    /// </summary>
+    public static void ApplyGrenadeDamageMultiplier(UseableThrowable useable, UnityEngineCoreModule.UnityEngine.GameObject throwable)
+    {
+        Grenade? grenade = throwable.GetComponent<Grenade>();
+        if (grenade == null) return;
+
+        float multiplier = HordeServerPlugin.instance!.Configuration.Instance.GrenadeDamageMultiplier;
+
+        UnturnedPlayer player = UnturnedPlayer.FromPlayer(useable.player);
+        if (PowerupSystem.PlayerHasPowerup(player, "grenadier")) multiplier *= GrenadierDamageMultiplier;
+
+        grenade.zombieDamage *= multiplier;
+    }
+
     public static void HitPoints(ref DamageZombieParameters parameters, ref bool _)
     {
         object instigator = parameters.instigator;

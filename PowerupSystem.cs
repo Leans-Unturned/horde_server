@@ -26,6 +26,7 @@ namespace HordeServer
                 case "packapunch": GivePackAPunch(player); return;
                 case "grenades": GiveMaxGrenadesForPlayer(player, true); return;
                 case "sharpshooter": GivePlayerSharpshooter(player); return;
+                case "grenadier": GivePlayerGrenadier(player); return;
                 case "mysterybox": MysteryBoxSystem.Open(player); return;
             }
         }
@@ -509,6 +510,59 @@ namespace HordeServer
             {
                 playersPowerups.Add(player, ["sharpshooter"]);
                 increaseSkills();
+                return true;
+            }
+        }
+
+        // 5x grenade damage is applied directly in HordeUtils.ApplyGrenadeDamageMultiplier by
+        // checking PlayerHasPowerup(player, "grenadier"); there's no native skill for it like the
+        // other powerups above, so this only tracks/announces the powerup itself.
+        private static bool GivePlayerGrenadier(UnturnedPlayer player)
+        {
+            void announce()
+            {
+                ChatManager.serverSendMessage(
+                    HordeServerPlugin.instance!.Translate("receive_powerup", HordeServerPlugin.instance!.Translate("grenadier")),
+                    new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                    null,
+                    player.SteamPlayer(),
+                    EChatMode.SAY,
+                    HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                    true
+                );
+            }
+
+            if (playersPowerups.TryGetValue(player, out List<string> powerups))
+            {
+                if (powerups.Contains("grenadier"))
+                {
+                    var refundValue = HordeServerPlugin.instance!.Configuration.Instance.AvailablePowerupsToPurchase
+                        .FirstOrDefault(powerup => powerup.powerupType == "grenadier")?.refundValue ?? 0;
+
+                    if (refundValue > 0)
+                    {
+                        player.Experience += refundValue;
+                        ChatManager.serverSendMessage(
+                            HordeServerPlugin.instance!.Translate("refund_powerup", refundValue),
+                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                            null,
+                            player.SteamPlayer(),
+                            EChatMode.SAY,
+                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                            true
+                        );
+                    }
+                    return false;
+                }
+
+                playersPowerups[player].Add("grenadier");
+                announce();
+                return true;
+            }
+            else
+            {
+                playersPowerups.Add(player, ["grenadier"]);
+                announce();
                 return true;
             }
         }

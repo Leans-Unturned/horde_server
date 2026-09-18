@@ -1414,6 +1414,11 @@
       <powerupType>mysterybox</powerupType>
       <refundValue>0</refundValue>
     </PowerupLoadout>
+    <PowerupLoadout>
+      <itemId>1058</itemId>
+      <powerupType>grenadier</powerupType>
+      <refundValue>4000</refundValue>
+    </PowerupLoadout>
   </AvailablePowerupsToPurchase>
   <AvailableDoorsToPurchase>
     <Door>
@@ -1867,5 +1872,7 @@
   </DisabledInventoryIds>
   <StartingCredits>500</StartingCredits>
   <HitCredits>10</HitCredits>
+  <KillCredits>50</KillCredits>
   <MaxGrenades>4</MaxGrenades>
+  <GrenadeDamageMultiplier>1</GrenadeDamageMultiplier>
 </HordeServerConfiguration>
