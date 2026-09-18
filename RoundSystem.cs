@@ -51,6 +51,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                 wave = -1;
 
                 DoorSystem.RespawnDoors();
+                EletricSystem.ResetRound();
 
                 RestartRound = false;
                 HordeUtils.KillAllZombies();

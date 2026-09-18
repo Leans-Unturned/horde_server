@@ -41,6 +41,9 @@ namespace HordeServer
         // Logs (chat + server log) the position and rotation of every player-placed salvageable
         // barricade, so door coordinates for AvailableDoorsToPurchase can be copied straight from it
         public bool DebugDoors = false;
+        // Logs (chat + server log) the position and rotation of every player-placed Barbed Wire,
+        // so coordinates for AvailableEletricToPurchase can be copied straight from it
+        public bool DebugEletric = false;
         // Logs every item removal and weapon equip step to track disappearing weapons
         public bool DebugItems = false;
 
@@ -55,6 +58,7 @@ namespace HordeServer
         public List<WeaponLoadout> AvailableWeaponsToPurchase = [];
         public List<PowerupLoadout> AvailablePowerupsToPurchase = [];
         public List<Door> AvailableDoorsToPurchase = [];
+        public List<EletricFence> AvailableEletricToPurchase = [];
         public List<PackAPunchWeapon> AvailablePackAPunch = [];
         public List<ushort> DisabledInventoryIds = [];
         public bool InvulnerableLevelObjects = true;
@@ -574,6 +578,21 @@ namespace HordeServer
                     rotation = new(-0.48098f, 0.51832f, 0.51832f, 0.48098f),
                     cost = 1000,
                     assetId = 30,
+                },
+            ];
+
+            // Example entry, just to document which fields exist, replace pos/rotation with real
+            // coordinates from DebugEletric before relying on this in a map
+            AvailableEletricToPurchase = [
+                new() {
+                    id = 1059,
+                    pos = new(0f, 0f, 0f),
+                    rotation = new(0f, 0f, 0f, 1f),
+                    assetId = 386, // Barbed Wire
+                    zombieDamage = 25f,
+                    playerDamage = 50f,
+                    refundValue = 500,
+                    cooldown = 60f,
                 },
             ];
 

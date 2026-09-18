@@ -210,6 +210,30 @@ namespace HordeServer
                 }
             }
 
+            // Checking if is an electric fence (Barbed Wire) purchase
+            foreach (EletricFence eletricFence in HordeServerPlugin.instance!.Configuration.Instance.AvailableEletricToPurchase)
+            {
+                if (eletricFence.id == P.item.id)
+                {
+                    for (byte page = 0; page < PlayerInventory.PAGES; page++)
+                    {
+                        try
+                        {
+                            for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
+                            {
+                                if (player.Inventory.getItem(page, j).item.id == P.item.id)
+                                {
+                                    EletricSystem.TryPurchase(player, eletricFence);
+                                    player.Inventory.removeItem(page, j);
+                                    return;
+                                }
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                }
+            }
+
             // Ignore weapon receive for this event
             if (weaponInventoryIgnoreNextTick.Contains(player))
             {

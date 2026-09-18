@@ -121,6 +121,7 @@ namespace HordeServer
 
             BarricadeDrop.OnSalvageRequested_Global += DoorSystem.TryOpenDoor;
             BarricadeManager.onBarricadeSpawned += DoorSystem.LogDebugDoorPlacement;
+            BarricadeManager.onBarricadeSpawned += EletricSystem.LogDebugEletricPlacement;
             ObjectManager.onDamageObjectRequested += OnDamageObjectRequested;
             BarricadeManager.onDamageBarricadeRequested += OnDamageBarricadeRequested;
             System.Timers.Timer doorRefreshTimer = new();
@@ -128,6 +129,12 @@ namespace HordeServer
             doorRefreshTimer.Interval = 1000;
             doorRefreshTimer.Elapsed += (_, __) => DoorSystem.RefreshOwnerships();
             doorRefreshTimer.Enabled = true;
+
+            System.Timers.Timer eletricPlayerDamageTimer = new();
+            eletricPlayerDamageTimer.AutoReset = true;
+            eletricPlayerDamageTimer.Interval = 1000;
+            eletricPlayerDamageTimer.Elapsed += (_, __) => EletricSystem.CheckPlayerDamage();
+            eletricPlayerDamageTimer.Enabled = true;
 
             if (Configuration.Instance.KitCommandOnlyInArea)
                 UnturnedPlayerEvents.OnPlayerUpdatePosition += KitSystem.PositionUpdate;
@@ -313,6 +320,8 @@ namespace HordeServer
             {"not_enough_money", "Not enough money, necessary: {0}"},
             {"door_open", "Door opened, you lose: {0} money"},
             {"door_opened", "Door opened by {0}, with: {1} money"},
+            {"eletric_fence_placed", "Barbed wire deployed"},
+            {"refund_eletric_fence", "Barbed wire already deployed, refunded: {0} credits"},
             {"packapunch_unavailable", "Unavailable Pack a Punch"},
             {"packapunch_maxlevel", "Pack a Punch is on Max Level"},
             {"packapunch", "Pack a Punch Received"},

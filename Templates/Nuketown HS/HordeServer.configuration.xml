@@ -22,6 +22,7 @@
   <DebugPlayerPosition>false</DebugPlayerPosition>
   <DebugZombies>false</DebugZombies>
   <DebugDoors>false</DebugDoors>
+  <DebugEletric>false</DebugEletric>
   <ChatIconURL>https://add-image-url.com</ChatIconURL>
   <KitCommandOnlyInArea>true</KitCommandOnlyInArea>
   <KitCommandAreas>
@@ -1733,6 +1734,32 @@
       <DoorIndex>0</DoorIndex>
     </Door>
   </AvailableDoorsToPurchase>
+  <AvailableEletricToPurchase>
+    <EletricFence>
+      <id>1398</id>
+      <pos>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </pos>
+      <rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+        <w>1</w>
+        <eulerAngles>
+          <x>0</x>
+          <y>0</y>
+          <z>0</z>
+        </eulerAngles>
+      </rotation>
+      <assetId>386</assetId>
+      <zombieDamage>2147483647</zombieDamage>
+      <playerDamage>50</playerDamage>
+      <refundValue>500</refundValue>
+      <cooldown>60</cooldown>
+    </EletricFence>
+  </AvailableEletricToPurchase>
   <AvailablePackAPunch>
     <PackAPunchWeapon>
       <Id>97</Id>
