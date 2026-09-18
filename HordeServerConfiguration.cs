@@ -581,13 +581,18 @@ namespace HordeServer
                 },
             ];
 
-            // Example entry, just to document which fields exist, replace pos/rotation with real
-            // coordinates from DebugEletric before relying on this in a map
+            // Example entry, just to document which fields exist, replace placements with real
+            // coordinates from DebugEletric before relying on this in a map. Add more than one
+            // placement when a single Barbed Wire doesn't fully block the gap
             AvailableEletricToPurchase = [
                 new() {
                     id = 1059,
-                    pos = new(0f, 0f, 0f),
-                    rotation = new(0f, 0f, 0f, 1f),
+                    placements = [
+                        new() {
+                            pos = new(0f, 0f, 0f),
+                            rotation = new(0f, 0f, 0f, 1f),
+                        },
+                    ],
                     assetId = 386, // Barbed Wire
                     zombieDamage = 25f,
                     playerDamage = 50f,

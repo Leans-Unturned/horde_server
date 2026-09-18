@@ -19,7 +19,9 @@ class EletricSystem
 
     private class ActiveFence
     {
-        public UnityEngineCoreModule.UnityEngine.Transform Transform = null!;
+        // Some fences need more than one Barbed Wire placement to fully block a gap, see
+        // EletricFence.placements
+        public List<UnityEngineCoreModule.UnityEngine.Transform> Transforms = [];
         public System.Timers.Timer RemovalTimer = null!;
         public float PlayerDamage;
     }
@@ -44,12 +46,18 @@ class EletricSystem
         {
             if (fence.PlayerDamage <= 0f) continue;
 
-            UnityEngineCoreModule.UnityEngine.Vector3 fencePosition = fence.Transform.position;
-
             foreach (UnturnedPlayer player in HordeServerPlugin.alivePlayers)
             {
-                if (UnityEngineCoreModule.UnityEngine.Vector3.Distance(fencePosition, player.Position) > PlayerDamageRadius)
-                    continue;
+                bool inRange = false;
+                foreach (UnityEngineCoreModule.UnityEngine.Transform transform in fence.Transforms)
+                {
+                    if (UnityEngineCoreModule.UnityEngine.Vector3.Distance(transform.position, player.Position) <= PlayerDamageRadius)
+                    {
+                        inRange = true;
+                        break;
+                    }
+                }
+                if (!inRange) continue;
 
                 Player? nativePlayer = player.Player;
                 if (nativePlayer == null) continue;
@@ -126,24 +134,31 @@ class EletricSystem
 
         // No owner/group, so RefreshOwnerships-style logic never touches it and players can never
         // gain ownership to salvage it (see Interactable2SalvageBarricade.checkHint)
-        Barricade barricade = new(asset)
+        List<UnityEngineCoreModule.UnityEngine.Transform> transforms = [];
+        foreach (EletricPlacement placement in fence.placements)
         {
-            health = ushort.MaxValue
-        };
-        UnityEngineCoreModule.UnityEngine.Transform transform = BarricadeManager.dropNonPlantedBarricade(
-            barricade,
-            fence.pos,
-            fence.rotation,
-            0,
-            0
-        );
-        if (transform == null) return;
+            Barricade barricade = new(asset)
+            {
+                health = ushort.MaxValue
+            };
+            UnityEngineCoreModule.UnityEngine.Transform transform = BarricadeManager.dropNonPlantedBarricade(
+                barricade,
+                placement.pos,
+                placement.rotation,
+                0,
+                0
+            );
+            if (transform == null) continue;
 
-        if (trapZombieDamageField != null)
-        {
-            InteractableTrap? trap = transform.GetComponentInChildren<InteractableTrap>();
-            if (trap != null) trapZombieDamageField.SetValue(trap, fence.zombieDamage);
+            if (trapZombieDamageField != null)
+            {
+                InteractableTrap? trap = transform.GetComponentInChildren<InteractableTrap>();
+                if (trap != null) trapZombieDamageField.SetValue(trap, fence.zombieDamage);
+            }
+
+            transforms.Add(transform);
         }
+        if (transforms.Count == 0) return;
 
         // System.Timers.Timer throws for an interval <= 0, guard against a misconfigured cooldown
         System.Timers.Timer removalTimer = new(fence.cooldown > 0f ? fence.cooldown * 1000 : 1)
@@ -153,7 +168,7 @@ class EletricSystem
         removalTimer.Elapsed += (_, __) => TaskDispatcher.QueueOnMainThread(() => RemoveFence(fence.id));
         removalTimer.Start();
 
-        activeFences[fence.id] = new ActiveFence { Transform = transform, RemovalTimer = removalTimer, PlayerDamage = fence.playerDamage };
+        activeFences[fence.id] = new ActiveFence { Transforms = transforms, RemovalTimer = removalTimer, PlayerDamage = fence.playerDamage };
 
         ChatManager.serverSendMessage(
             HordeServerPlugin.instance!.Translate("eletric_fence_placed"),
@@ -171,9 +186,12 @@ class EletricSystem
         if (!activeFences.TryGetValue(fenceId, out ActiveFence? fence)) return;
         activeFences.Remove(fenceId);
 
-        if (BarricadeManager.tryGetRegion(fence.Transform, out byte x, out byte y, out ushort plant, out BarricadeRegion region))
+        foreach (UnityEngineCoreModule.UnityEngine.Transform transform in fence.Transforms)
         {
-            BarricadeDrop? drop = region.FindBarricadeByRootTransform(fence.Transform);
+            if (!BarricadeManager.tryGetRegion(transform, out byte x, out byte y, out ushort plant, out BarricadeRegion region))
+                continue;
+
+            BarricadeDrop? drop = region.FindBarricadeByRootTransform(transform);
             if (drop != null) BarricadeManager.destroyBarricade(drop, x, y, plant);
         }
     }
@@ -192,13 +210,21 @@ class EletricSystem
     }
 }
 
+// One Barbed Wire barricade to spawn as part of an EletricFence. Most fences need only one, but a
+// wide enough gap needs a second placement to fully block it, hence the list on EletricFence instead
+// of a single pos/rotation
+public class EletricPlacement
+{
+    public UnityEngineCoreModule.UnityEngine.Vector3 pos;
+    public UnityEngineCoreModule.UnityEngine.Quaternion rotation;
+}
+
 public class EletricFence
 {
     // Matches the HordePurchaseVolume's Item_ID placed in the map, the item it grants on purchase is
     // used purely as a trigger, it is removed immediately by ItemSystem.OnInventoryAdded
     public ushort id;
-    public UnityEngineCoreModule.UnityEngine.Vector3 pos;
-    public UnityEngineCoreModule.UnityEngine.Quaternion rotation;
+    public List<EletricPlacement> placements = [];
     public ushort assetId = 386; // Barbed Wire
     public float zombieDamage;
     public float playerDamage;
