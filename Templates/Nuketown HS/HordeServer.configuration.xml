@@ -22,7 +22,6 @@
   <ZombieSpeedMultiplier>0.6</ZombieSpeedMultiplier>
   <ZombieSpeedVariance>0.3</ZombieSpeedVariance>
   <DebugPlayerPosition>false</DebugPlayerPosition>
-  <DebugBarricadesPosition>false</DebugBarricadesPosition>
   <DebugZombies>false</DebugZombies>
   <DebugDoors>false</DebugDoors>
   <DebugEletric>false</DebugEletric>

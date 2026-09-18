@@ -49,7 +49,7 @@ class DoorSystem
                     UnturnedPlayer? nearestPlayer = null;
                     float nearestDistance = float.MaxValue;
 
-                    if (HordeServerPlugin.instance!.Configuration.Instance.DebugBarricadesPosition)
+                    if (HordeServerPlugin.instance!.Configuration.Instance.DebugDoors)
                         Logger.Log($"{transform.position} / {transform.rotation}");
 
                     foreach (UnturnedPlayer player in HordeServerPlugin.alivePlayers)

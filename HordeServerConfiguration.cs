@@ -38,7 +38,6 @@ namespace HordeServer
         public float ZombieSpeedVariance = 0f;
         public float SalvageDuration = 2f;
         public bool DebugPlayerPosition = false;
-        public bool DebugBarricadesPosition = false;
         public bool DebugZombies = false;
         // Logs (chat + server log) the position and rotation of every player-placed salvageable
         // barricade, so door coordinates for AvailableDoorsToPurchase can be copied straight from it
