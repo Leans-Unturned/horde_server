@@ -261,6 +261,8 @@ class HordeUtils
     {
         if (wave == null) return;
 
+        fromPlayer.Experience += HordeServerPlugin.instance!.Configuration.Instance.KillCredits;
+
         // Special drop calculation
         float chance = Random.Range(0f, 100f);
         if (chance <= wave!.MaxAmmoChance)
@@ -343,7 +345,10 @@ class HordeUtils
 
         if (parameters.instigator is Player abstractPlayer)
         {
-            parameters.damage *= 1f / wave.HealthMultiplier;
+            float healthMult = wave.HealthMultiplier;
+            if (parameters.zombie.speciality == EZombieSpeciality.CRAWLER)
+                healthMult *= wave.CrawlerHealthMultiplier;
+            parameters.damage *= 1f / healthMult;
 
             UnturnedPlayer player = UnturnedPlayer.FromPlayer(abstractPlayer);
             if (player.Player?.equipment?.itemID == null) return;

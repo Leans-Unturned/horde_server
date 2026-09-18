@@ -28,6 +28,41 @@ namespace HordeServer
         // the admin to duplicate/retype it in our config
         public static string PlayersFolder => Path.Combine(ReadWrite.PATH, "Servers", Provider.serverID, "Players");
 
+        private static readonly string[] playerSaveFiles = ["Clothing.dat", "Inventory.dat", "Player.dat", "Life.dat", "Skills.dat"];
+
+        // Deletes save files for one player across all levels without relying on Level.info.name
+        private static void DeletePlayerSaveFiles(string steamId)
+        {
+            string playerFolder = Path.Combine(PlayersFolder, $"{steamId}_0");
+            if (!System.IO.Directory.Exists(playerFolder)) return;
+
+            foreach (string levelFolder in System.IO.Directory.GetDirectories(playerFolder))
+            {
+                string dataFolder = Path.Combine(levelFolder, "Player");
+                foreach (string fileName in playerSaveFiles)
+                {
+                    string path = Path.Combine(dataFolder, fileName);
+                    if (File.Exists(path)) File.Delete(path);
+                }
+            }
+        }
+
+        private static void DeleteAllPlayerSaveFiles()
+        {
+            if (!System.IO.Directory.Exists(PlayersFolder)) return;
+
+            foreach (string playerFolder in System.IO.Directory.GetDirectories(PlayersFolder))
+                foreach (string levelFolder in System.IO.Directory.GetDirectories(playerFolder))
+                {
+                    string dataFolder = Path.Combine(levelFolder, "Player");
+                    foreach (string fileName in playerSaveFiles)
+                    {
+                        string path = Path.Combine(dataFolder, fileName);
+                        if (File.Exists(path)) File.Delete(path);
+                    }
+                }
+        }
+
         private UnityTickrate? unityTickrate;
         public override void LoadPlugin()
         {
@@ -71,37 +106,15 @@ namespace HordeServer
             UseableGun.onChangeMagazineRequested += HordeUtils.BlockPackAPunchAttachmentChange;
             UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
             PlayerSkills.OnExperienceChanged_Global += ItemSystem.OnPlayerExperienceChanged;
+            SaveManager.onPostSave += OnPostSave;
 
             try
             {
-                // Nothing to clean up yet (fresh server, no player has ever joined), and Level.info
-                // is not guaranteed to be populated this early in plugin load, avoid relying on
-                // GetDirectories/Level.info throwing to detect either case
-                if (System.IO.Directory.Exists(PlayersFolder) && Level.info != null)
-                {
-                    string[] playersDirectory = System.IO.Directory.GetDirectories(PlayersFolder);
-                    foreach (string playerFolder in playersDirectory)
-                    {
-                        string clothingPath = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Clothing.dat");
-                        if (File.Exists(clothingPath)) File.Delete(clothingPath);
-
-                        string inventoryPath = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Inventory.dat");
-                        if (File.Exists(inventoryPath)) File.Delete(inventoryPath);
-
-                        string position = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Player.dat");
-                        if (File.Exists(position)) File.Delete(position);
-
-                        string life = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Life.dat");
-                        if (File.Exists(life)) File.Delete(life);
-
-                        string skills = Path.Combine(PlayersFolder, playerFolder, Level.info.name, "Player", "Skills.dat");
-                        if (File.Exists(skills)) File.Delete(skills);
-                    }
-                }
+                DeleteAllPlayerSaveFiles();
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Invalid players directory ({PlayersFolder}), exception: {ex.Message}");
+                Logger.LogWarning($"Startup player cleanup failed ({PlayersFolder}): {ex.Message}");
             }
 
             BarricadeDrop.OnSalvageRequested_Global += DoorSystem.TryOpenDoor;
@@ -174,20 +187,26 @@ namespace HordeServer
             onlinePlayers.Remove(player);
             alivePlayers.Remove(player);
 
-            string clothingPath = Path.Combine(PlayersFolder, $"{player.Id}_0", Level.info.name, "Player", "Clothing.dat");
-            if (File.Exists(clothingPath)) File.Delete(clothingPath);
+            try
+            {
+                DeletePlayerSaveFiles(player.Id.ToString());
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Disconnect player cleanup failed ({player.Id}): {ex.Message}");
+            }
+        }
 
-            string inventoryPath = Path.Combine(PlayersFolder, $"{player.Id}_0", Level.info.name, "Player", "Inventory.dat");
-            if (File.Exists(inventoryPath)) File.Delete(inventoryPath);
-
-            string position = Path.Combine(PlayersFolder, $"{player.Id}_0", Level.info.name, "Player", "Player.dat");
-            if (File.Exists(position)) File.Delete(position);
-
-            string life = Path.Combine(PlayersFolder, $"{player.Id}_0", Level.info.name, "Player", "Life.dat");
-            if (File.Exists(life)) File.Delete(life);
-
-            string skills = Path.Combine(PlayersFolder, $"{player.Id}_0", Level.info.name, "Player", "Skills.dat");
-            if (File.Exists(skills)) File.Delete(skills);
+        private static void OnPostSave()
+        {
+            try
+            {
+                DeleteAllPlayerSaveFiles();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Post-save player cleanup failed: {ex.Message}");
+            }
         }
 
         private void OnPlayerRevive(UnturnedPlayer player, UnityEngineCoreModule.UnityEngine.Vector3 position, byte angle)

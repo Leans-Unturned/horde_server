@@ -1267,7 +1267,7 @@
       <weapondId>1369</weapondId>
       <ammoId>1371</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
-      <primary>true</primary>
+      <primary>false</primary>
       <refundValue>1700</refundValue>
       <ammoRefundValue>800</ammoRefundValue>
       <baseDamage>0.3</baseDamage>

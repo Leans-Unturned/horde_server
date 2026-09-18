@@ -50,6 +50,7 @@ namespace HordeServer
 
         public uint StartingCredits = 500;
         public uint HitCredits = 10;
+        public uint KillCredits = 50;
         public uint MaxGrenades = 4;
 
         public void LoadDefaults()
@@ -801,6 +802,7 @@ namespace HordeServer
         public long Spirit = 0;
         public long Sprinter = 0;
         public float HealthMultiplier = 1.0f;
+        public float CrawlerHealthMultiplier = 0.5f;
         public float MaxAmmoChance = 0.05f;
 
         public ConfigWave Clone()
@@ -826,6 +828,7 @@ namespace HordeServer
                 Spirit = Spirit,
                 Sprinter = Sprinter,
                 HealthMultiplier = HealthMultiplier,
+                CrawlerHealthMultiplier = CrawlerHealthMultiplier,
                 MaxAmmoChance = MaxAmmoChance,
             };
         }
