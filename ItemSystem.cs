@@ -288,9 +288,11 @@ namespace HordeServer
                             {
                                 if (player.Inventory.getItem(page, j).item.id == P.item.id)
                                 {
-                                    PowerupSystem.GivePlayerPowerupByType(player, powerUpLoadout.powerupType);
+                                    bool powerupGranted = PowerupSystem.GivePlayerPowerupByType(player, powerUpLoadout.powerupType);
 
-                                    if (powerUpLoadout.forceDrink)
+                                    // Player already had this powerup (refund already granted above) —
+                                    // just delete the trigger item, no point forcing a drink for nothing
+                                    if (powerUpLoadout.forceDrink && powerupGranted)
                                     {
                                         ItemJar drinkItem = player.Inventory.getItem(page, j);
                                         QueueForceDrink(player, page, drinkItem.x, drinkItem.y);

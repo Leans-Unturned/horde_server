@@ -16,19 +16,23 @@ namespace HordeServer
         private static Dictionary<UnturnedPlayer, PackAPunchEquippment> packAPunchPrimary = [];
         private static Dictionary<UnturnedPlayer, PackAPunchEquippment> packAPunchSecondary = [];
 
-        public static void GivePlayerPowerupByType(UnturnedPlayer player, string powerupType)
+        // Returns false when the player already had the powerup (a refund was granted instead),
+        // so callers can skip any follow-up that assumes a fresh grant (e.g. forcing a drink animation)
+        public static bool GivePlayerPowerupByType(UnturnedPlayer player, string powerupType)
         {
             switch (powerupType)
             {
-                case "juggernog": GivePlayerJuggernog(player); return;
-                case "speedcola": GivePlayerSpeedCola(player); return;
-                case "estaminaup": GivePlayerEstaminaup(player); return;
-                case "packapunch": GivePackAPunch(player); return;
-                case "grenades": GiveMaxGrenadesForPlayer(player, true); return;
-                case "sharpshooter": GivePlayerSharpshooter(player); return;
-                case "grenadier": GivePlayerGrenadier(player); return;
-                case "mysterybox": MysteryBoxSystem.Open(player); return;
+                case "juggernog": return GivePlayerJuggernog(player);
+                case "speedcola": return GivePlayerSpeedCola(player);
+                case "estaminaup": return GivePlayerEstaminaup(player);
+                case "packapunch": GivePackAPunch(player); return true;
+                case "grenades": GiveMaxGrenadesForPlayer(player, true); return true;
+                case "sharpshooter": return GivePlayerSharpshooter(player);
+                case "grenadier": return GivePlayerGrenadier(player);
+                case "mysterybox": MysteryBoxSystem.Open(player); return true;
             }
+
+            return true;
         }
 
         private static void GivePackAPunch(UnturnedPlayer player)
@@ -321,7 +325,7 @@ namespace HordeServer
                 if (powerups.Contains("juggernog"))
                 {
                     var refundValue = HordeServerPlugin.instance!.Configuration.Instance.AvailablePowerupsToPurchase
-                        .FirstOrDefault(powerup => powerup.powerupType == "estaminaup")?.refundValue ?? 0;
+                        .FirstOrDefault(powerup => powerup.powerupType == "juggernog")?.refundValue ?? 0;
 
                     if (refundValue > 0)
                     {
