@@ -149,24 +149,45 @@ namespace HordeServer
         // so the caller can fall back to a plain removeItem.
         static private bool ForcePlayerDrinkItem(UnturnedPlayer player, byte page, byte x, byte y)
         {
+            bool debugItems = HordeServerPlugin.instance!.Configuration.Instance.DebugItems;
+
             PlayerEquipment equipment = player.Player!.equipment;
             equipment.ServerEquip(page, x, y);
+
+            if (debugItems)
+                Logger.LogWarning($"[DebugItems] ForceDrink: after ServerEquip({page},{x},{y}) useableType={equipment.useable?.GetType().Name ?? "null"} equipped=({equipment.equippedPage},{equipment.equipped_x},{equipment.equipped_y}) for {player.CSteamID}");
 
             if (equipment.useable is not UseableConsumeable consumeable
                 || equipment.equippedPage != page || equipment.equipped_x != x || equipment.equipped_y != y)
                 return false;
 
-            consumeable.startPrimary();
+            bool started = consumeable.startPrimary();
+
+            if (debugItems)
+                Logger.LogWarning($"[DebugItems] ForceDrink: startPrimary() returned {started} for {player.CSteamID}");
+
+            if (!started)
+                return false;
 
             // startPrimary() broadcasts the use animation/sound to every OTHER nearby client, but
             // deliberately excludes the owner's own connection — it assumes the owner already played
             // it locally from their own input. Since this was forced with no client input, replay
-            // the same RPC to the owner alone so they also see/hear themselves drink it.
-            ITransportConnection ownerConnection = consumeable.channel.GetOwnerTransportConnection();
-            if (ownerConnection != null)
+            // the same RPC to the owner alone so they also see/hear themselves drink it. This part
+            // is best-effort/cosmetic only, so failures here must not undo the already-started use.
+            try
             {
-                var replayToOwner = ClientInstanceMethod<EConsumeMode>.Get(typeof(UseableConsumeable), "ReceivePlayConsume");
-                replayToOwner.Invoke(consumeable.GetNetId(), ENetReliability.Unreliable, ownerConnection, EConsumeMode.USE);
+                ITransportConnection ownerConnection = consumeable.channel.GetOwnerTransportConnection();
+                if (ownerConnection != null)
+                {
+                    var replayToOwner = ClientInstanceMethod<EConsumeMode>.Get(typeof(UseableConsumeable), "ReceivePlayConsume");
+                    replayToOwner.Invoke(consumeable.GetNetId(), ENetReliability.Unreliable, ownerConnection, EConsumeMode.USE);
+                }
+                else if (debugItems)
+                    Logger.LogWarning($"[DebugItems] ForceDrink: owner transport connection was null for {player.CSteamID}");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"ForceDrink: failed to replay drink animation to owner: {ex}");
             }
 
             return true;
