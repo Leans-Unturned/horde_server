@@ -78,8 +78,11 @@ class DoorSystem
 
         UnityEngineCoreModule.UnityEngine.Vector3 pos = data.point;
         UnityEngineCoreModule.UnityEngine.Quaternion rot = data.rotation;
+        // eulerAngles is included because the XML config's <rotation> also needs it: Quaternion.eulerAngles
+        // has a setter, and since it's serialized after x/y/z/w it silently overrides them on load if wrong
+        UnityEngineCoreModule.UnityEngine.Vector3 euler = rot.eulerAngles;
 
-        string message = $"[DebugDoors] assetId {asset.id} ({asset.name}) placed at pos = new({pos.x:F2}f, {pos.y:F2}f, {pos.z:F2}f), rotation = new({rot.x:F5}f, {rot.y:F5}f, {rot.z:F5}f, {rot.w:F5}f)";
+        string message = $"[DebugDoors] assetId {asset.id} ({asset.name}) placed at pos = new({pos.x:F2}f, {pos.y:F2}f, {pos.z:F2}f), rotation = new({rot.x:F5}f, {rot.y:F5}f, {rot.z:F5}f, {rot.w:F5}f), eulerAngles = ({euler.x:F4}, {euler.y:F4}, {euler.z:F4})";
 
         Rocket.Core.Logging.Logger.Log(message);
 

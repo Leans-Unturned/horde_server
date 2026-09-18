@@ -1738,18 +1738,18 @@
     <EletricFence>
       <id>1398</id>
       <pos>
-        <x>0</x>
-        <y>0</y>
-        <z>0</z>
+        <x>7.79</x>
+        <y>52.99</y>
+        <z>-89.56</z>
       </pos>
       <rotation>
-        <x>0</x>
-        <y>0</y>
-        <z>0</z>
-        <w>1</w>
+        <x>-0.51192</x>
+        <y>-0.48779</y>
+        <z>-0.48779</z>
+        <w>0.51192</w>
         <eulerAngles>
-          <x>0</x>
-          <y>0</y>
+          <x>270</x>
+          <y>272.7654</y>
           <z>0</z>
         </eulerAngles>
       </rotation>
