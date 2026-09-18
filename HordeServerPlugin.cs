@@ -58,23 +58,6 @@ namespace HordeServer
             Provider.modeConfigData.Players.Food_Use_Ticks = uint.MaxValue;
             Provider.modeConfigData.Players.Water_Use_Ticks = uint.MaxValue;
 
-            // Weapons no longer have a fixed primary/secondary slot in the config (WeaponLoadout.primary
-            // was removed), placement is now decided dynamically at purchase time. But the asset itself
-            // still carries its own baked-in Slot (PRIMARY/SECONDARY/etc from the .dat), which would still
-            // block tryAddItem/tryEquip from placing it in whichever slot is free. Force every purchasable
-            // weapon's asset to accept either slot 0 or 1, this must be reapplied on every asset load
-            foreach (WeaponLoadout weaponLoadout in Configuration.Instance.AvailableWeaponsToPurchase)
-            {
-                if (Assets.find(EAssetType.ITEM, weaponLoadout.weapondId) is ItemAsset asset)
-                {
-                    asset.slot = ESlotType.SECONDARY;
-                    if (Configuration.Instance.DebugWeaponSlots)
-                        Logger.Log($"[WeaponSlots] Overrode asset.slot for weapondId {weaponLoadout.weapondId} ({asset.name}) to SECONDARY (accepts slot 0 or 1)");
-                }
-                else
-                    Logger.LogWarning($"[WeaponSlots] Could not find ItemAsset for weapondId {weaponLoadout.weapondId}, slot override skipped, this weapon may still be restricted to its baked-in primary/secondary slot");
-            }
-
             Rocket.Unturned.U.Events.OnPlayerConnected += OnPlayerConnected;
             Rocket.Unturned.U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
             DamageTool.damageZombieRequested += HordeUtils.CalculateZombieArmor;

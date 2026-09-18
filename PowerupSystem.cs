@@ -172,9 +172,6 @@ namespace HordeServer
             // above), so equippedPage reliably tells us which slot (0 or 1) it's actually sitting in
             byte equippedPage = player.Player!.equipment.equippedPage;
 
-            if (HordeServerPlugin.instance!.Configuration.Instance.DebugWeaponSlots)
-                Logger.Log($"[WeaponSlots] {player.SteamName}: pack-a-punching weapondId {equippedLoadout.weapondId} equipped in page {equippedPage}");
-
             if (equippedPage == 0)
             {
                 if (packAPunchPrimary.TryGetValue(player, out PackAPunchEquippment value))

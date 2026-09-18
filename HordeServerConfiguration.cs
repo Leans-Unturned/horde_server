@@ -23,10 +23,11 @@ namespace HordeServer
         public float ZombieHealthIncreasePerPlayer = 0.25f;
         public bool DebugPlayerPosition = false;
         public bool DebugZombies = false;
-        public bool DebugWeaponSlots = false;
         // Logs (chat + server log) the position and rotation of every player-placed salvageable
         // barricade, so door coordinates for AvailableDoorsToPurchase can be copied straight from it
         public bool DebugDoors = false;
+        // Logs every item removal and weapon equip step to track disappearing weapons
+        public bool DebugItems = false;
 
         public string ChatIconURL = "https://add-image-url.com";
 
@@ -406,6 +407,7 @@ namespace HordeServer
                     weapondId = 101,
                     ammoId = 103,
                     ammoRefilQuantity = 5,
+                    primary = true,
                     refundValue = 500,
                     ammoRefundValue = 200,
                     baseDamage = 2.0f
@@ -414,6 +416,7 @@ namespace HordeServer
                     weapondId = 380,
                     ammoId = 381,
                     ammoRefilQuantity = 10,
+                    primary = false,
                     refundValue = 500,
                     ammoRefundValue = 200,
                     baseDamage = 1.0f
@@ -879,6 +882,7 @@ namespace HordeServer
         public ushort weapondId = 0;
         public ushort ammoId = 0;
         public byte ammoRefilQuantity = 0;
+        public bool primary = true;
         public uint refundValue = 0;
         public uint ammoRefundValue = 0;
         public float baseDamage = 1.0f;

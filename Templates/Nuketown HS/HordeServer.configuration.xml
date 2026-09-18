@@ -7,13 +7,300 @@
   <TickrateBetweenRounds>1000</TickrateBetweenRounds>
   <SecondsAfterRoundFail>10</SecondsAfterRoundFail>
   <MaximumZombieNodeDistanceToSpawn>150</MaximumZombieNodeDistanceToSpawn>
+  <DeathItemsClearRadius>10</DeathItemsClearRadius>
+  <HitsToKillPlayer>2</HitsToKillPlayer>
+  <HitsToKillPlayerWithJuggernog>4</HitsToKillPlayerWithJuggernog>
+  <HealthRegenDelay>2</HealthRegenDelay>
+  <HealthRegenDuration>1</HealthRegenDuration>
   <ZombieCountIncreasePerPlayer>0.5</ZombieCountIncreasePerPlayer>
   <ZombieHealthIncreasePerPlayer>0.0</ZombieHealthIncreasePerPlayer>
   <DebugPlayerPosition>false</DebugPlayerPosition>
   <DebugZombies>false</DebugZombies>
-  <DebugWeaponSlots>false</DebugWeaponSlots>
   <DebugDoors>false</DebugDoors>
   <ChatIconURL>https://add-image-url.com</ChatIconURL>
+  <KitCommandOnlyInArea>true</KitCommandOnlyInArea>
+  <KitCommandAreas>
+    <KitAreas>
+      <X1>15.5</X1>
+      <Y1>50</Y1>
+      <Z1>-241.5</Z1>
+      <X2>33.1</X2>
+      <Y2>60</Y2>
+      <Z2>-250.05</Z2>
+    </KitAreas>
+  </KitCommandAreas>
+  <Items>
+    <Kit>
+      <name>Dmitri</name>
+      <permissionId xsi:nil="true" />
+      <items>
+        <KitItem>
+          <Id>1182</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>1385</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>1386</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>1387</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>97</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+      </items>
+      <experience>
+        <Agriculture>0</Agriculture>
+        <Cardio>0</Cardio>
+        <Cooking>0</Cooking>
+        <Crafting>0</Crafting>
+        <Dexerity>0</Dexerity>
+        <Diving>0</Diving>
+        <Engineer>0</Engineer>
+        <Exercise>0</Exercise>
+        <Fishing>0</Fishing>
+        <Healing>0</Healing>
+        <Immunity>0</Immunity>
+        <Mechanic>0</Mechanic>
+        <Outdoors>0</Outdoors>
+        <Overkill>0</Overkill>
+        <Parkour>0</Parkour>
+        <Sharpshooter>0</Sharpshooter>
+        <Sneakybeaky>0</Sneakybeaky>
+        <Strength>0</Strength>
+        <Survival>0</Survival>
+        <Toughness>0</Toughness>
+        <Vitality>0</Vitality>
+        <Warmblooded>0</Warmblooded>
+      </experience>
+    </Kit>
+    <Kit>
+      <name>Nikolai</name>
+      <permissionId xsi:nil="true" />
+      <items>
+        <KitItem>
+          <Id>1182</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>305</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>306</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>313</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>97</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+      </items>
+      <experience>
+        <Agriculture>0</Agriculture>
+        <Cardio>0</Cardio>
+        <Cooking>0</Cooking>
+        <Crafting>0</Crafting>
+        <Dexerity>0</Dexerity>
+        <Diving>0</Diving>
+        <Engineer>0</Engineer>
+        <Exercise>0</Exercise>
+        <Fishing>0</Fishing>
+        <Healing>0</Healing>
+        <Immunity>0</Immunity>
+        <Mechanic>0</Mechanic>
+        <Outdoors>0</Outdoors>
+        <Overkill>0</Overkill>
+        <Parkour>0</Parkour>
+        <Sharpshooter>0</Sharpshooter>
+        <Sneakybeaky>0</Sneakybeaky>
+        <Strength>0</Strength>
+        <Survival>0</Survival>
+        <Toughness>0</Toughness>
+        <Vitality>0</Vitality>
+        <Warmblooded>0</Warmblooded>
+      </experience>
+    </Kit>
+    <Kit>
+      <name>Aleksandr</name>
+      <permissionId xsi:nil="true" />
+      <items>
+        <KitItem>
+          <Id>1182</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>254</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>1048</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>407</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>408</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>97</Id>
+          <Amount>1</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+        <KitItem>
+          <Id>98</Id>
+          <Amount>7</Amount>
+          <Metadata />
+        </KitItem>
+      </items>
+      <experience>
+        <Agriculture>0</Agriculture>
+        <Cardio>0</Cardio>
+        <Cooking>0</Cooking>
+        <Crafting>0</Crafting>
+        <Dexerity>0</Dexerity>
+        <Diving>0</Diving>
+        <Engineer>0</Engineer>
+        <Exercise>0</Exercise>
+        <Fishing>0</Fishing>
+        <Healing>0</Healing>
+        <Immunity>0</Immunity>
+        <Mechanic>0</Mechanic>
+        <Outdoors>0</Outdoors>
+        <Overkill>0</Overkill>
+        <Parkour>0</Parkour>
+        <Sharpshooter>0</Sharpshooter>
+        <Sneakybeaky>0</Sneakybeaky>
+        <Strength>0</Strength>
+        <Survival>0</Survival>
+        <Toughness>0</Toughness>
+        <Vitality>0</Vitality>
+        <Warmblooded>0</Warmblooded>
+      </experience>
+    </Kit>
+  </Items>
   <Waves>
     <ConfigWave>
       <Acid>0</Acid>
@@ -919,6 +1206,7 @@
       <weapondId>97</weapondId>
       <ammoId>98</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>false</primary>
       <refundValue>0</refundValue>
       <ammoRefundValue>0</ammoRefundValue>
       <baseDamage>0.3</baseDamage>
@@ -928,6 +1216,7 @@
       <weapondId>101</weapondId>
       <ammoId>103</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>500</refundValue>
       <ammoRefundValue>250</ammoRefundValue>
       <baseDamage>1</baseDamage>
@@ -937,6 +1226,7 @@
       <weapondId>380</weapondId>
       <ammoId>381</ammoId>
       <ammoRefilQuantity>10</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>500</refundValue>
       <ammoRefundValue>250</ammoRefundValue>
       <baseDamage>0.5</baseDamage>
@@ -946,6 +1236,7 @@
       <weapondId>112</weapondId>
       <ammoId>113</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>1500</refundValue>
       <ammoRefundValue>500</ammoRefundValue>
       <baseDamage>0.5</baseDamage>
@@ -955,6 +1246,7 @@
       <weapondId>363</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>1600</refundValue>
       <ammoRefundValue>650</ammoRefundValue>
       <baseDamage>0.3</baseDamage>
@@ -964,6 +1256,7 @@
       <weapondId>1021</weapondId>
       <ammoId>1022</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>1000</refundValue>
       <ammoRefundValue>400</ammoRefundValue>
       <baseDamage>0.5</baseDamage>
@@ -973,6 +1266,7 @@
       <weapondId>1369</weapondId>
       <ammoId>1371</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>1700</refundValue>
       <ammoRefundValue>800</ammoRefundValue>
       <baseDamage>0.3</baseDamage>
@@ -982,6 +1276,7 @@
       <weapondId>112</weapondId>
       <ammoId>123</ammoId>
       <ammoRefilQuantity>8</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>3000</refundValue>
       <ammoRefundValue>2000</ammoRefundValue>
       <baseDamage>1.0</baseDamage>
@@ -991,6 +1286,7 @@
       <weapondId>1037</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>8</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>3000</refundValue>
       <ammoRefundValue>2000</ammoRefundValue>
       <baseDamage>1.0</baseDamage>
@@ -1000,6 +1296,7 @@
       <weapondId>1037</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>8</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>3000</refundValue>
       <ammoRefundValue>2000</ammoRefundValue>
       <baseDamage>1.0</baseDamage>
@@ -1009,6 +1306,7 @@
       <weapondId>4</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>8</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>3000</refundValue>
       <ammoRefundValue>2000</ammoRefundValue>
       <baseDamage>1.0</baseDamage>
@@ -1018,6 +1316,7 @@
       <weapondId>4</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>8</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>3000</refundValue>
       <ammoRefundValue>2000</ammoRefundValue>
       <baseDamage>1.0</baseDamage>
@@ -1027,6 +1326,7 @@
       <weapondId>1362</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>8</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>3000</refundValue>
       <ammoRefundValue>2000</ammoRefundValue>
       <baseDamage>1.0</baseDamage>
@@ -1036,6 +1336,7 @@
       <weapondId>1375</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>8</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>3000</refundValue>
       <ammoRefundValue>2000</ammoRefundValue>
       <baseDamage>1.0</baseDamage>
@@ -1045,6 +1346,7 @@
       <weapondId>1377</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>8</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>3000</refundValue>
       <ammoRefundValue>2000</ammoRefundValue>
       <baseDamage>1.0</baseDamage>
@@ -1054,6 +1356,7 @@
       <weapondId>116</weapondId>
       <ammoId>6</ammoId>
       <ammoRefilQuantity>8</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>3000</refundValue>
       <ammoRefundValue>2000</ammoRefundValue>
       <baseDamage>1.0</baseDamage>
@@ -1063,6 +1366,7 @@
       <weapondId>1024</weapondId>
       <ammoId>1026</ammoId>
       <ammoRefilQuantity>5</ammoRefilQuantity>
+      <primary>true</primary>
       <refundValue>3000</refundValue>
       <ammoRefundValue>2000</ammoRefundValue>
       <baseDamage>1.0</baseDamage>
@@ -1094,7 +1398,7 @@
       <itemId>1055</itemId>
       <powerupType>grenades</powerupType>
       <refundValue>750</refundValue>
-    </PowerupLoadout>    
+    </PowerupLoadout>
     <PowerupLoadout>
       <itemId>1056</itemId>
       <powerupType>sharpshooter</powerupType>
