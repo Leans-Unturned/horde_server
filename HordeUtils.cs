@@ -259,6 +259,8 @@ class HordeUtils
 
     public static void ReceiveZombieDeathUpdate(UnturnedPlayer fromPlayer, string zombieType)
     {
+        if (wave == null) return;
+
         // Special drop calculation
         float chance = Random.Range(0f, 100f);
         if (chance <= wave!.MaxAmmoChance)
