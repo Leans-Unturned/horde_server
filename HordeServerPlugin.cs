@@ -319,10 +319,42 @@ namespace HordeServer
         // wiping every item on the map
         public static readonly List<UnityEngineCoreModule.UnityEngine.Vector3> PendingDeathItemClears = [];
 
+        // Cached once — accessing private fields via reflection every frame needs to be fast
+        private static readonly System.Reflection.FieldInfo? zombieSeekerField =
+            typeof(Zombie).GetField("seeker", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        // Tracks the speed value we last wrote per zombie so we only re-apply when the zombie
+        // itself changed the speed (state transition), not every frame
+        private static readonly Dictionary<Zombie, float> zombieLastSetSpeed = [];
+
         public void Start()
         {
             RoundSystemInstance = new(HordeServerPlugin.instance!.Configuration.Instance.TickrateBetweenRounds,
                 HordeServerPlugin.instance!.Configuration.Instance.SpawnTickrate);
+        }
+
+        public void LateUpdate()
+        {
+            float multiplier = HordeServerPlugin.instance?.Configuration.Instance.ZombieSpeedMultiplier ?? 1f;
+            if (multiplier >= 1f || zombieSeekerField == null) return;
+
+            foreach (Zombie zombie in HordeUtils.zombiesAlive)
+            {
+                if (zombie.isDead) continue;
+                var seeker = zombieSeekerField.GetValue(zombie) as SDG.Unturned.IUnturnedPathfindingMovementComponentInterface;
+                if (seeker == null) continue;
+
+                float current = seeker.Speed;
+
+                // Skip if we already applied the multiplier this speed value — the zombie hasn't
+                // changed state, so the value is already at current * multiplier from a prior frame
+                zombieLastSetSpeed.TryGetValue(zombie, out float lastSet);
+                if (current == lastSet) continue;
+
+                float scaled = current * multiplier;
+                seeker.Speed = scaled;
+                zombieLastSetSpeed[zombie] = scaled;
+            }
         }
 
         public void Update()

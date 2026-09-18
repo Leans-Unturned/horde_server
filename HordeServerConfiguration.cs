@@ -21,6 +21,8 @@ namespace HordeServer
         // is not the same difficulty as someone playing solo. 0 disables the respective scaling
         public float ZombieCountIncreasePerPlayer = 0.5f;
         public float ZombieHealthIncreasePerPlayer = 0.25f;
+        // Multiplier applied to every zombie's movement speed each frame (1.0 = no change, 0.75 = 75% of original)
+        public float ZombieSpeedMultiplier = 0.75f;
         public float SalvageDuration = 2f;
         public bool DebugPlayerPosition = false;
         public bool DebugBarricadesPosition = false;

@@ -14,6 +14,7 @@
   <HealthRegenDuration>1</HealthRegenDuration>
   <ZombieCountIncreasePerPlayer>0.5</ZombieCountIncreasePerPlayer>
   <ZombieHealthIncreasePerPlayer>0.0</ZombieHealthIncreasePerPlayer>
+  <ZombieSpeedMultiplier>0.6</ZombieSpeedMultiplier>
   <DebugPlayerPosition>false</DebugPlayerPosition>
   <DebugZombies>false</DebugZombies>
   <DebugDoors>false</DebugDoors>
