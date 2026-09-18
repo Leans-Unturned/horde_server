@@ -420,6 +420,39 @@ class HordeUtils
         grenade.zombieDamage *= multiplier;
     }
 
+    /// <summary>
+    /// Turns a NORMAL zombie into a Crawler when a grenade blast leaves it alive under the
+    /// configured health fraction. Reuses the same "instigator is null" explosion signal as
+    /// ApplyGrenadeDamageMultiplier's doc comment - guns/melee always assign a Player instigator
+    /// before calling damageZombie, explosions never do.
+    ///
+    /// The final damage isn't applied yet at this point in DamageTool.damageZombie, so the amount
+    /// that will land is predicted here: explosion hits always target ELimb.SPINE with
+    /// respectArmor/allowBackstab both false, leaving only the pending global armor multiplier
+    /// (applyGlobalArmorMultiplier) to account for, matching damageZombie's own math.
+    /// </summary>
+    public static void ConvertLowHealthGrenadeVictimToCrawler(ref DamageZombieParameters parameters, ref bool _)
+    {
+        float threshold = HordeServerPlugin.instance!.Configuration.Instance.GrenadeCrawlerHealthThreshold;
+        if (threshold <= 0f) return;
+
+        if (parameters.instigator != null) return;
+
+        Zombie zombie = parameters.zombie;
+        if (zombie == null || zombie.isDead || zombie.speciality != EZombieSpeciality.NORMAL) return;
+
+        float globalMultiplier = parameters.applyGlobalArmorMultiplier
+            ? Provider.modeConfigData.Zombies.NonHeadshot_Armor_Multiplier
+            : 1f;
+        int roundedDamage = (int)System.Math.Floor(parameters.damage * parameters.times * globalMultiplier);
+        if (roundedDamage <= 0) return;
+
+        float healthAfter = zombie.GetHealth() - roundedDamage;
+        if (healthAfter <= 0f || healthAfter > zombie.GetMaxHealth() * threshold) return;
+
+        ZombieManager.sendZombieSpeciality(zombie, EZombieSpeciality.CRAWLER);
+    }
+
     public static void HitPoints(ref DamageZombieParameters parameters, ref bool _)
     {
         object instigator = parameters.instigator;

@@ -98,6 +98,7 @@ namespace HordeServer
             Rocket.Unturned.U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
             DamageTool.damageZombieRequested += HordeUtils.CalculateZombieArmor;
             DamageTool.damageZombieRequested += HordeUtils.HitPoints;
+            DamageTool.damageZombieRequested += HordeUtils.ConvertLowHealthGrenadeVictimToCrawler;
             DamageTool.damagePlayerRequested += HordeUtils.CalculatePlayerLifeFromZombieHit;
             UseableThrowable.onThrowableSpawned += HordeUtils.ApplyGrenadeDamageMultiplier;
             UseableGun.onChangeSightRequested += HordeUtils.BlockPackAPunchAttachmentChange;

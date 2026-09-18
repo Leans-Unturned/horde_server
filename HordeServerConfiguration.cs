@@ -64,6 +64,9 @@ namespace HordeServer
         public uint KillCredits = 50;
         public uint MaxGrenades = 4;
         public float GrenadeDamageMultiplier = 1.0f;
+        // If a grenade explosion leaves a NORMAL zombie alive with its health at or below this
+        // fraction of its max health, it converts into a Crawler. 0 disables the conversion
+        public float GrenadeCrawlerHealthThreshold = 0.5f;
 
         public void LoadDefaults()
         {
