@@ -833,6 +833,10 @@ namespace HordeServer
         public long Sprinter = 0;
         public float HealthMultiplier = 1.0f;
         public float CrawlerHealthMultiplier = 0.5f;
+        // Mega/Boss speciality zombies otherwise take damage exactly like a Normal zombie of the
+        // same wave, making them die just as fast despite being the "tougher" enemy type
+        public float MegaHealthMultiplier = 2.0f;
+        public float BossHealthMultiplier = 4.0f;
         public float MaxAmmoChance = 0.05f;
 
         public ConfigWave Clone()
@@ -859,6 +863,8 @@ namespace HordeServer
                 Sprinter = Sprinter,
                 HealthMultiplier = HealthMultiplier,
                 CrawlerHealthMultiplier = CrawlerHealthMultiplier,
+                MegaHealthMultiplier = MegaHealthMultiplier,
+                BossHealthMultiplier = BossHealthMultiplier,
                 MaxAmmoChance = MaxAmmoChance,
             };
         }

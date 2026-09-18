@@ -327,6 +327,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.1</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -349,6 +351,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.2</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -371,6 +375,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.3</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -393,6 +399,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.4</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -415,6 +423,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.5</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -437,6 +447,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.6</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -459,6 +471,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.7</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -481,6 +495,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.8</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -503,6 +519,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>0.9</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -525,6 +543,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -547,6 +567,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.1</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -569,6 +591,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.2</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -591,6 +615,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.3</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -613,6 +639,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.4</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -635,6 +663,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.5</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -657,6 +687,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.6</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -679,6 +711,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.7</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -701,6 +735,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.8</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -723,6 +759,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>1.9</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -745,6 +783,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -767,6 +807,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.1</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -789,6 +831,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.2</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -811,6 +855,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.3</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -833,6 +879,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.4</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -855,6 +903,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.5</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -877,6 +927,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.6</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -899,6 +951,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.7</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -921,6 +975,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.8</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -943,6 +999,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>2.9</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -965,6 +1023,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -987,6 +1047,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.1</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -1009,6 +1071,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.2</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -1031,6 +1095,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.3</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -1053,6 +1119,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.4</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -1075,6 +1143,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.5</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -1097,6 +1167,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.6</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -1119,6 +1191,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.7</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -1141,6 +1215,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.8</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -1163,6 +1239,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>3.9</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
     <ConfigWave>
@@ -1185,6 +1263,8 @@
       <Spirit>0</Spirit>
       <Sprinter>0</Sprinter>
       <HealthMultiplier>4</HealthMultiplier>
+      <MegaHealthMultiplier>10</MegaHealthMultiplier>
+      <BossHealthMultiplier>20</BossHealthMultiplier>
       <MaxAmmoChance>1</MaxAmmoChance>
     </ConfigWave>
   </Waves>

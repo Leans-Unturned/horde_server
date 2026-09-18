@@ -376,8 +376,24 @@ class HordeUtils
         if (parameters.instigator is Player abstractPlayer)
         {
             float healthMult = wave.HealthMultiplier;
-            if (parameters.zombie.speciality == EZombieSpeciality.CRAWLER)
-                healthMult *= wave.CrawlerHealthMultiplier;
+            switch (parameters.zombie.speciality)
+            {
+                case EZombieSpeciality.CRAWLER:
+                    healthMult *= wave.CrawlerHealthMultiplier;
+                    break;
+                case EZombieSpeciality.MEGA:
+                    healthMult *= wave.MegaHealthMultiplier;
+                    break;
+                case EZombieSpeciality.BOSS_ELECTRIC:
+                case EZombieSpeciality.BOSS_ELVER_STOMPER:
+                case EZombieSpeciality.BOSS_FIRE:
+                case EZombieSpeciality.BOSS_MAGMA:
+                case EZombieSpeciality.BOSS_NUCLEAR:
+                case EZombieSpeciality.BOSS_SPIRIT:
+                case EZombieSpeciality.BOSS_WIND:
+                    healthMult *= wave.BossHealthMultiplier;
+                    break;
+            }
             parameters.damage *= 1f / healthMult;
 
             UnturnedPlayer player = UnturnedPlayer.FromPlayer(abstractPlayer);
