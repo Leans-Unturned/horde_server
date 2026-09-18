@@ -354,14 +354,19 @@ namespace HordeServer
 
         public void LateUpdate()
         {
-            float multiplier = HordeServerPlugin.instance?.Configuration.Instance.ZombieSpeedMultiplier ?? 1f;
-            if (multiplier >= 1f || zombieSeekerField == null) return;
+            var config = HordeServerPlugin.instance?.Configuration.Instance;
+            if (config == null || zombieSeekerField == null) return;
+            // Nothing to override — no global slowdown and no per-zombie variance configured
+            if (config.ZombieSpeedMultiplier >= 1f && config.ZombieSpeedVariance <= 0f) return;
 
             foreach (Zombie zombie in HordeUtils.zombiesAlive)
             {
                 if (zombie.isDead) continue;
                 var seeker = zombieSeekerField.GetValue(zombie) as SDG.Unturned.IUnturnedPathfindingMovementComponentInterface;
                 if (seeker == null) continue;
+
+                if (!HordeUtils.zombieSpeedMultipliers.TryGetValue(zombie, out float multiplier))
+                    multiplier = config.ZombieSpeedMultiplier;
 
                 float current = seeker.Speed;
 

@@ -18,6 +18,7 @@
   <ZombieCountIncreasePerPlayer>0.5</ZombieCountIncreasePerPlayer>
   <ZombieHealthIncreasePerPlayer>0.0</ZombieHealthIncreasePerPlayer>
   <ZombieSpeedMultiplier>0.6</ZombieSpeedMultiplier>
+  <ZombieSpeedVariance>0.3</ZombieSpeedVariance>
   <DebugPlayerPosition>false</DebugPlayerPosition>
   <DebugZombies>false</DebugZombies>
   <DebugDoors>false</DebugDoors>

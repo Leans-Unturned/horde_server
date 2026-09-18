@@ -30,6 +30,10 @@ namespace HordeServer
         public float ZombieHealthIncreasePerPlayer = 0.25f;
         // Multiplier applied to every zombie's movement speed each frame (1.0 = no change, 0.75 = 75% of original)
         public float ZombieSpeedMultiplier = 0.75f;
+        // Random +/- variance applied per zombie on top of ZombieSpeedMultiplier, rolled once when it
+        // spawns and kept for its lifetime, so not every zombie moves at the exact same speed.
+        // 0.3 = each zombie's final speed multiplier is ZombieSpeedMultiplier +/- up to 30%. 0 disables it
+        public float ZombieSpeedVariance = 0f;
         public float SalvageDuration = 2f;
         public bool DebugPlayerPosition = false;
         public bool DebugBarricadesPosition = false;

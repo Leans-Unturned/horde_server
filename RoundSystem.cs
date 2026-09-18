@@ -44,6 +44,7 @@ class RoundSystem(uint tickrateBetweenRounds, uint spawnTickrate)
                 actualRemainingTick = HordeServerPlugin.instance!.Configuration.Instance.RemainingCheckTickrate;
 
                 HordeUtils.zombiesAlive = [];
+                HordeUtils.zombieSpeedMultipliers.Clear();
                 HordeUtils.zombiesToSpawn = 0;
                 HordeUtils.wave = null;
                 LightingManager.time = 500;

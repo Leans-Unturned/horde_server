@@ -22,6 +22,9 @@ class HordeUtils
     public static long zombiesAliveCountReference = 0;
     public static List<Zombie> zombiesAlive = [];
     public static ConfigWave? wave = null;
+    // Per-zombie speed multiplier rolled once at spawn (ZombieSpeedMultiplier +/- ZombieSpeedVariance),
+    // read every frame by HordeServerPlugin's speed override instead of the flat global multiplier
+    public static Dictionary<Zombie, float> zombieSpeedMultipliers = [];
 
     private static List<LocationDevkitNode> GetLocationNodesByName(string name)
     {
@@ -179,6 +182,12 @@ class HordeUtils
             zombiesAlive.Add(deadZombie);
             zombiesToSpawn--;
             zombiesSpawnedThisTick++;
+
+            float baseMultiplier = HordeServerPlugin.instance.Configuration.Instance.ZombieSpeedMultiplier;
+            float variance = HordeServerPlugin.instance.Configuration.Instance.ZombieSpeedVariance;
+            zombieSpeedMultipliers[deadZombie] = variance <= 0f
+                ? baseMultiplier
+                : baseMultiplier * (1f + Random.Range(-variance, variance));
 
             if (debug)
                 Logger.Log($"[ZombieSpawn] Spawned: bound={bound} type={type} speciality={speciality} pos={point.x:F1},{point.y:F1},{point.z:F1} isDead={deadZombie.isDead} hp={deadZombie.GetHealth()}");
@@ -343,6 +352,7 @@ class HordeUtils
         foreach (Zombie zombie in toRemove)
         {
             zombiesAlive.Remove(zombie);
+            zombieSpeedMultipliers.Remove(zombie);
         }
 
         if (HordeServerPlugin.instance!.Configuration.Instance.DebugZombies)
