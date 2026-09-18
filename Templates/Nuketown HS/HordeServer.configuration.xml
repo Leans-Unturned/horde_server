@@ -2,16 +2,19 @@
 <HordeServerConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <ForceRemoveZombieRadiation>true</ForceRemoveZombieRadiation>
   <ForceRemovePlayerRadiation>true</ForceRemovePlayerRadiation>
-  <SpawnTickrate>600</SpawnTickrate>
-  <RemainingCheckTickrate>600</RemainingCheckTickrate>
+  <SpawnTickrate>100</SpawnTickrate>
+  <RemainingCheckTickrate>300</RemainingCheckTickrate>
   <TickrateBetweenRounds>1000</TickrateBetweenRounds>
   <SecondsAfterRoundFail>10</SecondsAfterRoundFail>
   <MaximumZombieNodeDistanceToSpawn>150</MaximumZombieNodeDistanceToSpawn>
+  <MaxZombiesSpawnedPerTick>3</MaxZombiesSpawnedPerTick>
+  <MaxZombiesSpawnedPerTickIncreasePerPlayer>0.5</MaxZombiesSpawnedPerTickIncreasePerPlayer>
   <DeathItemsClearRadius>10</DeathItemsClearRadius>
   <HitsToKillPlayer>2</HitsToKillPlayer>
   <HitsToKillPlayerWithJuggernog>4</HitsToKillPlayerWithJuggernog>
-  <HealthRegenDelay>2</HealthRegenDelay>
+  <HealthRegenDelay>4</HealthRegenDelay>
   <HealthRegenDuration>1</HealthRegenDuration>
+  <SalvageDuration>1</SalvageDuration>
   <ZombieCountIncreasePerPlayer>0.5</ZombieCountIncreasePerPlayer>
   <ZombieHealthIncreasePerPlayer>0.0</ZombieHealthIncreasePerPlayer>
   <ZombieSpeedMultiplier>0.6</ZombieSpeedMultiplier>

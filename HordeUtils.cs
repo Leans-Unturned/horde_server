@@ -97,30 +97,34 @@ class HordeUtils
             return;
         }
 
+        uint zombiesSpawnedThisTick = 0;
+        uint maxZombiesPerTick = GetScaledMaxZombiesSpawnedPerTick(HordeServerPlugin.onlinePlayers.Count);
+
         List<UnityEngineCoreModule.UnityEngine.Vector3> zombiesNodesToSpawn = new(zombieSpawnPositions);
         foreach (UnityEngineCoreModule.UnityEngine.Vector3 _ in zombieSpawnPositions)
         {
             if (zombiesNodesToSpawn.Count == 0) return;
+            if (maxZombiesPerTick > 0 && zombiesSpawnedThisTick >= maxZombiesPerTick) return;
 
             int nodeIndex = Random.Range(0, zombiesNodesToSpawn.Count);
             UnityEngineCoreModule.UnityEngine.Vector3 point = zombiesNodesToSpawn[nodeIndex];
             zombiesNodesToSpawn.RemoveAt(nodeIndex);
 
-            // Skip nodes that are too far from all alive players
-            bool nodeTooFar = false;
+            // Skip nodes that are not close to at least one alive player
+            bool nodeNearAnyPlayer = false;
             foreach (UnturnedPlayer alivePlayer in HordeServerPlugin.alivePlayers)
             {
                 float distance = UnityEngineCoreModule.UnityEngine.Vector3.Distance(alivePlayer.Position, point);
                 if (HordeServerPlugin.instance.Configuration.Instance.DebugPlayerPosition)
                     Logger.Log($"{alivePlayer.SteamName} node: {point.x},{point.y},{point.z} distance: {distance}");
 
-                if (distance > HordeServerPlugin.instance.Configuration.Instance.MaximumZombieNodeDistanceToSpawn)
+                if (distance <= HordeServerPlugin.instance.Configuration.Instance.MaximumZombieNodeDistanceToSpawn)
                 {
-                    nodeTooFar = true;
+                    nodeNearAnyPlayer = true;
                     break;
                 }
             }
-            if (nodeTooFar)
+            if (!nodeNearAnyPlayer)
             {
                 if (HordeServerPlugin.instance.Configuration.Instance.DebugPlayerPosition)
                     Logger.Log($"node: {point.x},{point.y},{point.z} too far");
@@ -174,6 +178,7 @@ class HordeUtils
                 RemoveZombiesRadiation();
             zombiesAlive.Add(deadZombie);
             zombiesToSpawn--;
+            zombiesSpawnedThisTick++;
 
             if (debug)
                 Logger.Log($"[ZombieSpawn] Spawned: bound={bound} type={type} speciality={speciality} pos={point.x:F1},{point.y:F1},{point.z:F1} isDead={deadZombie.isDead} hp={deadZombie.GetHealth()}");
@@ -225,6 +230,21 @@ class HordeUtils
 
         if (HordeServerPlugin.instance!.Configuration.Instance.DebugZombies)
             Logger.Log($"[Difficulty] Scaled wave for {playerCount} players (+{extraPlayers} extra): countScale={countScale}, healthScale={healthScale}, HealthMultiplier={wave.HealthMultiplier}");
+    }
+
+    // Same scaling formula as ScaleWaveForPlayerCount: more players means more nodes near them are
+    // eligible each tick, so the per-tick spawn cap needs to grow too or the trickle stays sized for
+    // solo play. 0 (no cap) is left untouched
+    public static uint GetScaledMaxZombiesSpawnedPerTick(int playerCount)
+    {
+        uint baseMax = HordeServerPlugin.instance!.Configuration.Instance.MaxZombiesSpawnedPerTick;
+        if (baseMax == 0) return 0;
+
+        int extraPlayers = System.Math.Max(0, playerCount - 1);
+        if (extraPlayers <= 0) return baseMax;
+
+        float scale = 1f + extraPlayers * HordeServerPlugin.instance!.Configuration.Instance.MaxZombiesSpawnedPerTickIncreasePerPlayer;
+        return (uint)System.Math.Ceiling(baseMax * scale);
     }
 
     public static void CalculateZombiesToSpawn()

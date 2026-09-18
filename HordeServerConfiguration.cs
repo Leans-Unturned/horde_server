@@ -7,11 +7,18 @@ namespace HordeServer
     {
         public bool ForceRemoveZombieRadiation = true;
         public bool ForceRemovePlayerRadiation = true;
-        public uint SpawnTickrate = 600;
-        public uint RemainingCheckTickrate = 600;
+        public uint SpawnTickrate = 100;
+        public uint RemainingCheckTickrate = 300;
         public uint TickrateBetweenRounds = 1000;
         public int SecondsAfterRoundFail = 10;
         public int MaximumZombieNodeDistanceToSpawn = 150;
+        // Caps how many zombies can be revived in a single SpawnZombiesInNodes tick, so a map with
+        // many eligible nodes near the players doesn't dump them all in at once. 0 = no cap
+        public uint MaxZombiesSpawnedPerTick = 3;
+        // Scales MaxZombiesSpawnedPerTick up per player beyond the first, same formula as
+        // ZombieCountIncreasePerPlayer, so more players (more nodes covered at once) still get a
+        // steady stream instead of the same trickle sized for solo play. 0 disables the scaling
+        public float MaxZombiesSpawnedPerTickIncreasePerPlayer = 0.5f;
         public float DeathItemsClearRadius = 10f;
         public uint HitsToKillPlayer = 2;
         public uint HitsToKillPlayerWithJuggernog = 4;
