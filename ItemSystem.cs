@@ -141,25 +141,61 @@ namespace HordeServer
             }
         }
 
-        // Forces the item sitting at (page,x,y) to be consumed as if the player used it themselves,
-        // instead of silently deleting it — the real engine consume flow (UseableConsumeable.
-        // startPrimary -> performUseOnSelf) applies the item's own stat effects and removes it
-        // automatically once done (see ItemConsumeableAsset.shouldDeleteAfterUse). Returns false if
-        // the engine refused to equip it (e.g. player mid-animation of something else, dead, etc.),
-        // so the caller can fall back to a plain removeItem.
-        static private bool ForcePlayerDrinkItem(UnturnedPlayer player, byte page, byte x, byte y)
+        // How long to wait, after equipping a force-drunk item, before actually starting the drink.
+        // The owner's own client silently ignores ReceivePlayConsume while ITS OWN equip/raise
+        // animation hasn't finished yet (PlayerEquipment.IsEquipAnimationFinished) — starting the
+        // drink in the very same tick as the equip is too early for the real client to show it,
+        // even though the server-side headless check passes instantly (no real animation to wait on)
+        // and the stat effect/removal still silently applies. This margin covers any vanilla
+        // "Equip" clip length so the client has always finished raising the item by the time it
+        // receives the forced consume RPC.
+        private const float ForceDrinkDelaySeconds = 0.75f;
+
+        private class PendingForceDrink
+        {
+            public UnturnedPlayer Player;
+            public byte Page;
+            public byte X;
+            public byte Y;
+            public float ReadyAtTime;
+
+            public PendingForceDrink(UnturnedPlayer player, byte page, byte x, byte y, float readyAtTime)
+            {
+                Player = player;
+                Page = page;
+                X = x;
+                Y = y;
+                ReadyAtTime = readyAtTime;
+            }
+        }
+        static private readonly List<PendingForceDrink> pendingForceDrink = [];
+
+        // Equips the item immediately (so it shows in the player's hand right away, like a normal
+        // pickup) and queues the actual forced drink for a bit later — see ForceDrinkDelaySeconds
+        static private void QueueForceDrink(UnturnedPlayer player, byte page, byte x, byte y)
+        {
+            player.Player!.equipment.ServerEquip(page, x, y);
+            pendingForceDrink.Add(new(player, page, x, y, UnityEngineCoreModule.UnityEngine.Time.time + ForceDrinkDelaySeconds));
+        }
+
+        // Starts consuming the item sitting at (page,x,y), which must already be equipped there —
+        // the real engine consume flow (UseableConsumeable.startPrimary -> performUseOnSelf) applies
+        // the item's own stat effects and removes it automatically once done (see
+        // ItemConsumeableAsset.shouldDeleteAfterUse). Returns false if the item is no longer equipped
+        // there or the engine refused to start (e.g. player dead/busy meanwhile), so the caller can
+        // fall back to a plain removeItem.
+        static private bool TryStartForcedDrink(UnturnedPlayer player, byte page, byte x, byte y)
         {
             bool debugItems = HordeServerPlugin.instance!.Configuration.Instance.DebugItems;
-
             PlayerEquipment equipment = player.Player!.equipment;
-            equipment.ServerEquip(page, x, y);
-
-            if (debugItems)
-                Logger.LogWarning($"[DebugItems] ForceDrink: after ServerEquip({page},{x},{y}) useableType={equipment.useable?.GetType().Name ?? "null"} equipped=({equipment.equippedPage},{equipment.equipped_x},{equipment.equipped_y}) for {player.CSteamID}");
 
             if (equipment.useable is not UseableConsumeable consumeable
                 || equipment.equippedPage != page || equipment.equipped_x != x || equipment.equipped_y != y)
+            {
+                if (debugItems)
+                    Logger.LogWarning($"[DebugItems] ForceDrink: item no longer equipped at ({page},{x},{y}) when trying to start drink for {player.CSteamID}, useableType={equipment.useable?.GetType().Name ?? "null"}");
                 return false;
+            }
 
             bool started = consumeable.startPrimary();
 
@@ -257,8 +293,7 @@ namespace HordeServer
                                     if (powerUpLoadout.forceDrink)
                                     {
                                         ItemJar drinkItem = player.Inventory.getItem(page, j);
-                                        if (!ForcePlayerDrinkItem(player, page, drinkItem.x, drinkItem.y))
-                                            player.Inventory.removeItem(page, j);
+                                        QueueForceDrink(player, page, drinkItem.x, drinkItem.y);
                                     }
                                     else
                                         player.Inventory.removeItem(page, j);
@@ -513,6 +548,25 @@ namespace HordeServer
 
         static public void Update()
         {
+            if (pendingForceDrink.Count > 0)
+            {
+                float now = UnityEngineCoreModule.UnityEngine.Time.time;
+                for (int i = pendingForceDrink.Count - 1; i >= 0; i--)
+                {
+                    PendingForceDrink entry = pendingForceDrink[i];
+                    if (now < entry.ReadyAtTime) continue;
+
+                    pendingForceDrink.RemoveAt(i);
+
+                    if (!TryStartForcedDrink(entry.Player, entry.Page, entry.X, entry.Y))
+                    {
+                        byte index = entry.Player.Inventory.getIndex(entry.Page, entry.X, entry.Y);
+                        if (index != 255)
+                            entry.Player.Inventory.removeItem(entry.Page, index);
+                    }
+                }
+            }
+
             { // weaponInventoryResetIgnoreNextTickOnNextTick handler
                 // If is 0 remove it from both lists
                 foreach (KeyValuePair<UnturnedPlayer, uint> keyValuePair in weaponInventoryResetIgnoreNextTickOnNextTick.ToList())
