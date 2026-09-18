@@ -11,6 +11,9 @@ namespace HordeServer
         private static readonly Dictionary<UnturnedPlayer, float> lastHitTime = [];
         // Fractional health carried over between ticks, since askHeal only accepts whole bytes
         private static readonly Dictionary<UnturnedPlayer, float> pendingHeal = [];
+        // HP observed at the end of the previous Update tick, to detect damage from sources that
+        // bypass DamageTool.damagePlayerRequested (deadzone, bleeding ticks, etc.)
+        private static readonly Dictionary<UnturnedPlayer, byte> previousHealth = [];
 
         public static void RegisterHit(UnturnedPlayer player)
         {
@@ -21,15 +24,14 @@ namespace HordeServer
         {
             lastHitTime.Remove(player);
             pendingHeal.Remove(player);
+            previousHealth.Remove(player);
         }
 
         public static void Update()
         {
             float duration = HordeServerPlugin.instance!.Configuration.Instance.HealthRegenDuration;
-            if (duration <= 0) return;
-
             float delay = HordeServerPlugin.instance!.Configuration.Instance.HealthRegenDelay;
-            float healthPerSecond = 100f / duration;
+            float healthPerSecond = duration > 0 ? 100f / duration : 0f;
             float now = UnityEngineCoreModule.UnityEngine.Time.time;
 
             foreach (UnturnedPlayer player in HordeServerPlugin.alivePlayers)
@@ -37,7 +39,15 @@ namespace HordeServer
                 SDG.Unturned.PlayerLife? life = player.Player?.life;
                 if (life == null || life.isDead) continue;
 
-                if (life.health >= 100)
+                byte currentHealth = life.health;
+
+                // Detect damage from sources that bypass DamageTool (deadzone, etc.)
+                if (previousHealth.TryGetValue(player, out byte prevHealth) && currentHealth < prevHealth)
+                    RegisterHit(player);
+
+                previousHealth[player] = currentHealth;
+
+                if (duration <= 0 || currentHealth >= 100)
                 {
                     pendingHeal.Remove(player);
                     continue;

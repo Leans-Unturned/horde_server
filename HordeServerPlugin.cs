@@ -57,6 +57,7 @@ namespace HordeServer
             Provider.modeConfigData.Zombies.Armor_Multiplier = 1.0f;
             Provider.modeConfigData.Players.Food_Use_Ticks = uint.MaxValue;
             Provider.modeConfigData.Players.Water_Use_Ticks = uint.MaxValue;
+            Provider.modeConfigData.Players.Can_Start_Bleeding = false;
 
             Rocket.Unturned.U.Events.OnPlayerConnected += OnPlayerConnected;
             Rocket.Unturned.U.Events.OnPlayerDisconnected += OnPlayerDisconnected;
