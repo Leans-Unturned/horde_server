@@ -18,16 +18,7 @@ namespace HordeServer
         static public Dictionary<UnturnedPlayer, WeaponLoadout> secondaryWeapon = [];
 
         static private List<KeyValuePair<UnturnedPlayer, Item>> itemSwapped = [];
-        // Player / tickrate
-        public static readonly Dictionary<UnturnedPlayer, uint> ignoredRefunds = [];
         static bool SwapTickReset = false;
-
-        // Marks a player who just legitimately spent credits (e.g. buying from a vendor), Player / tickrate
-        // Ammo refunds are only granted while this is set, so obtaining ammo through loot/crafting/trading
-        // cannot be used to farm credits
-        private static readonly Dictionary<UnturnedPlayer, uint> pendingCreditSpend = [];
-        // Players whose next credit spend should NOT be treated as a purchase (e.g. paying to open a door)
-        private static readonly HashSet<UnturnedPlayer> suppressNextCreditSpendEvent = [];
 
         // Players currently receiving a kit — OnInventoryAdded skips all checks for them
         internal static readonly HashSet<UnturnedPlayer> kitGiveInProgress = [];
@@ -73,28 +64,6 @@ namespace HordeServer
         private static List<UnturnedPlayer> refreshPrimaryWeaponNextTick = [];
         private static List<UnturnedPlayer> refreshSecondaryWeaponNextTick = [];
         private static List<KeyValuePair<UnturnedPlayer, Item>> removeItemNextTick = [];
-
-        // Call this right before manually deducting credits from a player for something that is NOT
-        // a vendor purchase (e.g. paying to open a door), so that spend is not mistaken for a purchase
-        static public void SuppressNextCreditSpend(UnturnedPlayer player)
-        {
-            suppressNextCreditSpendEvent.Remove(player);
-            suppressNextCreditSpendEvent.Add(player);
-        }
-
-        static public void OnPlayerExperienceChanged(PlayerSkills skills, uint oldExperience)
-        {
-            // Not a spend (award/refund), ignore
-            if (skills.experience >= oldExperience) return;
-
-            UnturnedPlayer? player = UnturnedPlayer.FromPlayer(skills.player);
-            if (player == null) return;
-
-            if (suppressNextCreditSpendEvent.Remove(player)) return;
-
-            pendingCreditSpend.Remove(player);
-            pendingCreditSpend.Add(player, 2);
-        }
 
         // Cleans up whatever weapon+ammo currently occupies (page, 0) so a misplaced weapon can be
         // relocated there safely, instead of just deleting whatever the player already has equipped
@@ -292,84 +261,94 @@ namespace HordeServer
                 }
             }
 
-            // Checking if is some sort of powerup
+        }
+
+        static public void OnPurchase(UnturnedPlayer player, HordePurchaseVolume volume, bool alreadyOwnedGun)
+        {
+            // Powerup purchase
             foreach (PowerupLoadout powerUpLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailablePowerupsToPurchase)
             {
-                if (powerUpLoadout.itemId == P.item.id)
+                if (powerUpLoadout.itemId != volume.id) continue;
+
+                for (byte page = 0; page < PlayerInventory.PAGES; page++)
                 {
-                    for (byte page = 0; page < PlayerInventory.PAGES; page++)
+                    try
                     {
-                        try
+                        for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
                         {
-                            for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
+                            if (player.Inventory.getItem(page, j).item.id != volume.id) continue;
+
+                            bool powerupGranted = PowerupSystem.GivePlayerPowerupByType(player, powerUpLoadout.powerupType);
+                            if (powerUpLoadout.forceDrink && powerupGranted)
                             {
-                                if (player.Inventory.getItem(page, j).item.id == P.item.id)
-                                {
-                                    bool powerupGranted = PowerupSystem.GivePlayerPowerupByType(player, powerUpLoadout.powerupType);
-
-                                    // Player already had this powerup (refund already granted above) —
-                                    // just delete the trigger item, no point forcing a drink for nothing
-                                    if (powerUpLoadout.forceDrink && powerupGranted)
-                                    {
-                                        ItemJar drinkItem = player.Inventory.getItem(page, j);
-                                        QueueForceDrink(player, page, drinkItem.x, drinkItem.y);
-                                    }
-                                    else
-                                        player.Inventory.removeItem(page, j);
-
-                                    return;
-                                }
+                                ItemJar drinkItem = player.Inventory.getItem(page, j);
+                                QueueForceDrink(player, page, drinkItem.x, drinkItem.y);
                             }
+                            else
+                                player.Inventory.removeItem(page, j);
+                            return;
                         }
-                        catch (Exception) { }
                     }
+                    catch (Exception) { }
                 }
+                return;
             }
 
-            // Checking if is an electric fence (Barbed Wire) purchase
+            // Electric fence purchase
             foreach (EletricFence eletricFence in HordeServerPlugin.instance!.Configuration.Instance.AvailableEletricToPurchase)
             {
-                if (eletricFence.id == P.item.id)
+                if (eletricFence.id != volume.id) continue;
+
+                for (byte page = 0; page < PlayerInventory.PAGES; page++)
                 {
-                    for (byte page = 0; page < PlayerInventory.PAGES; page++)
+                    try
                     {
-                        try
+                        for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
                         {
-                            for (byte j = 0; j < player.Inventory.getItemCount(page); j++)
-                            {
-                                if (player.Inventory.getItem(page, j).item.id == P.item.id)
-                                {
-                                    EletricSystem.TryPurchase(player, eletricFence);
-                                    player.Inventory.removeItem(page, j);
-                                    return;
-                                }
-                            }
+                            if (player.Inventory.getItem(page, j).item.id != volume.id) continue;
+
+                            EletricSystem.TryPurchase(player, eletricFence);
+                            player.Inventory.removeItem(page, j);
+                            return;
                         }
-                        catch (Exception) { }
                     }
+                    catch (Exception) { }
                 }
+                return;
             }
 
-            // In this situation the item is purchased
+            // Weapon purchase
             foreach (WeaponLoadout weaponLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
             {
-                // If is the first weapon give it the ammo for that weapon
-                if (P.item.id == weaponLoadout.weapondId)
+                if (weaponLoadout.weapondId != volume.id) continue;
+
+                if (alreadyOwnedGun)
                 {
+                    // Player already had the gun — game gave ammo instead, refund and refill
+                    if (weaponLoadout.ammoRefundValue > 0)
+                    {
+                        player.Experience += weaponLoadout.ammoRefundValue;
+                        ChatManager.serverSendMessage(
+                            HordeServerPlugin.instance!.Translate("refund_ammo", weaponLoadout.ammoRefundValue),
+                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
+                            null,
+                            player.SteamPlayer(),
+                            EChatMode.SAY,
+                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
+                            true
+                        );
+                    }
+                    RemovePreviouslyAmmo(player, weaponLoadout.ammoId);
+                    player.GiveItem(weaponLoadout.ammoId, weaponLoadout.ammoRefilQuantity);
+                }
+                else
+                {
+                    // First purchase — equip and give ammo next tick
                     byte targetSlot = weaponLoadout.primary ? (byte)0 : (byte)1;
 
                     if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems)
-                        Logger.LogWarning($"[DebugItems] OnInventoryAdded: weapon={P.item.id} detected as purchase, targetSlot={targetSlot}, player={player.CSteamID}");
+                        Logger.LogWarning($"[DebugItems] OnPurchase: weapon={volume.id} targetSlot={targetSlot} player={player.CSteamID}");
 
-                    // Ignore the next: 2 ticks, before detecting ammo refunds
-                    // This is necessary on first buy so the system does not refund for the ammo received
-                    // in first buy
-                    ignoredRefunds.Remove(player);
-                    ignoredRefunds.Add(player, 4);
-
-                    // For some reason in this function the item add is not yet in the inventory, we need to equip in the next tick
-                    // And for another reason the player receives ammo of the weapon in the horde purchase volume
-                    // and we need to remove it for handling the ammo system in the next tick
                     weaponEquipNextTick.Add(new(player, weaponLoadout) { TargetSlot = targetSlot });
 
                     if (targetSlot == 0)
@@ -383,32 +362,7 @@ namespace HordeServer
                         PowerupSystem.ResetPlayerSecondaryPackAPunch(player);
                     }
                 }
-
-                // If the player receives ammo, is because he already have the weapon lets refresh the inventory
-                if (P.item.id == weaponLoadout.ammoId)
-                {
-                    // Only refund credits if this ammo actually came from a real credit spend
-                    // (vendor purchase), never for ammo obtained via loot, crafting or trading
-                    bool purchasedNow = pendingCreditSpend.Remove(player);
-
-                    if (weaponLoadout.ammoRefundValue > 0 && purchasedNow && !ignoredRefunds.ContainsKey(player))
-                    {
-                        player.Experience += weaponLoadout.ammoRefundValue;
-
-                        ChatManager.serverSendMessage(
-                            HordeServerPlugin.instance!.Translate("refund_ammo", weaponLoadout.ammoRefundValue),
-                            new UnityEngineCoreModule.UnityEngine.Color(0, 255, 0),
-                            null,
-                            player.SteamPlayer(),
-                            EChatMode.SAY,
-                            HordeServerPlugin.instance!.Configuration.Instance.ChatIconURL,
-                            true
-                        );
-                    }
-
-                    RemovePreviouslyAmmo(player, weaponLoadout.ammoId);
-                    player.GiveItem(weaponLoadout.ammoId, weaponLoadout.ammoRefilQuantity);
-                }
+                return;
             }
         }
 
@@ -559,32 +513,6 @@ namespace HordeServer
                 }
             }
 
-            if (ignoredRefunds.Count > 0)
-            {
-                foreach (var key in ignoredRefunds.Keys.ToList())
-                {
-                    ignoredRefunds[key]--;
-
-                    if (ignoredRefunds[key] <= 0)
-                    {
-                        ignoredRefunds.Remove(key);
-                    }
-                }
-            }
-
-            if (pendingCreditSpend.Count > 0)
-            {
-                foreach (var key in pendingCreditSpend.Keys.ToList())
-                {
-                    pendingCreditSpend[key]--;
-
-                    if (pendingCreditSpend[key] <= 0)
-                    {
-                        pendingCreditSpend.Remove(key);
-                    }
-                }
-            }
-
             if (SwapTickReset)
                 itemSwapped = [];
 
@@ -653,7 +581,21 @@ namespace HordeServer
                                         {
                                             if (debugItems)
                                                 Logger.LogWarning($"[DebugItems] EquipTick: relocation OK weapon={savedId} to slot={entry.TargetSlot}, removing source page={page}");
-                                            player.Inventory.removeItem(page, itemIndex);
+
+                                            // EvictSlotForRelocation may have removed items from the same
+                                            // page at lower indices, shifting the weapon's index — re-find
+                                            // it by ID so we remove the right slot, not a stale index
+                                            byte freshIndex = 255;
+                                            for (byte s = 0; s < player.Inventory.getItemCount(page); s++)
+                                            {
+                                                if (player.Inventory.getItem(page, s)?.item?.id == savedId)
+                                                {
+                                                    freshIndex = s;
+                                                    break;
+                                                }
+                                            }
+                                            if (freshIndex != 255)
+                                                player.Inventory.removeItem(page, freshIndex);
                                             // Clear itemSwapped so OnInventoryAdded won't trigger weaponReplaceNextTick
                                             itemSwapped.RemoveAll(e => e.Key == player && e.Value.item.item.id == entry.Loadout.weapondId);
 
@@ -668,10 +610,6 @@ namespace HordeServer
                                                 RemovePreviouslyAmmo(player, entry.Loadout.ammoId);
                                                 player.GiveItem(entry.Loadout.ammoId, entry.Loadout.ammoRefilQuantity);
                                                 weaponEquipNextTick.RemoveAt(i);
-                                                if (debugItems)
-                                                    Logger.LogWarning($"[DebugItems] [{DateTime.UtcNow:HH:mm:ss.fff}] EquipTick GIVE_AMMO_2 (reloc): ammo={entry.Loadout.ammoId} qty={entry.Loadout.ammoRefilQuantity} for {player.CSteamID}");
-                                                RemovePreviouslyAmmo(player, entry.Loadout.ammoId);
-                                                player.GiveItem(entry.Loadout.ammoId, entry.Loadout.ammoRefilQuantity);
                                             }
                                         }
                                         else
@@ -711,11 +649,6 @@ namespace HordeServer
                                             player.GiveItem(entry.Loadout.ammoId, entry.Loadout.ammoRefilQuantity);
 
                                             weaponEquipNextTick.RemoveAt(i);
-
-                                            if (debugItemsAmmo)
-                                                Logger.LogWarning($"[DebugItems] [{DateTime.UtcNow:HH:mm:ss.fff}] EquipTick GIVE_AMMO_2: ammo={entry.Loadout.ammoId} qty={entry.Loadout.ammoRefilQuantity} for {player.CSteamID}");
-                                            RemovePreviouslyAmmo(player, entry.Loadout.ammoId);
-                                            player.GiveItem(entry.Loadout.ammoId, entry.Loadout.ammoRefilQuantity);
                                         }
                                         else
                                         {

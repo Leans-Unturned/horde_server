@@ -19,3 +19,4 @@ dotnet build -c Release
 pwd
 cp -r ./bin/Release/net48/HordeServer.dll "$game_dir"
 cp -r ./bin/Release/net48/HordeServer.pdb "$game_dir"
+cp -r ./Libs/0Harmony.dll "$game_dir"

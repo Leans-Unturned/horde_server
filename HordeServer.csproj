@@ -51,6 +51,9 @@
 			<HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
 			<Aliases>UnityEngineCoreModule</Aliases>
 		</Reference>
+		<Reference Include="0Harmony">
+			<HintPath>Libs\0Harmony.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 </Project>

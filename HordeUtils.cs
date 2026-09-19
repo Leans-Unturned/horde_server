@@ -555,11 +555,6 @@ class HordeUtils
     {
         void GiveAmmo(UnturnedPlayer player)
         {
-            // We are giving ammo, the item system doens't know if is purchased
-            // We are preventing purchase refunds for 4 ticks
-            if (!ItemSystem.ignoredRefunds.ContainsKey(player))
-                ItemSystem.ignoredRefunds.Add(player, 4);
-
             ItemJar primaryWeapon = player.Inventory.getItem(0, 0);
             ItemJar secondaryWeapon = player.Inventory.getItem(1, 0);
 

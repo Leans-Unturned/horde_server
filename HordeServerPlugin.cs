@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using HarmonyLib;
 using Rocket.API.Collections;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
@@ -63,11 +64,15 @@ namespace HordeServer
                 }
         }
 
+        private Harmony? harmony;
         private UnityTickrate? unityTickrate;
         public override void LoadPlugin()
         {
             base.LoadPlugin();
             instance = this;
+
+            harmony = new Harmony("com.leandrothedev.hordeserver");
+            harmony.PatchAll();
 
             unityTickrate = gameObject.AddComponent<UnityTickrate>();
 
@@ -108,7 +113,7 @@ namespace HordeServer
             UseableGun.onChangeBarrelRequested += HordeUtils.BlockPackAPunchAttachmentChange;
             UseableGun.onChangeMagazineRequested += HordeUtils.BlockPackAPunchMagazineExploit;
             UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
-            PlayerSkills.OnExperienceChanged_Global += ItemSystem.OnPlayerExperienceChanged;
+            PurchaseSystem.OnPurchase += ItemSystem.OnPurchase;
             SaveManager.onPostSave += OnPostSave;
 
             try
@@ -296,6 +301,11 @@ namespace HordeServer
 
                 tryToRestartRound();
             }
+        }
+
+        private void OnDestroy()
+        {
+            harmony?.UnpatchAll(harmony.Id);
         }
 
         public override TranslationList DefaultTranslations => new()

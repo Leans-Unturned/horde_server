@@ -150,8 +150,6 @@ class DoorSystem
             return;
         }
 
-        // Paying to open a door is not a vendor purchase, do not let it be mistaken for one
-        ItemSystem.SuppressNextCreditSpend(player);
         player.Experience -= (uint)door.cost;
 
         // Unlocks every "zombiespawn<DoorIndex>" node sharing this door's index, DoorIndex 0 means
