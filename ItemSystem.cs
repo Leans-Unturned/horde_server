@@ -655,6 +655,17 @@ namespace HordeServer
                                     // Weapon is already in its target slot, equip it
                                     else
                                     {
+                                        // Before equipping the new weapon, purge any leftover ammo from the
+                                        // previous weapon that occupied this slot. EvictSlotForRelocation
+                                        // handles this in the relocation path, but when the new weapon lands
+                                        // directly in the target slot (slot was temporarily empty), that code
+                                        // never runs. secondaryWeapon/primaryWeapon still points to the OLD
+                                        // loadout at this point (RefreshSecondaryLoadout runs after us).
+                                        if (entry.TargetSlot == 1 && secondaryWeapon.TryGetValue(player, out WeaponLoadout? oldSecLoadout) && oldSecLoadout.ammoId != entry.Loadout.ammoId)
+                                            RemovePreviouslyAmmo(player, oldSecLoadout.ammoId);
+                                        else if (entry.TargetSlot == 0 && primaryWeapon.TryGetValue(player, out WeaponLoadout? oldPriLoadout) && oldPriLoadout.ammoId != entry.Loadout.ammoId)
+                                            RemovePreviouslyAmmo(player, oldPriLoadout.ammoId);
+
                                         player.Inventory.player.equipment.ServerEquip(page, item.x, item.y);
 
                                         // Only give ammo if weaponInventory is not ignored

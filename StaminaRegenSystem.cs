@@ -48,8 +48,9 @@ namespace HordeServer
                     else if (currentStamina > prevStamina)
                     {
                         // Vanilla passive regen ticked this frame; revert it so only the delayed
-                        // burst regen below can restore stamina
-                        life.askTire((byte)(currentStamina - prevStamina));
+                        // burst regen below can restore stamina.
+                        // serverModifyStamina replicates the delta to the client (askTire does not).
+                        life.serverModifyStamina(-(currentStamina - prevStamina));
                         currentStamina = life.stamina;
                     }
                 }
@@ -78,7 +79,7 @@ namespace HordeServer
                 byte wholeAmount = (byte)System.Math.Min(byte.MaxValue, System.Math.Floor(pending));
                 if (wholeAmount > 0)
                 {
-                    life.askRest(wholeAmount);
+                    life.serverModifyStamina(wholeAmount);
                     pending -= wholeAmount;
                 }
 
