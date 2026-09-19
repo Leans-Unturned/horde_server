@@ -517,6 +517,8 @@ class HordeUtils
         UnturnedPlayer? player = UnturnedPlayer.FromPlayer(equipment.player);
         if (player == null) return;
 
+        if (player.IsAdmin) return;
+
         byte page = equipment.equippedPage;
         if (page != 0 && page != 1) return;
 

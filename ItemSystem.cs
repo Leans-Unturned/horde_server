@@ -255,6 +255,19 @@ namespace HordeServer
                 return;
             }
 
+            // Must come before itemSwapped: EvictSlotForRelocation removes the old weapon from the
+            // target slot (which populates itemSwapped), then tryAddItem places the new weapon there.
+            // If itemSwapped is checked first, the new weapon hits the swap path instead of being
+            // ignored, leaving weaponInventoryIgnoreNextTick unconsumed — which then blocks ammo
+            // giving in EquipTick next tick.
+            if (weaponInventoryIgnoreNextTick.Contains(player))
+            {
+                if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems)
+                    Logger.LogWarning($"[DebugItems] OnInventoryAdded: item={P.item.id} blocked by weaponInventoryIgnoreNextTick for {player.CSteamID}");
+                weaponInventoryIgnoreNextTick.Remove(player);
+                return;
+            }
+
             // Check if the items is swapped
             for (int i = itemSwapped.Count - 1; i >= 0; i--)
             {
@@ -267,10 +280,14 @@ namespace HordeServer
                         // Yes the player put the weapon in inventory
                         if (weaponLoadout.weapondId == P.item.id)
                         {
+                            if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems)
+                                Logger.LogWarning($"[DebugItems] OnInventoryAdded: item={P.item.id} hit itemSwapped path, adding to weaponReplaceNextTick currentPage={inventoryGroup} targetSlot={entry.Value.inventoryPage} for {player.CSteamID}");
                             weaponReplaceNextTick.Add(new(player, new(inventoryGroup, inventoryIndex, P), entry.Value.inventoryPage));
                             break;
                         }
                     }
+                    if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems)
+                        Logger.LogWarning($"[DebugItems] OnInventoryAdded: item={P.item.id} hit itemSwapped path but NOT a weapon loadout, returning early for {player.CSteamID}");
                     return;
                 }
             }
@@ -331,13 +348,6 @@ namespace HordeServer
                         catch (Exception) { }
                     }
                 }
-            }
-
-            // Ignore weapon receive for this event
-            if (weaponInventoryIgnoreNextTick.Contains(player))
-            {
-                weaponInventoryIgnoreNextTick.Remove(player);
-                return;
             }
 
             // In this situation the item is purchased
@@ -578,8 +588,14 @@ namespace HordeServer
             if (SwapTickReset)
                 itemSwapped = [];
 
+            if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems && weaponEquipNextTick.Count > 0)
+                Logger.LogWarning($"[DebugItems] [{DateTime.UtcNow:HH:mm:ss.fff}] EquipTick TICK: pending={weaponEquipNextTick.Count} ignoreSet={string.Join(",", weaponInventoryIgnoreNextTick.Select(p => p.CSteamID.ToString()))}");
+
             if (weaponEquipNextTick.Count > 0)
             {
+                bool debugItems2 = HordeServerPlugin.instance!.Configuration.Instance.DebugItems;
+                if (debugItems2)
+                    Logger.LogWarning($"[DebugItems] [{DateTime.UtcNow:HH:mm:ss.fff}] EquipTick START: {weaponEquipNextTick.Count} entries pending");
                 // Try equip items
                 for (int i = weaponEquipNextTick.Count - 1; i >= 0; i--)
                 {
@@ -640,6 +656,23 @@ namespace HordeServer
                                             player.Inventory.removeItem(page, itemIndex);
                                             // Clear itemSwapped so OnInventoryAdded won't trigger weaponReplaceNextTick
                                             itemSwapped.RemoveAll(e => e.Key == player && e.Value.item.item.id == entry.Loadout.weapondId);
+
+                                            // Equip and give ammo immediately — the weapon is already at
+                                            // targetSlot after tryAddItem, no need to wait another tick.
+                                            ItemJar? relocJar = player.Inventory.getItem(entry.TargetSlot, 0);
+                                            if (relocJar != null)
+                                            {
+                                                player.Inventory.player.equipment.ServerEquip(entry.TargetSlot, relocJar.x, relocJar.y);
+                                                if (debugItems)
+                                                    Logger.LogWarning($"[DebugItems] [{DateTime.UtcNow:HH:mm:ss.fff}] EquipTick GIVE_AMMO_1 (reloc): ammo={entry.Loadout.ammoId} qty={entry.Loadout.ammoRefilQuantity} for {player.CSteamID}");
+                                                RemovePreviouslyAmmo(player, entry.Loadout.ammoId);
+                                                player.GiveItem(entry.Loadout.ammoId, entry.Loadout.ammoRefilQuantity);
+                                                weaponEquipNextTick.RemoveAt(i);
+                                                if (debugItems)
+                                                    Logger.LogWarning($"[DebugItems] [{DateTime.UtcNow:HH:mm:ss.fff}] EquipTick GIVE_AMMO_2 (reloc): ammo={entry.Loadout.ammoId} qty={entry.Loadout.ammoRefilQuantity} for {player.CSteamID}");
+                                                RemovePreviouslyAmmo(player, entry.Loadout.ammoId);
+                                                player.GiveItem(entry.Loadout.ammoId, entry.Loadout.ammoRefilQuantity);
+                                            }
                                         }
                                         else
                                         {
@@ -668,22 +701,26 @@ namespace HordeServer
 
                                         player.Inventory.player.equipment.ServerEquip(page, item.x, item.y);
 
+                                        bool debugItemsAmmo = HordeServerPlugin.instance!.Configuration.Instance.DebugItems;
                                         // Only give ammo if weaponInventory is not ignored
                                         if (!weaponInventoryIgnoreNextTick.Contains(player))
                                         {
+                                            if (debugItemsAmmo)
+                                                Logger.LogWarning($"[DebugItems] [{DateTime.UtcNow:HH:mm:ss.fff}] EquipTick GIVE_AMMO_1: ammo={entry.Loadout.ammoId} qty={entry.Loadout.ammoRefilQuantity} for {player.CSteamID}");
                                             RemovePreviouslyAmmo(player, entry.Loadout.ammoId);
                                             player.GiveItem(entry.Loadout.ammoId, entry.Loadout.ammoRefilQuantity);
 
                                             weaponEquipNextTick.RemoveAt(i);
 
-                                            // Why you give ammo 2 times in a row?
-                                            // Simple the game code is bugged, the first time you give ammo it will multiply by a strange amount
-                                            // The second time is normal
+                                            if (debugItemsAmmo)
+                                                Logger.LogWarning($"[DebugItems] [{DateTime.UtcNow:HH:mm:ss.fff}] EquipTick GIVE_AMMO_2: ammo={entry.Loadout.ammoId} qty={entry.Loadout.ammoRefilQuantity} for {player.CSteamID}");
                                             RemovePreviouslyAmmo(player, entry.Loadout.ammoId);
                                             player.GiveItem(entry.Loadout.ammoId, entry.Loadout.ammoRefilQuantity);
                                         }
                                         else
                                         {
+                                            if (debugItemsAmmo)
+                                                Logger.LogWarning($"[DebugItems] [{DateTime.UtcNow:HH:mm:ss.fff}] EquipTick SKIPPED_AMMO: weaponInventoryIgnoreNextTick was set for {player.CSteamID}");
                                             weaponInventoryIgnoreNextTick.Remove(player);
                                             weaponEquipNextTick.RemoveAt(i);
                                         }
@@ -704,6 +741,8 @@ namespace HordeServer
                     if (!foundItem)
                     {
                         entry.MissedTicks++;
+                        if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems)
+                            Logger.LogWarning($"[DebugItems] EquipTick: weapon={entry.Loadout.weapondId} not found in inventory, missedTicks={entry.MissedTicks} for {player.CSteamID}");
                         if (entry.MissedTicks > 3)
                         {
                             Logger.LogWarning($"Giving up on equipping weapon {entry.Loadout.weapondId} for {player.CSteamID}, item no longer found in inventory");
@@ -739,8 +778,34 @@ namespace HordeServer
                     {
                         if (weaponLoadout.weapondId == entry.CurrentLocation.item.item.id)
                         {
+                            // Weapon is already on the target page (in-place replacement, e.g. buying
+                            // the same weapon again). Nothing to move and no message needed.
+                            if (entry.CurrentLocation.inventoryPage == entry.TargetSlot)
+                            {
+                                if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems)
+                                    Logger.LogWarning($"[DebugItems] weaponReplaceNextTick: weapon={entry.CurrentLocation.item.item.id} already at targetSlot={entry.TargetSlot}, no-op for {entry.Player.CSteamID}");
+                                weaponInventoryIgnoreNextTick.Remove(entry.Player);
+                                weaponInventoryResetIgnoreNextTickOnNextTick.Remove(entry.Player);
+                                break;
+                            }
+
                             byte[] itemMetadata = entry.CurrentLocation.item.item.metadata;
                             entry.Player.Inventory.removeItem(entry.CurrentLocation.inventoryPage, entry.CurrentLocation.inventoryIndex);
+
+                            // A duplicate of the weapon appeared in the bag while the original was
+                            // already correctly placed in targetSlot (can happen when system-generated
+                            // ammo removals cause inventory shifts that confuse itemSwapped tracking).
+                            // Remove the bag copy and re-equip the slot copy — no evict needed.
+                            ItemJar? alreadyAtTarget = entry.Player.Inventory.getItem(entry.TargetSlot, 0);
+                            if (alreadyAtTarget?.item?.id == entry.CurrentLocation.item.item.id)
+                            {
+                                if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems)
+                                    Logger.LogWarning($"[DebugItems] weaponReplaceNextTick: weapon={entry.CurrentLocation.item.item.id} duplicate removed from bag, already at targetSlot={entry.TargetSlot}, re-equipping for {entry.Player.CSteamID}");
+                                weaponInventoryIgnoreNextTick.Remove(entry.Player);
+                                weaponInventoryResetIgnoreNextTickOnNextTick.Remove(entry.Player);
+                                entry.Player.Inventory.player.equipment.ServerEquip(entry.TargetSlot, alreadyAtTarget.x, alreadyAtTarget.y);
+                                continue;
+                            }
 
                             SDG.Unturned.Item itemToRespawn = new(entry.CurrentLocation.item.item.id, true)
                             {

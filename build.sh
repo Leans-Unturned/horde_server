@@ -18,3 +18,4 @@ library_dir="$UNTURNED_SERVER/Servers/$UNTURNED_SERVER_NAME/Rocket/Libraries/"
 dotnet build -c Release
 pwd
 cp -r ./bin/Release/net48/HordeServer.dll "$game_dir"
+cp -r ./bin/Release/net48/HordeServer.pdb "$game_dir"
