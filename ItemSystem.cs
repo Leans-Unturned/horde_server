@@ -351,39 +351,6 @@ namespace HordeServer
                     if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems)
                         Logger.LogWarning($"[DebugItems] OnInventoryAdded: weapon={P.item.id} detected as purchase, targetSlot={targetSlot}, player={player.CSteamID}");
 
-                    // Remove previously equipped weapon occupying the target slot
-                    {
-                        ItemJar? equippedWeapon = player.Inventory.getItem(targetSlot, 0);
-
-                        // Check if exists (in theory is not necessary but...)
-                        if (equippedWeapon != null)
-                        {
-                            if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems)
-                                Logger.LogWarning($"[DebugItems] OnInventoryAdded: slot {targetSlot} occupied by item={equippedWeapon.item.id}, sameWeapon={equippedWeapon.item.id == P.item.id}");
-
-                            // Check if the weapon id is different from the equipped id
-                            if (equippedWeapon.item.id != P.item.id)
-                            {
-                                // Getting the ammo id
-                                foreach (WeaponLoadout checkLoadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
-                                {
-                                    if (checkLoadout.weapondId == equippedWeapon.item.id)
-                                    {
-                                        if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems)
-                                            Logger.LogWarning($"[DebugItems] OnInventoryAdded: removing old weapon={equippedWeapon.item.id} from slot {targetSlot} for {player.CSteamID}");
-                                        // Removing the ammo and the weapon
-                                        RemovePreviouslyAmmo(player, checkLoadout.ammoId);
-                                        player.Inventory.removeItem(targetSlot, 0);
-
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        else if (HordeServerPlugin.instance!.Configuration.Instance.DebugItems)
-                            Logger.LogWarning($"[DebugItems] OnInventoryAdded: slot {targetSlot} empty, no eviction needed");
-                    }
-
                     // Ignore the next: 2 ticks, before detecting ammo refunds
                     // This is necessary on first buy so the system does not refund for the ammo received
                     // in first buy

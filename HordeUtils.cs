@@ -425,7 +425,7 @@ class HordeUtils
     /// </summary>
     public static void ApplyGrenadeDamageMultiplier(UseableThrowable useable, UnityEngineCoreModule.UnityEngine.GameObject throwable)
     {
-        Grenade? grenade = throwable.GetComponent<Grenade>();
+        Grenade? grenade = throwable.GetComponent(typeof(Grenade)) as Grenade;
         if (grenade == null) return;
 
         float multiplier = HordeServerPlugin.instance!.Configuration.Instance.GrenadeDamageMultiplier;
