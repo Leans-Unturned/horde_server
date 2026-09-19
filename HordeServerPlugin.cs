@@ -106,7 +106,7 @@ namespace HordeServer
             UseableGun.onChangeTacticalRequested += HordeUtils.BlockPackAPunchAttachmentChange;
             UseableGun.onChangeGripRequested += HordeUtils.BlockPackAPunchAttachmentChange;
             UseableGun.onChangeBarrelRequested += HordeUtils.BlockPackAPunchAttachmentChange;
-            UseableGun.onChangeMagazineRequested += HordeUtils.BlockPackAPunchAttachmentChange;
+            UseableGun.onChangeMagazineRequested += HordeUtils.BlockPackAPunchMagazineExploit;
             UnturnedPlayerEvents.OnPlayerUpdateStat += OnPlayerStatsUpdate;
             PlayerSkills.OnExperienceChanged_Global += ItemSystem.OnPlayerExperienceChanged;
             SaveManager.onPostSave += OnPostSave;

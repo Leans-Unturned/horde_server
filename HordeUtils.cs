@@ -510,8 +510,8 @@ class HordeUtils
     // config, without ever giving the player a real attachment item. The vanilla attach/detach RPCs
     // mint a genuine attachment item out of whatever is encoded in state when the player removes or
     // replaces one, so if left alone Pack-a-Punch would be a free-loot exploit. Block any attachment
-    // change on a currently pack-a-punched weapon, this same handler is shared by all 5 attachment
-    // slot events since they all use the same signature
+    // change on a currently pack-a-punched weapon, this same handler is shared by all 4 non-magazine
+    // attachment slot events since they all use the same signature
     public static void BlockPackAPunchAttachmentChange(PlayerEquipment equipment, UseableGun gun, SDG.Unturned.Item oldItem, ItemJar newItem, ref bool shouldAllow)
     {
         UnturnedPlayer? player = UnturnedPlayer.FromPlayer(equipment.player);
@@ -522,6 +522,31 @@ class HordeUtils
 
         if (PowerupSystem.IsPackAPunched(player, page))
             shouldAllow = false;
+    }
+
+    // Magazine changes must allow legitimate reloads (newItem is the ammo from inventory) while still
+    // blocking exploit swaps that would mint a free item out of the pack-a-punched state bytes
+    public static void BlockPackAPunchMagazineExploit(PlayerEquipment equipment, UseableGun gun, SDG.Unturned.Item oldItem, ItemJar newItem, ref bool shouldAllow)
+    {
+        UnturnedPlayer? player = UnturnedPlayer.FromPlayer(equipment.player);
+        if (player == null) return;
+
+        byte page = equipment.equippedPage;
+        if (page != 0 && page != 1) return;
+
+        if (!PowerupSystem.IsPackAPunched(player, page)) return;
+
+        // Allow if the incoming item is the correct ammo for this weapon (i.e. a reload)
+        if (newItem?.item != null)
+        {
+            foreach (WeaponLoadout loadout in HordeServerPlugin.instance!.Configuration.Instance.AvailableWeaponsToPurchase)
+            {
+                if (loadout.weapondId == equipment.itemID && loadout.ammoId == newItem.item.id)
+                    return;
+            }
+        }
+
+        shouldAllow = false;
     }
 
     public static void GiveMaxAmmo(UnturnedPlayer? uniquePlayer = null)
